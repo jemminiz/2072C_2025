@@ -15,11 +15,13 @@
 #define PID_DRIVE_MAX 127
 #define PID_DRIVE_MIN (-127)
 
+#define PID_INTEGRAL_LIMIT 50
+
 extern pros::Controller master;
 extern float kP;
 extern float kI ;
 extern float kD;
 
-extern std::vector<int> left_motors;
-extern std::vector<int> right_motors;
+extern std::vector<int8_t> left_motors;
+extern std::vector<int8_t> right_motors;
 #endif
