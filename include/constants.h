@@ -3,17 +3,17 @@
 #include "pros.h"
 #include <vector>
 
-#define LEFT_MOTOR_BACK_PORT 1
-#define LEFT_MOTOR_MID_PORT 1
-#define LEFT_MOTOR_FRONT_PORT 1
-#define RIGHT_MOTOR_BACK_PORT 1
-#define RIGHT_MOTOR_MID_PORT 1
-#define RIGHT_MOTOR_FRONT_PORT 1
+inline constexpr int LEFT_MOTOR_BACK_PORT (1);
+inline constexpr int LEFT_MOTOR_MID_PORT (1);
+inline constexpr int LEFT_MOTOR_FRONT_PORT (1);
+inline constexpr int RIGHT_MOTOR_BACK_PORT (1);
+inline constexpr int RIGHT_MOTOR_MID_PORT (1);
+inline constexpr int RIGHT_MOTOR_FRONT_PORT (1);
 
-#define IMU_PORT 0
+inline constexpr int IMU_PORT (0);
 
-#define PID_DRIVE_MAX 127
-#define PID_DRIVE_MIN (-127)
+inline constexpr int PID_DRIVE_MAX (127);
+inline constexpr int PID_DRIVE_MIN (-127);
 
 inline constexpr int PID_INTEGRAL_LIMIT (50);
 
