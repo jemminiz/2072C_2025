@@ -15,7 +15,7 @@
 #define PID_DRIVE_MAX 127
 #define PID_DRIVE_MIN (-127)
 
-#define PID_INTEGRAL_LIMIT 50
+inline constexpr int PID_INTEGRAL_LIMIT (50);
 
 extern pros::Controller master;
 extern float kP;
