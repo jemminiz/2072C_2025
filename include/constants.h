@@ -3,6 +3,7 @@
 #include "pros.h"
 #include "pros/misc.h"
 #include <vector>
+#include "drivetrain.h"
 
 inline constexpr int LEFT_MOTOR_BACK_PORT (1);
 inline constexpr int LEFT_MOTOR_MID_PORT (1);
@@ -26,4 +27,6 @@ extern pros::Controller master;
 
 extern std::vector<int8_t> left_motors;
 extern std::vector<int8_t> right_motors;
+
+extern Drivetrain dt;
 #endif
