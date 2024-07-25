@@ -1,11 +1,11 @@
-#include "pid.h"
+#include "PID.h"
 #include "constants.h"
 
-PID_Controller::PID_Controller() : pidLastError(0), pidIntegral(0), drivetrain(left_motors, right_motors, IMU_PORT)
+PID::PID() : drivetrain(left_motors, right_motors, IMU_PORT)
 {
 };
 
-void PID_Controller::DriveTo(double heading)
+void PID::DriveTo(double heading)
 {
     pidSensorCurrentValue = drivetrain.get_heading();
 

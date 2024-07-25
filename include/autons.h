@@ -4,6 +4,6 @@
 #include "drivetrain.h"
 #include "pid.h"
 
-PID_Controller pid();
+PID pid();
 
 #endif

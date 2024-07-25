@@ -4,20 +4,20 @@
 #include "pros.h"
 #include "drivetrain.h"
 
-class PID_Controller {
+class PID {
     public:
-        PID_Controller();
+        PID();
         void DriveTo(double heading);
 
         Drivetrain drivetrain;
     private:
-        float pidSensorCurrentValue;
+        float pidSensorCurrentValue = 0.f;
 
-        float pidError;
-        float pidLastError;
-        float pidDerivative;
-        float pidIntegral;
-        float pidDrive;
+        float pidError = 0.f;
+        float pidLastError = 0.f;
+        float pidDerivative = 0.f;
+        float pidIntegral = 0.f;
+        float pidDrive = 0.f;
 
 };
 #endif

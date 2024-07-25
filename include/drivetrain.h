@@ -9,6 +9,9 @@
 class Drivetrain {
     public:
         Drivetrain(std::vector<int8_t> left_mg, std::vector<int8_t> right_mg, std::optional<int> imu = std::nullopt);
+        Drivetrain(const Drivetrain& rhs) = delete;
+        Drivetrain& operator=(const Drivetrain& rhs) = delete;
+
         void drive();
         double get_heading();
         void setVoltage(int voltage);
