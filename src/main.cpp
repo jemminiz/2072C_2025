@@ -82,7 +82,7 @@ void opcontrol() {
 		                 (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
 		                 (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);  // Prints status of the emulated screen LCDs
 
-		dt.drive();
+		StratusQuo::dt.drive();
 		pros::delay(20);                               // Run for 20 ms then update
 	}
 }
