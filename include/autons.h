@@ -4,6 +4,9 @@
 #include "drivetrain.h"
 #include "pid.h"
 
-PID pid();
+namespace StratusQuo
+{
+    PID pid();
+};
 
 #endif

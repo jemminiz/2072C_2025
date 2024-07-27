@@ -1,11 +1,11 @@
 #include "PID.h"
 #include "constants.h"
 
-PID::PID() : drivetrain(left_motors, right_motors, IMU_PORT)
+StratusQuo::PID::PID() : drivetrain(left_motors, right_motors, IMU_PORT)
 {
 };
 
-void PID::DriveTo(double heading)
+void StratusQuo::PID::DriveTo(double heading)
 {
     pidSensorCurrentValue = drivetrain.get_heading();
 

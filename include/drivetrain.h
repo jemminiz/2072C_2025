@@ -6,18 +6,22 @@
 #include <vector>
 #include "pros.h"
 
-class Drivetrain {
-    public:
-        Drivetrain(std::vector<int8_t> left_mg, std::vector<int8_t> right_mg, std::optional<int> imu = std::nullopt);
-        Drivetrain(const Drivetrain& rhs) = delete;
-        Drivetrain& operator=(const Drivetrain& rhs) = delete;
+namespace StratusQuo
+{
+    class Drivetrain
+    {
+        public:
+            Drivetrain(std::vector<int8_t> left_mg, std::vector<int8_t> right_mg, std::optional<int> imu = std::nullopt);
+            Drivetrain(const Drivetrain& rhs) = delete;
+            Drivetrain& operator=(const Drivetrain& rhs) = delete;
 
-        void drive();
-        double get_heading();
-        void setVoltage(int voltage);
-    private:
-        pros::MotorGroup left_motor_group;
-        pros::MotorGroup right_motor_group;
-        pros::Imu imu;
-};
+            void drive();
+            double get_heading();
+            void setVoltage(int voltage);
+        private:
+            pros::MotorGroup left_motor_group;
+            pros::MotorGroup right_motor_group;
+            pros::Imu imu;
+    };
+}
 #endif

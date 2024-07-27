@@ -2,5 +2,5 @@
 #include "constants.h"
 #include "pid.h"
 
-    PID pid();
+    StratusQuo::PID pid();
     
