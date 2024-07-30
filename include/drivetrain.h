@@ -17,11 +17,20 @@ namespace StratusQuo
 
             void drive();
             double get_heading();
+            void driveTo(double heading);
             void setVoltage(int voltage);
         private:
             pros::MotorGroup left_motor_group;
             pros::MotorGroup right_motor_group;
             pros::Imu imu;
+
+            float pidSensorCurrentValue = 0.f;
+
+            float pidError = 0.f;
+            float pidLastError = 0.f;
+            float pidDerivative = 0.f;
+            float pidIntegral = 0.f;
+            float pidDrive = 0.f;
     };
 }
 #endif

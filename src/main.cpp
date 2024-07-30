@@ -1,7 +1,6 @@
 #include "pros.h"
 #include "drivetrain.h"
 #include "constants.h"
-#include "autons.h"
 
 /**
  * A callback function for LLEMU's center button.

@@ -4,7 +4,7 @@
 
 namespace StratusQuo
 {
-    PID pid();
+    
 };
 
 #endif
