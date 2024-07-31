@@ -30,6 +30,6 @@ namespace StratusQuo
     extern std::vector<int8_t> left_motors;
     extern std::vector<int8_t> right_motors;
 
-    extern StratusQuo::Drivetrain dt;
+    extern Drivetrain dt;
 };
 #endif
