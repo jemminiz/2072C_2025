@@ -1,6 +1,10 @@
 #include "pros.h"
 #include "drivetrain.h"
 #include "constants.h"
+#include "clamp.h"
+#include "pros/adi.hpp"
+#include "pros/misc.h"
+#include "objects.h"
 
 /**
  * A callback function for LLEMU's center button.
@@ -27,6 +31,8 @@ void on_center_button() {
 void initialize()
 {
 	pros::lcd::initialize();
+	pros::adi::DigitalOut p(1);
+	StratusQuo::Clamp piston(p);
 }
 
 /**
@@ -85,6 +91,10 @@ void opcontrol() {
 		                 (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);  // Prints status of the emulated screen LCDs
 
 		StratusQuo::dt.drive();
+		if(StratusQuo::master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1))
+		{
+			StratusQuo::piston.toggle();
+		}
 		pros::delay(20);                               // Run for 20 ms then update
 	}
 }

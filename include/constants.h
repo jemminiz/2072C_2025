@@ -25,11 +25,7 @@ namespace StratusQuo
     inline constexpr float kI (0.04);
     inline constexpr float kD (0.);
 
-    extern pros::Controller master;
-
     extern std::vector<int8_t> left_motors;
     extern std::vector<int8_t> right_motors;
-
-    extern Drivetrain dt;
 };
 #endif
