@@ -1,5 +1,6 @@
 #include "drivetrain.h"
 #include "constants.h"
+#include "objects.h"
 #include "pros/misc.h"
 
 using namespace StratusQuo;

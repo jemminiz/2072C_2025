@@ -31,8 +31,6 @@ void on_center_button() {
 void initialize()
 {
 	pros::lcd::initialize();
-	pros::adi::DigitalOut p(1);
-	StratusQuo::Clamp piston(p);
 }
 
 /**
