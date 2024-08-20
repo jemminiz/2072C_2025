@@ -1,7 +1,6 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
-#include "pros.h"
-#include "pros/misc.h"
+#include <cstdint>
 #include <vector>
 
 namespace StratusQuo

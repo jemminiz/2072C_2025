@@ -1,4 +1,3 @@
-#include "pros.h"
 #include "objects.h"
 #include "constants.h"
 
