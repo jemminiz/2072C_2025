@@ -93,6 +93,15 @@ void opcontrol() {
 		{
 			StratusQuo::piston.toggle();
 		}
+		if(StratusQuo::master.get_digital(pros::E_CONTROLLER_DIGITAL_R1))
+		{
+			StratusQuo::in.intake();
+		}
+		else if(StratusQuo::master.get_digital(pros::E_CONTROLLER_DIGITAL_R2))
+		{
+			StratusQuo::in.outtake();
+		}
+		
 		pros::delay(20);                               // Run for 20 ms then update
 	}
 }

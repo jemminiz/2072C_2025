@@ -3,7 +3,6 @@
 #include "pros.h"
 #include "pros/misc.h"
 #include <vector>
-#include "drivetrain.h"
 
 namespace StratusQuo
 {
@@ -15,6 +14,8 @@ namespace StratusQuo
     inline constexpr int RIGHT_MOTOR_FRONT_PORT (-6);
 
     inline constexpr int IMU_PORT (0);
+    inline constexpr int CLAMP_PORT (0);
+    inline constexpr int8_t INTAKE_PORT (10);
 
     inline constexpr int PID_DRIVE_MAX (127);
     inline constexpr int PID_DRIVE_MIN (-127);
