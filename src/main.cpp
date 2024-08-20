@@ -1,3 +1,5 @@
+#include "liblvgl/llemu.h"
+#include "liblvgl/llemu.hpp"
 #include "pros.h"
 #include "drivetrain.h"
 #include "constants.h"
@@ -5,8 +7,10 @@
 #include "pros/adi.hpp"
 #include "pros/misc.h"
 #include "objects.h"
+#include "pros/screen.hpp"
+#include "autons.h"
 
-// HI
+StratusQuo::auton_type auton;
 
 /**
  * A callback function for LLEMU's center button.
@@ -55,7 +59,22 @@ void competition_initialize()
 {
 	/*TODO: Make auton selector :D */
 
-	//pros::screen::draw_rect(1,1,)
+	pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
+		                 (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
+		                 (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);
+	
+	if(pros::lcd::read_buttons() == LCD_BTN_LEFT)
+	{
+		auton = StratusQuo::SKILLS;
+	}
+	else if(pros::lcd::read_buttons() == LCD_BTN_CENTER)
+	{
+		auton = StratusQuo::MATCH;
+	}
+	else
+	{
+		auton = StratusQuo::MATCH;
+	}
 }
 
 /**

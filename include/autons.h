@@ -3,7 +3,11 @@
 
 namespace StratusQuo
 {
-    
+    enum auton_type
+    {
+        SKILLS,
+        MATCH
+    };
 };
 
 #endif
