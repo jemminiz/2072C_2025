@@ -1,5 +1,5 @@
 #include "autons.h"
-#include "constants.h"
+#include "objects.h"
 
 StratusQuo::Auton::Auton()
 {};
@@ -7,6 +7,7 @@ StratusQuo::Auton::Auton()
 void StratusQuo::Auton::skills()
 {
     // do skills stuff
+    dt.driveTo(5);
 };
 
 void StratusQuo::Auton::match()

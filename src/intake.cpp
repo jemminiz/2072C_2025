@@ -4,7 +4,7 @@
 
 StratusQuo::Intake::Intake() : motor(StratusQuo::INTAKE_PORT)
 {
-    motor.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+    motor.set_brake_mode(pros::E_MOTOR_BRAKE_COAST); // Could be an issue later
 };
 
 void StratusQuo::Intake::intake()

@@ -10,8 +10,6 @@
 #include "pros/screen.hpp"
 #include "autons.h"
 
-StratusQuo::auton_type auton;
-
 /**
  * A callback function for LLEMU's center button.
  *
@@ -67,15 +65,15 @@ void competition_initialize()
 	{
 		if(pros::lcd::read_buttons() == LCD_BTN_LEFT)
 		{
-			auton = StratusQuo::SKILLS;
+			StratusQuo::auton = StratusQuo::SKILLS;
 		}
 		else if(pros::lcd::read_buttons() == LCD_BTN_CENTER)
 		{
-			auton = StratusQuo::MATCH;
+			StratusQuo::auton = StratusQuo::MATCH;
 		}
 		else if(pros::lcd::read_buttons() == LCD_BTN_RIGHT)
 		{
-			auton = StratusQuo::GOAL_RUSH;
+			StratusQuo::auton = StratusQuo::GOAL_RUSH;
 		}
 	}
 }
@@ -91,9 +89,10 @@ void competition_initialize()
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */
+
 void autonomous()
 {
-	switch (auton)
+	switch (StratusQuo::auton)
 	{
 		case StratusQuo::SKILLS:
 			// do skills

@@ -1,3 +1,5 @@
+// USE THE INERTIAL SENSOR AS THE SECOND WHEEL
+
 #ifndef DRIVETRAIN_H
 #define DRIVETRAIN_H
 
@@ -19,6 +21,7 @@ namespace StratusQuo
             double get_heading();
             void driveTo(double heading);
             void setVoltage(int voltage);
+            void odom_drive(double heading, double orientation);
         private:
             pros::MotorGroup left_motor_group;
             pros::MotorGroup right_motor_group;
@@ -31,6 +34,12 @@ namespace StratusQuo
             float pidDerivative = 0.f;
             float pidIntegral = 0.f;
             float pidDrive = 0.f;
+
+            float horizontal_wheel_distance;
+            float vertical_wheel_distance;
+            float d0;
+            float theta0;
+            float thetaR;
     };
 }
 #endif

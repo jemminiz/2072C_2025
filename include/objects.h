@@ -16,6 +16,7 @@ namespace StratusQuo
     extern StratusQuo::Clamp piston;
     extern StratusQuo::Intake in;
     extern StratusQuo::Auton autonomous;
+    extern StratusQuo::auton_type auton;
 }
 
 #endif
