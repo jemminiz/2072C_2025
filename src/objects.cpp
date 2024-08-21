@@ -10,4 +10,5 @@ namespace StratusQuo
     Drivetrain dt (left_motors, right_motors, IMU_PORT);
     Clamp piston (p);
     Intake in;
+    Auton autonomous;
 }

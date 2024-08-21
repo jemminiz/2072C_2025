@@ -63,17 +63,20 @@ void competition_initialize()
 		                 (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
 		                 (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);
 	
-	if(pros::lcd::read_buttons() == LCD_BTN_LEFT)
+	while(true) 
 	{
-		auton = StratusQuo::SKILLS;
-	}
-	else if(pros::lcd::read_buttons() == LCD_BTN_CENTER)
-	{
-		auton = StratusQuo::MATCH;
-	}
-	else
-	{
-		auton = StratusQuo::MATCH;
+		if(pros::lcd::read_buttons() == LCD_BTN_LEFT)
+		{
+			auton = StratusQuo::SKILLS;
+		}
+		else if(pros::lcd::read_buttons() == LCD_BTN_CENTER)
+		{
+			auton = StratusQuo::MATCH;
+		}
+		else if(pros::lcd::read_buttons() == LCD_BTN_RIGHT)
+		{
+			auton = StratusQuo::GOAL_RUSH;
+		}
 	}
 }
 
@@ -88,7 +91,23 @@ void competition_initialize()
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */
-void autonomous() {}
+void autonomous()
+{
+	switch (auton)
+	{
+		case StratusQuo::SKILLS:
+			// do skills
+			StratusQuo::autonomous.skills();
+		case StratusQuo::MATCH:
+			// do match
+			StratusQuo::autonomous.match();
+		case StratusQuo::GOAL_RUSH:
+			// do goal rush
+			StratusQuo::autonomous.goal_rush();
+		default:
+			return;
+	}
+}
 
 /**
  * Runs the operator control code. This function will be started in its own task
