@@ -13,7 +13,7 @@ namespace StratusQuo
     class Drivetrain
     {
         public:
-            Drivetrain(std::vector<int8_t> left_mg, std::vector<int8_t> right_mg, std::optional<int> imu = std::nullopt);
+            Drivetrain(std::vector<int8_t> left_mg, std::vector<int8_t> right_mg, int imu, int8_t horizontal, int8_t vertical);
             Drivetrain(const Drivetrain& rhs) = delete;
             Drivetrain& operator=(const Drivetrain& rhs) = delete;
 
@@ -26,6 +26,10 @@ namespace StratusQuo
             pros::MotorGroup left_motor_group;
             pros::MotorGroup right_motor_group;
             pros::Imu imu;
+            pros::v5::Rotation horizontal_wheel;
+            pros::v5::Rotation vertical_wheel;
+
+            float calc_delta_orientation();
 
             float pidSensorCurrentValue = 0.f;
 
@@ -37,9 +41,11 @@ namespace StratusQuo
 
             float horizontal_wheel_distance;
             float vertical_wheel_distance;
-            float d0;
-            float theta0;
-            float thetaR;
+            float imu_distance;
+            float previous_global_position;
+            float previous_global_orientation;
+            float global_orientation_at_reset;
+            float deltaOrientation;
     };
 }
 #endif

@@ -12,11 +12,11 @@ namespace StratusQuo
 	extern pros::adi::DigitalOut p;
     extern pros::v5::Imu imu;
 
-    extern StratusQuo::Drivetrain dt;
-    extern StratusQuo::Clamp piston;
-    extern StratusQuo::Intake in;
-    extern StratusQuo::Auton autonomous;
-    extern StratusQuo::auton_type auton;
+    extern Drivetrain dt;
+    extern Clamp piston;
+    extern Intake in;
+    extern Auton autonomous;
+    extern auton_type auton;
 }
 
 #endif

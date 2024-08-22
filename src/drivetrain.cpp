@@ -3,8 +3,9 @@
 #include "objects.h"
 #include "pros/misc.h"
 
-StratusQuo::Drivetrain::Drivetrain(std::vector<int8_t> left_mg, std::vector<int8_t> right_mg, std::optional<int> imuPort) : left_motor_group(left_mg), right_motor_group(right_mg),
-imu(imuPort.value_or(0))
+StratusQuo::Drivetrain::Drivetrain(std::vector<int8_t> left_mg, std::vector<int8_t> right_mg, int imuPort, int8_t horizontal, int8_t vertical) : 
+left_motor_group(left_mg), right_motor_group(right_mg), imu(imuPort), horizontal_wheel(horizontal),
+vertical_wheel(vertical)
 {};
 
 void StratusQuo::Drivetrain::drive()
@@ -47,3 +48,13 @@ void StratusQuo::Drivetrain::setVoltage(int voltage)
     left_motor_group.move_voltage(voltage);
     right_motor_group.move_voltage(voltage);
 }
+
+float StratusQuo::Drivetrain::calc_delta_orientation()
+{
+    return previous_global_orientation;
+}
+
+void StratusQuo::Drivetrain::odom_drive(double heading, double orientation)
+{
+    
+};
