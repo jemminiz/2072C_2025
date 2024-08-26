@@ -11,7 +11,7 @@ namespace StratusQuo
     inline constexpr int RIGHT_MOTOR_BACK_PORT (-4);
     inline constexpr int RIGHT_MOTOR_MID_PORT (-5);
     inline constexpr int RIGHT_MOTOR_FRONT_PORT (-6);
-    inline constexpr int IMU_PORT (0);
+    inline constexpr uint8_t IMU_PORT (0);
     inline constexpr int HORIZONTAL_WHEEL_PORT (0);
     inline constexpr int VERTICAL_WHEEL_PORT (0);
     inline constexpr int ARM_PORT_1 (0);

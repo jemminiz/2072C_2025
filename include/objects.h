@@ -1,6 +1,7 @@
 #ifndef OBJECTS_H
 #define OBJECTS_H
 
+#include "arm.h"
 #include "autons.h"
 #include "clamp.h"
 #include "drivetrain.h"
@@ -17,6 +18,7 @@ namespace StratusQuo
     extern Intake in;
     extern Auton autonomous;
     extern auton_type auton;
+    extern Arm arm;
 }
 
 #endif

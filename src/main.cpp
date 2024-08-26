@@ -2,12 +2,9 @@
 #include "liblvgl/llemu.hpp"
 #include "pros.h"
 #include "drivetrain.h"
-#include "constants.h"
 #include "clamp.h"
-#include "pros/adi.hpp"
 #include "pros/misc.h"
 #include "objects.h"
-#include "pros/screen.hpp"
 #include "autons.h"
 
 /**
@@ -35,6 +32,7 @@ void on_center_button() {
 void initialize()
 {
 	pros::lcd::initialize();
+	StratusQuo::dt.initialize();
 }
 
 /**

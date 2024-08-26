@@ -12,4 +12,5 @@ namespace StratusQuo
     Intake in;
     Auton autonomous;
     auton_type auton;
+    Arm arm;
 }

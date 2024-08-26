@@ -4,16 +4,16 @@
 #define DRIVETRAIN_H
 
 #include <cstdint>
-#include <optional>
 #include <vector>
 #include "pros.h"
+#include "position.h"
 
 namespace StratusQuo
 {
     class Drivetrain
     {
         public:
-            Drivetrain(std::vector<int8_t> left_mg, std::vector<int8_t> right_mg, int imu, int8_t horizontal, int8_t vertical);
+            Drivetrain(std::vector<int8_t> left_mg, std::vector<int8_t> right_mg, uint8_t imu, int8_t horizontal, int8_t vertical);
             Drivetrain(const Drivetrain& rhs) = delete;
             Drivetrain& operator=(const Drivetrain& rhs) = delete;
 
@@ -22,6 +22,8 @@ namespace StratusQuo
             void driveTo(double heading);
             void setVoltage(int voltage);
             void odom_drive(double heading, double orientation);
+            void initialize();
+            double get_rotation();
         private:
             pros::MotorGroup left_motor_group;
             pros::MotorGroup right_motor_group;
@@ -30,6 +32,9 @@ namespace StratusQuo
             pros::v5::Rotation vertical_wheel;
 
             float calc_delta_orientation();
+            float get_delta_x();
+            float get_delta_y();
+            void calc_delta_position();
 
             float pidSensorCurrentValue = 0.f;
 
@@ -46,6 +51,8 @@ namespace StratusQuo
             float previous_global_orientation;
             float global_orientation_at_reset;
             float deltaOrientation;
+
+            Position pos;
     };
 }
 #endif
