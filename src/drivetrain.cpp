@@ -96,15 +96,7 @@ void StratusQuo::Drivetrain::odom_drive(double x_heading, double y_heading, doub
     // change orientation to face a specific point (in inches)
 
     this->face_direction(x_heading, y_heading);
-    while(pos.getX() != x_heading && pos.getY() != y_heading)
-    {
-        int h_angle = horizontal_wheel.get_angle();
-        int v_angle = vertical_wheel.get_angle();
-        left_motor_group.move_voltage(127);
-        right_motor_group.move_voltage(127);
-        pos.changeX((horizontal_wheel.get_angle() - h_angle) * cos(imu.get_heading()));
-        pos.changeY((vertical_wheel.get_angle() - v_angle) * sin(imu.get_heading()));
-    }
+    driveTo(sqrt(((x_heading - pos.getX())* (x_heading - pos.getX())) + (y_heading - pos.getY()) * (y_heading - pos.getY())));
 };
 
 void StratusQuo::Drivetrain::face_direction(double x, double y)
