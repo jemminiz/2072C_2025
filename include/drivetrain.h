@@ -18,12 +18,13 @@ namespace StratusQuo
             Drivetrain& operator=(const Drivetrain& rhs) = delete;
 
             void drive();
-            double get_heading();
             void driveTo(double heading);
             void setVoltage(int voltage);
-            void odom_drive(double heading, double orientation);
+            void odom_drive(double x_heading, double y_heading, double orientation);
             void initialize();
+            void face_direction(double x, double y);
             double get_rotation();
+            double get_heading();
         private:
             pros::MotorGroup left_motor_group;
             pros::MotorGroup right_motor_group;
@@ -51,6 +52,9 @@ namespace StratusQuo
             float previous_global_orientation;
             float global_orientation_at_reset;
             float deltaOrientation;
+            
+            float previous_x_position = 0;
+            float previous_y_position = 0;
 
             Position pos;
     };

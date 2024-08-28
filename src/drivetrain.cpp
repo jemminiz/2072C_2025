@@ -6,12 +6,12 @@
  */
 
 
-
 #include "drivetrain.h"
 #include "constants.h"
 #include "objects.h"
 #include "pros/misc.h"
 #include <cstdint>
+#include <cmath>
 
 StratusQuo::Drivetrain::Drivetrain(std::vector<int8_t> left_mg, std::vector<int8_t> right_mg, uint8_t imuPort, int8_t horizontal, int8_t vertical) : 
 left_motor_group(left_mg), right_motor_group(right_mg), imu(imuPort), horizontal_wheel(horizontal),
@@ -64,11 +64,20 @@ float StratusQuo::Drivetrain::calc_delta_orientation()
     float delta = this->get_rotation() - previous_global_orientation;
     previous_global_orientation = this->get_rotation();
     return delta;
-};
+}; // Should work properly
 
 float StratusQuo::Drivetrain::get_delta_x()
 {
-    float delta = pos.getX();
+    float delta = previous_x_position + pos.getX();
+    previous_x_position = pos.getX();
+    return delta;
+}; // Need global last_x_position variable
+
+float StratusQuo::Drivetrain::get_delta_y()
+{
+    float delta = previous_y_position + pos.getY();
+    previous_y_position = pos.getY();
+    return delta;
 };
 
 void StratusQuo::Drivetrain::calc_delta_position()
@@ -76,11 +85,51 @@ void StratusQuo::Drivetrain::calc_delta_position()
     float delta_x = this->get_delta_x();
     float delta_y = this->get_delta_y();
     
+    pos.changeX(delta_x);
+    pos.changeY(delta_y);
 };
 
-void StratusQuo::Drivetrain::odom_drive(double heading, double orientation)
+void StratusQuo::Drivetrain::odom_drive(double x_heading, double y_heading, double orientation)
 {
     //imu.get_rotation() is absolute!!!
+    //absolute turning algorithm for orientation?
+    // change orientation to face a specific point (in inches)
+
+    this->face_direction(x_heading, y_heading);
+    while(pos.getX() != x_heading && pos.getY() != y_heading)
+    {
+        int h_angle = horizontal_wheel.get_angle();
+        int v_angle = vertical_wheel.get_angle();
+        left_motor_group.move_voltage(127);
+        right_motor_group.move_voltage(127);
+        pos.changeX((horizontal_wheel.get_angle() - h_angle) * cos(imu.get_heading()));
+        pos.changeY((vertical_wheel.get_angle() - v_angle) * sin(imu.get_heading()));
+    }
+};
+
+void StratusQuo::Drivetrain::face_direction(double x, double y)
+{
+    double angle = atan2(y, x);
+    if(angle > 180)
+    {
+        while(this->get_rotation() != angle)
+        {
+            left_motor_group.move_voltage(127);
+            right_motor_group.move_voltage(-127);
+        }
+        left_motor_group.brake();
+        right_motor_group.brake();
+    }
+    else
+    {
+        while(this->get_rotation() != angle)
+        {
+            left_motor_group.move_voltage(-127);
+            right_motor_group.move_voltage(127);
+        }
+        left_motor_group.brake();
+        right_motor_group.brake();
+    }
 };
 
 void StratusQuo::Drivetrain::initialize()
@@ -90,5 +139,5 @@ void StratusQuo::Drivetrain::initialize()
 
 double StratusQuo::Drivetrain::get_rotation()
 {
-    return imu.get_rotation();
+    return (std::fmod(imu.get_rotation(), M_2_PI));
 };

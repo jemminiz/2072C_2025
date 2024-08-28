@@ -3,7 +3,7 @@
 
 namespace StratusQuo
 {
-    class Position
+    class Position // Represents a "Position" in inches, used for odometry
     {
         public: 
             Position();
