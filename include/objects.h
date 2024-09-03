@@ -11,6 +11,8 @@ namespace StratusQuo
 {
     extern pros::Controller master;
 	extern pros::adi::DigitalOut p;
+    extern pros::adi::DigitalIn limit_switch;
+    extern pros::adi::DigitalOut intake_piston;
     extern pros::v5::Imu imu;
 
     extern Drivetrain dt;
