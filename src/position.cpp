@@ -3,22 +3,22 @@
 StratusQuo::Position::Position()
 {};
 
-float StratusQuo::Position::getX()
+double StratusQuo::Position::getX()
 {
     return x;
 };
 
-float StratusQuo::Position::getY()
+double StratusQuo::Position::getY()
 {
     return y;
 };
 
-void StratusQuo::Position::changeX(float delta)
+void StratusQuo::Position::changeX(double delta)
 {
     x += delta;
 };
 
-void StratusQuo::Position::changeY(float delta)
+void StratusQuo::Position::changeY(double delta)
 {
     y += delta;
 };

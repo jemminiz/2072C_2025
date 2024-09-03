@@ -71,7 +71,7 @@ float StratusQuo::Drivetrain::get_delta_x()
     float delta = previous_x_position + pos.getX();
     previous_x_position = pos.getX();
     return delta;
-}; // Need global last_x_position variable
+};
 
 float StratusQuo::Drivetrain::get_delta_y()
 {
