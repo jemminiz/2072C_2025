@@ -10,11 +10,11 @@ StratusQuo::Arm::Arm() : motor1(ARM_PORT_1), motor2(ARM_PORT_2)
 
 void StratusQuo::Arm::arm_up()
 {
-    motor1.move(63);
-    motor2.move(63);
+    motor1.move(42);
+    motor2.move(42);
 }
 void StratusQuo::Arm::arm_down()
 {
-    motor1.move(-63);
-    motor2.move(-63);
+    motor1.move(-42);
+    motor2.move(-42);
 }
