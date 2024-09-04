@@ -1,8 +1,8 @@
 #ifndef ARM_H
 #define ARM_H
 
-#include "pros.h"
 
+#include "pros/motors.hpp"
 namespace StratusQuo
 {
     class Arm

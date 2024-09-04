@@ -1,8 +1,6 @@
 #ifndef CLAMP_H
 #define CLAMP_H
 
-#include "pros.h"
-#include "pros/adi.h"
 #include "pros/adi.hpp"
 
 namespace StratusQuo

@@ -5,8 +5,10 @@
 
 #include <cstdint>
 #include <vector>
-#include "pros.h"
 #include "position.h"
+#include "pros/imu.hpp"
+#include "pros/rotation.hpp"
+#include "pros/motor_group.hpp"
 
 namespace StratusQuo
 {

@@ -1,8 +1,9 @@
 #ifndef INTAKE_H
 #define INTAKE_H
 
-#include "pros.h"
 
+#include "pros/adi.hpp"
+#include "pros/motors.hpp"
 namespace StratusQuo
 {
     class Intake
