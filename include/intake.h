@@ -11,8 +11,11 @@ namespace StratusQuo
             Intake();
             void intake();
             void outtake();
+            void move();
         private:
             pros::Motor motor;
+            pros::adi::DigitalOut piston;
+            bool current_piston_state;
     };
 }
 
