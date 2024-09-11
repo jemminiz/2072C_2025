@@ -134,7 +134,7 @@ void opcontrol() {
 		{
 			StratusQuo::in.intake();
 		}
-		else if(StratusQuo::master.get_digital(pros::E_CONTROLLER_DIGITAL_R2))
+		else if(StratusQuo::master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2))
 		{
 			StratusQuo::in.outtake();
 		}

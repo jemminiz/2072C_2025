@@ -21,8 +21,9 @@ vertical_wheel(vertical), pos()
 void StratusQuo::Drivetrain::drive()
 {
     // Tank Drive
-    left_motor_group.move_voltage(StratusQuo::master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y));
-    right_motor_group.move_voltage(StratusQuo::master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y));
+    left_motor_group.move(StratusQuo::master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y));
+    right_motor_group.move(StratusQuo::master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y));
+    pros::delay(2);
 }
 void StratusQuo::Drivetrain::driveTo(double heading)
 {
