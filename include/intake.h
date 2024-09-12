@@ -12,6 +12,7 @@ namespace StratusQuo
             Intake();
             void intake();
             void outtake();
+            void stop();
             void move();
         private:
             pros::Motor motor;

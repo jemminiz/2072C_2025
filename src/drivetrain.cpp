@@ -15,7 +15,7 @@
 
 StratusQuo::Drivetrain::Drivetrain(std::vector<int8_t> left_mg, std::vector<int8_t> right_mg, uint8_t imuPort, int8_t horizontal, int8_t vertical) : 
 left_motor_group(left_mg), right_motor_group(right_mg), imu(imuPort), horizontal_wheel(horizontal),
-vertical_wheel(vertical), pos()
+vertical_wheel(vertical), pos(), right_back(right_mg[0]),right_mid (right_mg[1]), right_front (right_mg[2])
 {};
 
 void StratusQuo::Drivetrain::drive()
@@ -23,6 +23,10 @@ void StratusQuo::Drivetrain::drive()
     // Tank Drive
     left_motor_group.move(StratusQuo::master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y));
     right_motor_group.move(StratusQuo::master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y));
+    //right_back.move(StratusQuo::master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y));
+    //right_mid.move(StratusQuo::master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y));
+    //right_front.move(StratusQuo::master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y));
+    
 }
 void StratusQuo::Drivetrain::driveTo(double heading)
 {

@@ -34,6 +34,10 @@ namespace StratusQuo
             pros::v5::Rotation horizontal_wheel;
             pros::v5::Rotation vertical_wheel;
 
+            pros::Motor right_back;
+            pros::Motor right_mid;
+            pros::Motor right_front;
+
             float calc_delta_orientation();
             float get_delta_x();
             float get_delta_y();

@@ -134,9 +134,21 @@ void opcontrol() {
 		{
 			StratusQuo::in.intake();
 		}
-		else if(StratusQuo::master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2))
+		else if(StratusQuo::master.get_digital(pros::E_CONTROLLER_DIGITAL_R2))
 		{
 			StratusQuo::in.outtake();
+		}
+		else
+		{
+			StratusQuo::in.stop();
+		}
+		if(StratusQuo::master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT))
+		{
+			StratusQuo::in.move();
+		}
+		if(StratusQuo::master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y))
+		{
+			StratusQuo::piston.toggle();
 		}
 		
 		pros::delay(20);                               // Run for 20 ms then update
