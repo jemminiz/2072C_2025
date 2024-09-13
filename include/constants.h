@@ -18,7 +18,7 @@ namespace StratusQuo
     inline constexpr int VERTICAL_WHEEL_PORT (14);
     inline constexpr int ARM_PORT_1 (15);
     inline constexpr int ARM_PORT_2 (16);
-    inline constexpr int INTAKE_PORT (7);
+    inline constexpr int INTAKE_PORT (6);
 
     inline constexpr uint8_t CLAMP_PORT (6);
     inline constexpr uint8_t INTAKE_PISTON_PORT (4);

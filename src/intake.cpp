@@ -9,7 +9,7 @@ StratusQuo::Intake::Intake() : motor(StratusQuo::INTAKE_PORT), piston(StratusQuo
 
 void StratusQuo::Intake::intake()
 {
-    motor.move_velocity(600);
+    motor.move_velocity(200);
 };
 void StratusQuo::Intake::outtake()
 {

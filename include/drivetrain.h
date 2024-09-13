@@ -37,6 +37,9 @@ namespace StratusQuo
             pros::Motor right_back;
             pros::Motor right_mid;
             pros::Motor right_front;
+            pros::Motor left_back;
+            pros::Motor left_mid;
+            pros::Motor left_front;
 
             float calc_delta_orientation();
             float get_delta_x();

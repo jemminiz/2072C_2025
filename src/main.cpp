@@ -130,6 +130,7 @@ void opcontrol() {
 		{
 			StratusQuo::piston.toggle();
 		}
+
 		if(StratusQuo::master.get_digital(pros::E_CONTROLLER_DIGITAL_R1))
 		{
 			StratusQuo::in.intake();
@@ -142,6 +143,7 @@ void opcontrol() {
 		{
 			StratusQuo::in.stop();
 		}
+
 		if(StratusQuo::master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT))
 		{
 			StratusQuo::in.move();
