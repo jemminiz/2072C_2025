@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "2072C_2025",
+    "project_name": "Stratus Quo",
     "target": "v5",
     "templates": {
       "kernel": {

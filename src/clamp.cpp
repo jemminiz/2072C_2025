@@ -12,3 +12,12 @@ void StratusQuo::Clamp::toggle()
     currentState = !currentState;
     piston.set_value(currentState);
 }
+bool StratusQuo::Clamp::get_value()
+{
+    return currentState;
+}
+void StratusQuo::Clamp::set_value(bool in)
+{
+    piston.set_value(in);
+    currentState = in;
+}

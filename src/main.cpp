@@ -40,7 +40,10 @@ void initialize()
  * the VEX Competition Switch, following either autonomous or opcontrol. When
  * the robot is enabled, this task will exit.
  */
-void disabled() {}
+void disabled()
+{
+	StratusQuo::arm.stop();
+}
 
 /**
  * Runs after initialize(), and before autonomous when connected to the Field
@@ -126,9 +129,18 @@ void opcontrol() {
 		                 (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);  // Prints status of the emulated screen LCDs
 
 		StratusQuo::dt.drive();
-		if(StratusQuo::master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1))
+
+		if(StratusQuo::master.get_digital(pros::E_CONTROLLER_DIGITAL_L1))
 		{
-			StratusQuo::piston.toggle();
+			StratusQuo::arm.arm_up();
+		}
+		else if(StratusQuo::master.get_digital(pros::E_CONTROLLER_DIGITAL_L2))
+		{
+			StratusQuo::arm.arm_down();
+		}
+		else 
+		{
+			StratusQuo::arm.stop();
 		}
 
 		if(StratusQuo::master.get_digital(pros::E_CONTROLLER_DIGITAL_R1))
@@ -146,11 +158,12 @@ void opcontrol() {
 
 		if(StratusQuo::master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT))
 		{
-			StratusQuo::in.move();
+			StratusQuo::piston.set_value(false);
+			pros::delay(20);
 		}
-		if(StratusQuo::master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y))
+		if(StratusQuo::limit_switch.get_new_press())
 		{
-			StratusQuo::piston.toggle();
+			StratusQuo::piston.set_value(true);
 		}
 		
 		pros::delay(20);                               // Run for 20 ms then update

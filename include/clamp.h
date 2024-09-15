@@ -10,6 +10,8 @@ namespace StratusQuo
         public: 
             Clamp(pros::adi::DigitalOut p);
             void toggle();
+            bool get_value();
+            void set_value(bool in);
         private:
             pros::adi::DigitalOut piston;
             bool currentState = false;

@@ -24,14 +24,14 @@ void StratusQuo::Drivetrain::drive()
     // Issue with left_back, left_mid
 
     // Tank Drive
-    left_motor_group.move(StratusQuo::master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y));
-    //left_back.move(StratusQuo::master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y));
-    //left_mid.move(StratusQuo::master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y));
-    //left_front.move(StratusQuo::master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y));
-    right_motor_group.move(StratusQuo::master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y));
-    //right_back.move(StratusQuo::master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y));
-    //right_mid.move(StratusQuo::master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y));
-    //right_front.move(StratusQuo::master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y));
+    //left_motor_group.move(StratusQuo::master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y));
+    left_back.move(StratusQuo::master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y));
+    left_mid.move(StratusQuo::master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y));
+    left_front.move(StratusQuo::master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y));
+    //right_motor_group.move(StratusQuo::master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y));
+    right_back.move(StratusQuo::master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y));
+    right_mid.move(StratusQuo::master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y));
+    right_front.move(StratusQuo::master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y));
     
 }
 void StratusQuo::Drivetrain::driveTo(double heading)
