@@ -25,13 +25,13 @@ namespace StratusQuo
     inline constexpr uint8_t LIMIT_SWITCH_PORT ('h');
 
     inline constexpr int PID_DRIVE_MAX (127);
-    inline constexpr int PID_DRIVE_MIN (-127);
+    inline constexpr int PID_DRIVE_MIN (127);
 
     inline constexpr int PID_INTEGRAL_LIMIT (50);
 
-    inline constexpr float kP (2.00);
-    inline constexpr float kI (0.04);
-    inline constexpr float kD (0.);
+    inline constexpr float kP (2.0f);
+    inline constexpr float kI (0.0f);
+    inline constexpr float kD (0.0f);
 
     extern std::vector<int8_t> left_motors;
     extern std::vector<int8_t> right_motors;

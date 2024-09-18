@@ -32,7 +32,6 @@ void on_center_button() {
 void initialize()
 {
 	pros::lcd::initialize();
-	StratusQuo::dt.initialize();
 }
 
 /**
@@ -93,6 +92,9 @@ void competition_initialize()
 
 void autonomous()
 {
+	StratusQuo::dt.initialize();
+	StratusQuo::dt.pid_drive(500);
+	return;
 	switch (StratusQuo::auton)
 	{
 		case StratusQuo::SKILLS:
@@ -104,6 +106,8 @@ void autonomous()
 		case StratusQuo::GOAL_RUSH:
 			// do goal rush
 			StratusQuo::autonomous.goal_rush();
+		case StratusQuo::NONE:
+			return;
 		default:
 			return;
 	}
@@ -165,7 +169,11 @@ void opcontrol() {
 		{
 			StratusQuo::piston.set_value(true);
 		}
-		
+
+		if(StratusQuo::master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y))
+		{
+			StratusQuo::dt.pid_drive(10);
+		}
 		pros::delay(20);                               // Run for 20 ms then update
 	}
 }

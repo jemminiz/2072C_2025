@@ -13,6 +13,6 @@ namespace StratusQuo
     Clamp piston (p);
     Intake in;
     Auton autonomous;
-    auton_type auton;
+    auton_type auton = auton_type::NONE;
     Arm arm;
 }

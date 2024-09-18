@@ -23,6 +23,7 @@ namespace StratusQuo
             void driveTo(double heading);
             void setVoltage(int voltage);
             void odom_drive(double x_heading, double y_heading, double orientation);
+            void pid_drive(double heading);
             void initialize();
             void face_direction(double x, double y);
             double get_rotation();
@@ -64,6 +65,8 @@ namespace StratusQuo
             
             float previous_x_position = 0;
             float previous_y_position = 0;
+
+            void pidDriveHelper(double heading);
 
             Position pos;
     };

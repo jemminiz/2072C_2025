@@ -7,7 +7,8 @@ namespace StratusQuo
     {
         SKILLS,
         MATCH,
-        GOAL_RUSH
+        GOAL_RUSH,
+        NONE
     };
 
     class Auton

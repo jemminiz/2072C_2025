@@ -9,7 +9,9 @@
 #include "drivetrain.h"
 #include "constants.h"
 #include "objects.h"
+#include "pros/imu.h"
 #include "pros/misc.h"
+#include "pros/rtos.hpp"
 #include <cstdint>
 #include <cmath>
 
@@ -36,9 +38,23 @@ void StratusQuo::Drivetrain::drive()
 }
 void StratusQuo::Drivetrain::driveTo(double heading)
 {
-    pidSensorCurrentValue = this->get_heading();
+    //left_motor_group.move_relative(heading, 127);
+    //right_motor_group.move_relative(heading, 127);
+    left_back.move_relative(heading, 127);
+    left_mid.move_relative(heading, 127);
+    left_front.move_relative(heading, 127);
+    right_back.move_relative(heading, 127);
+    right_mid.move_relative(heading, 127);
+    right_front.move_relative(heading, 127);
+    
+}
 
-    pidError = pidSensorCurrentValue - heading;
+void StratusQuo::Drivetrain::pidDriveHelper(double heading)
+{
+    double desired_heading = -heading;
+    pidSensorCurrentValue = -imu.get_gyro_rate().z;
+
+    pidError = pidSensorCurrentValue - desired_heading;
 
     if(kI != 0)
     {
@@ -59,14 +75,29 @@ void StratusQuo::Drivetrain::driveTo(double heading)
 
     this->setVoltage(pidDrive);
 }
+void StratusQuo::Drivetrain::pid_drive(double heading)
+{
+    while(-imu.get_gyro_rate().z != heading)
+    {
+        driveTo(heading);
+        pros::delay(20);
+    }
+}
 double StratusQuo::Drivetrain::get_heading()
 {
-    return this->get_heading();
+    return imu.get_heading();
 }
 void StratusQuo::Drivetrain::setVoltage(int voltage)
 {
-    left_motor_group.move_voltage(voltage);
-    right_motor_group.move_voltage(voltage);
+    //left_motor_group.move_voltage(voltage);
+    //right_motor_group.move_voltage(voltage);
+    left_back.move_voltage(voltage);
+    left_mid.move_voltage(voltage);
+    left_front.move_voltage(voltage);
+    right_back.move_voltage(voltage);
+    right_mid.move_voltage(voltage);
+    right_front.move_voltage(voltage);
+    
 }
 
 float StratusQuo::Drivetrain::calc_delta_orientation()
