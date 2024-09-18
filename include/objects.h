@@ -6,6 +6,7 @@
 #include "clamp.h"
 #include "drivetrain.h"
 #include "intake.h"
+#include "scooper.h"
 
 namespace StratusQuo
 {
@@ -21,6 +22,7 @@ namespace StratusQuo
     extern Auton autonomous;
     extern auton_type auton;
     extern Arm arm;
+    extern Scooper scoop;
 }
 
 #endif

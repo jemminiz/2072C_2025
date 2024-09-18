@@ -23,6 +23,7 @@ namespace StratusQuo
     inline constexpr uint8_t CLAMP_PORT ('g');
     inline constexpr uint8_t INTAKE_PISTON_PORT ('b');
     inline constexpr uint8_t LIMIT_SWITCH_PORT ('h');
+    inline constexpr uint8_t SCOOP_PORT ('f');
 
     inline constexpr int PID_DRIVE_MAX (127);
     inline constexpr int PID_DRIVE_MIN (127);

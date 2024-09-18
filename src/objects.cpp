@@ -15,4 +15,5 @@ namespace StratusQuo
     Auton autonomous;
     auton_type auton = auton_type::NONE;
     Arm arm;
+    Scooper scoop(SCOOP_PORT);
 }

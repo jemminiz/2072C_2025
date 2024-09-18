@@ -6,6 +6,7 @@
 #include "pros/misc.h"
 #include "objects.h"
 #include "autons.h"
+#include "scooper.h"
 
 /**
  * A callback function for LLEMU's center button.
@@ -168,6 +169,10 @@ void opcontrol() {
 		if(StratusQuo::limit_switch.get_new_press())
 		{
 			StratusQuo::piston.set_value(true);
+		}
+		if(StratusQuo::master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_X))
+		{
+			StratusQuo::scoop.toggle();
 		}
 
 		if(StratusQuo::master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y))
