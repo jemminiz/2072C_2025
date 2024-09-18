@@ -7,7 +7,7 @@ namespace StratusQuo
 {
     //Unused motor ports: 13, 14, 15, 16, 17, 18, 19, 20, 21
     
-    inline constexpr int LEFT_MOTOR_BACK_PORT (4);
+    inline constexpr int LEFT_MOTOR_BACK_PORT (5);
     inline constexpr int LEFT_MOTOR_MID_PORT (-3);
     inline constexpr int LEFT_MOTOR_FRONT_PORT (-8);
     inline constexpr int RIGHT_MOTOR_BACK_PORT (-1);
