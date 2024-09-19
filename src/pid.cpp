@@ -107,7 +107,6 @@ double StratusQuo::PID::velocity_sensor_secondary_exit_get() { return velocity_z
 StratusQuo::exit_output StratusQuo::PID::exit_condition(bool print) {
   // If this function is called while all exit constants are 0, print an error
   if (exit.small_error == 0 && exit.small_exit_time == 0 && exit.big_error == 0 && exit.big_exit_time == 0 && exit.velocity_exit_time == 0 && exit.mA_timeout == 0) {
-    exit_condition_print(ERROR_NO_CONSTANTS);
     return ERROR_NO_CONSTANTS;
   }
 
@@ -118,7 +117,6 @@ StratusQuo::exit_output StratusQuo::PID::exit_condition(bool print) {
       i = 0;  // While this is running, don't run big thresh
       if (j > exit.small_exit_time) {
         timers_reset();
-        if (print) exit_condition_print(SMALL_EXIT);
         return SMALL_EXIT;
       }
     } else {
@@ -133,7 +131,6 @@ StratusQuo::exit_output StratusQuo::PID::exit_condition(bool print) {
       i += DELAY_TIME;
       if (i > exit.big_exit_time) {
         timers_reset();
-        if (print) exit_condition_print(BIG_EXIT);
         return BIG_EXIT;
       }
     } else {
@@ -147,7 +144,6 @@ StratusQuo::exit_output StratusQuo::PID::exit_condition(bool print) {
       k += DELAY_TIME;
       if (k > exit.velocity_exit_time) {
         timers_reset();
-        if (print) exit_condition_print(VELOCITY_EXIT);
         return VELOCITY_EXIT;
       }
     } else {
@@ -164,7 +160,6 @@ StratusQuo::exit_output StratusQuo::PID::exit_condition(bool print) {
       m += DELAY_TIME;
       if (m > exit.velocity_exit_time) {
         timers_reset();
-        if (print) exit_condition_print(VELOCITY_EXIT);
         return VELOCITY_EXIT;
       }
     } else {
@@ -184,7 +179,6 @@ StratusQuo::exit_output StratusQuo::PID::exit_condition(pros::Motor sensor, bool
       l += DELAY_TIME;
       if (l > exit.mA_timeout) {
         timers_reset();
-        if (print) exit_condition_print(mA_EXIT);
         return mA_EXIT;
       }
     } else {
@@ -213,7 +207,6 @@ StratusQuo::exit_output StratusQuo::PID::exit_condition(std::vector<pros::Motor>
       l += DELAY_TIME;
       if (l > exit.mA_timeout) {
         timers_reset();
-        if (print) exit_condition_print(mA_EXIT);
         return mA_EXIT;
       }
     } else {
