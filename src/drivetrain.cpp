@@ -18,7 +18,7 @@
 StratusQuo::Drivetrain::Drivetrain(std::vector<int8_t> left_mg, std::vector<int8_t> right_mg, uint8_t imuPort, int8_t horizontal, int8_t vertical) : 
 left_motor_group(left_mg), right_motor_group(right_mg), imu(imuPort), horizontal_wheel(horizontal),
 vertical_wheel(vertical), pos(), right_back(right_mg[0]),right_mid (right_mg[1]), right_front (right_mg[2]),
-left_back(left_mg[0]), left_mid(left_mg[1]), left_front(left_mg[2])
+left_back(left_mg[0]), left_mid(left_mg[1]), left_front(left_mg[2]), drive_task([this] {this->drive_task;})
 {};
 
 void StratusQuo::Drivetrain::drive()
@@ -49,55 +49,49 @@ void StratusQuo::Drivetrain::driveTo(double heading)
     
 }
 
-void StratusQuo::Drivetrain::pidDriveHelper(double heading)
-{
-    double desired_heading = -heading;
-    pidSensorCurrentValue = -imu.get_gyro_rate().z;
-
-    pidError = pidSensorCurrentValue - desired_heading;
-
-    if(kI != 0)
-    {
-        if(std::abs(pidError) < PID_INTEGRAL_LIMIT)
-        {
-            pidIntegral += pidError;
-        }
-        else pidIntegral = 0;
-    }
-    else pidIntegral = 0;
-
-    pidDerivative = pidError - pidLastError;
-    pidLastError = pidError;
-
-    pidDrive = kP * pidError + kI * pidIntegral + kD * pidDerivative;
-    if(pidDrive > PID_DRIVE_MAX) pidDrive = PID_DRIVE_MAX;
-    if(pidDrive < PID_DRIVE_MIN) pidDrive = PID_DRIVE_MIN;
-
-    this->setVoltage(pidDrive);
-}
 void StratusQuo::Drivetrain::pid_drive(double heading)
 {
-    while(-imu.get_gyro_rate().z != heading)
+    left_pid.target_set(heading);
+    right_pid.target_set(heading);
+    dt_wait();
+}
+
+void StratusQuo::Drivetrain::dt_wait()
+{
+    while(left_pid.exit_condition({left_front, right_front}, true) == RUNNING)
     {
-        driveTo(heading);
-        pros::delay(20);
+        pros::delay(10);
     }
 }
+
+void StratusQuo::Drivetrain::dt_task()
+{
+    pros::delay(2000);
+    while(true)
+    {
+        this->setLeftVoltage(left_pid.compute(left_front.get_position()));
+        this->setRightVoltage(right_pid.compute(right_front.get_position()));
+        pros::delay(10);
+    }
+}
+
 double StratusQuo::Drivetrain::get_heading()
 {
     return imu.get_heading();
 }
-void StratusQuo::Drivetrain::setVoltage(int voltage)
+void StratusQuo::Drivetrain::setLeftVoltage(int voltage)
 {
     //left_motor_group.move_voltage(voltage);
     //right_motor_group.move_voltage(voltage);
     left_back.move_voltage(voltage);
     left_mid.move_voltage(voltage);
-    left_front.move_voltage(voltage);
+    left_front.move_voltage(voltage);    
+}
+void StratusQuo::Drivetrain::setRightVoltage(int voltage)
+{
     right_back.move_voltage(voltage);
     right_mid.move_voltage(voltage);
     right_front.move_voltage(voltage);
-    
 }
 
 float StratusQuo::Drivetrain::calc_delta_orientation()
@@ -168,6 +162,8 @@ void StratusQuo::Drivetrain::face_direction(double x, double y)
 void StratusQuo::Drivetrain::initialize()
 {
     imu.reset();
+    left_pid.exit_condition_set(80, 50, 300, 150, 500, 500);
+    right_pid.exit_condition_set(80, 50, 300, 150, 500, 500);
 };
 
 double StratusQuo::Drivetrain::get_rotation()

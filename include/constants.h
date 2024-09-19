@@ -34,6 +34,13 @@ namespace StratusQuo
     inline constexpr float kI (0.0f);
     inline constexpr float kD (0.0f);
 
+    enum exit_output { RUNNING = 1,
+                   SMALL_EXIT = 2,
+                   BIG_EXIT = 3,
+                   VELOCITY_EXIT = 4,
+                   mA_EXIT = 5,
+                   ERROR_NO_CONSTANTS = 6 };
+
     extern std::vector<int8_t> left_motors;
     extern std::vector<int8_t> right_motors;
 };

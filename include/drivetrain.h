@@ -5,6 +5,7 @@
 
 #include <cstdint>
 #include <vector>
+#include "pid.h"
 #include "position.h"
 #include "pros/imu.hpp"
 #include "pros/rotation.hpp"
@@ -21,13 +22,21 @@ namespace StratusQuo
 
             void drive();
             void driveTo(double heading);
-            void setVoltage(int voltage);
+            void setLeftVoltage(int voltage);
+            void setRightVoltage(int voltage);
             void odom_drive(double x_heading, double y_heading, double orientation);
             void pid_drive(double heading);
             void initialize();
             void face_direction(double x, double y);
             double get_rotation();
             double get_heading();
+
+            StratusQuo::PID left_pid {0.45, 0, 0, 0, "Left Drive"};
+            StratusQuo::PID right_pid {0.45, 0, 0, 0, "Right Drive"};
+
+            void dt_wait();
+            void dt_task();
+            pros::Task drive_task;
         private:
             pros::MotorGroup left_motor_group;
             pros::MotorGroup right_motor_group;
