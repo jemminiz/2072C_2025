@@ -9,7 +9,6 @@
 #include "drivetrain.h"
 #include "constants.h"
 #include "objects.h"
-#include "pros/imu.h"
 #include "pros/misc.h"
 #include "pros/rtos.hpp"
 #include <cstdint>
