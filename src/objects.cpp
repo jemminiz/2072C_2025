@@ -16,4 +16,5 @@ namespace StratusQuo
     auton_type auton = auton_type::NONE;
     Arm arm;
     Scooper scoop(SCOOP_PORT);
+    Basket basket(BASKET_PORT, BASKET_START_EXTENDED);
 }

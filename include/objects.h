@@ -3,6 +3,7 @@
 
 #include "arm.h"
 #include "autons.h"
+#include "basket.h"
 #include "clamp.h"
 #include "drivetrain.h"
 #include "intake.h"
@@ -23,6 +24,7 @@ namespace StratusQuo
     extern auton_type auton;
     extern Arm arm;
     extern Scooper scoop;
+    extern Basket basket;
 }
 
 #endif
