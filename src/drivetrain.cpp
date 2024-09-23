@@ -17,7 +17,7 @@
 StratusQuo::Drivetrain::Drivetrain(std::vector<int8_t> left_mg, std::vector<int8_t> right_mg, uint8_t imuPort, int8_t horizontal, int8_t vertical) : 
 left_motor_group(left_mg), right_motor_group(right_mg), imu(imuPort), horizontal_wheel(horizontal),
 vertical_wheel(vertical), pos(), right_back(right_mg[0]),right_mid (right_mg[1]), right_front (right_mg[2]),
-left_back(left_mg[0]), left_mid(left_mg[1]), left_front(left_mg[2]), drive_task([this] {this->drive_task;})
+left_back(left_mg[0]), left_mid(left_mg[1]), left_front(left_mg[2]), drive_task([this] {this->dt_task();})
 {};
 
 void StratusQuo::Drivetrain::drive()
@@ -34,6 +34,11 @@ void StratusQuo::Drivetrain::drive()
     right_mid.move(StratusQuo::master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y));
     right_front.move(StratusQuo::master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y));
     
+}
+
+void StratusQuo::Drivetrain::suspend_task()
+{
+    drive_task.suspend();
 }
 void StratusQuo::Drivetrain::driveTo(double heading)
 {
@@ -52,6 +57,17 @@ void StratusQuo::Drivetrain::pid_drive(double heading)
 {
     left_pid.target_set(heading);
     right_pid.target_set(heading);
+    setLeftVoltage(left_pid.compute(left_front.get_position()));
+    setRightVoltage(right_pid.compute(right_front.get_position()));
+    dt_wait();
+}
+
+void StratusQuo::Drivetrain::turn(double theta)
+{
+    left_pid.target_set(theta);
+    right_pid.target_set(-theta);
+    setLeftVoltage(left_pid.compute(left_front.get_position()));
+    setRightVoltage(right_pid.compute(right_front.get_position()));
     dt_wait();
 }
 
@@ -72,6 +88,11 @@ void StratusQuo::Drivetrain::dt_task()
         this->setRightVoltage(right_pid.compute(right_front.get_position()));
         pros::delay(10);
     }
+}
+void StratusQuo::Drivetrain::set_target(double target)
+{
+    left_pid.target_set(target);
+    right_pid.target_set(target);
 }
 
 double StratusQuo::Drivetrain::get_heading()
@@ -160,7 +181,11 @@ void StratusQuo::Drivetrain::face_direction(double x, double y)
 
 void StratusQuo::Drivetrain::initialize()
 {
+    left_front.tare_position();
+    right_front.tare_position();
     imu.reset();
+    left_pid.constants_set(kP, kI, kD);
+    right_pid.constants_set(kP, kI, kD);
     left_pid.exit_condition_set(80, 50, 300, 150, 500, 500);
     right_pid.exit_condition_set(80, 50, 300, 150, 500, 500);
 };

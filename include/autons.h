@@ -20,7 +20,6 @@ namespace StratusQuo
             void match();
             void goal_rush();
         private:
-            
     };
 };
 

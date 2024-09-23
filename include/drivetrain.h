@@ -31,12 +31,17 @@ namespace StratusQuo
             double get_rotation();
             double get_heading();
 
-            StratusQuo::PID left_pid {0.45, 0, 0, 0, "Left Drive"};
-            StratusQuo::PID right_pid {0.45, 0, 0, 0, "Right Drive"};
+            StratusQuo::PID left_pid {kP, kI, kD, 0, "Left Drive"};
+            StratusQuo::PID right_pid {kP, kI, kD, 0, "Right Drive"};
 
             void dt_wait();
             void dt_task();
+            void set_target(double target);
+            void suspend_task();
+            void turn(double theta);
             pros::Task drive_task;
+            pros::Motor left_front;
+            pros::Motor right_front;
         private:
             pros::MotorGroup left_motor_group;
             pros::MotorGroup right_motor_group;
@@ -46,10 +51,8 @@ namespace StratusQuo
 
             pros::Motor right_back;
             pros::Motor right_mid;
-            pros::Motor right_front;
             pros::Motor left_back;
             pros::Motor left_mid;
-            pros::Motor left_front;
 
             float calc_delta_orientation();
             float get_delta_x();

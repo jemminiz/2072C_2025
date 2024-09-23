@@ -9,15 +9,14 @@ namespace StratusQuo
     class Intake
     {
         public: 
-            Intake();
+            Intake(uint8_t motor_port, uint8_t piston_port, bool starting_piston_state);
             void intake();
             void outtake();
             void stop();
-            void move();
+            void toggle();
         private:
             pros::Motor motor;
-            pros::adi::DigitalOut piston;
-            bool current_piston_state;
+            pros::adi::Pneumatics piston;
     };
 }
 

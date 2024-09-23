@@ -1,8 +1,7 @@
 #include "intake.h"
-#include "constants.h"
 #include "pros/motors.h"
 
-StratusQuo::Intake::Intake() : motor(StratusQuo::INTAKE_PORT), piston(StratusQuo::INTAKE_PISTON_PORT, true), current_piston_state(true)
+StratusQuo::Intake::Intake(uint8_t motor_port, uint8_t piston_port, bool starting_piston_state) : motor(motor_port), piston(piston_port, starting_piston_state)
 {
     motor.set_brake_mode(pros::E_MOTOR_BRAKE_COAST); // Could be an issue later
 };
@@ -20,8 +19,8 @@ void StratusQuo::Intake::stop()
     motor.move_velocity(0);
 }
 
-void StratusQuo::Intake::move()
+void StratusQuo::Intake::toggle()
 {
-    piston.set_value(!current_piston_state);
-    current_piston_state = !current_piston_state;
+    piston.toggle();
 };
+

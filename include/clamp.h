@@ -8,12 +8,12 @@ namespace StratusQuo
     class Clamp
     {
         public: 
-            Clamp(pros::adi::DigitalOut p);
+            Clamp(uint8_t clamp_port);
             void toggle();
             bool get_value();
             void set_value(bool in);
         private:
-            pros::adi::DigitalOut piston;
+            pros::adi::Pneumatics piston;
             bool currentState = false;
     };
 }

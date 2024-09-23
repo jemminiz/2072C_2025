@@ -7,6 +7,7 @@ namespace StratusQuo {
     {
         public:
             Basket(uint8_t port, bool start_extended);
+            void toggle();
         private:
             pros::adi::Pneumatics basket_pneumatic;
     };

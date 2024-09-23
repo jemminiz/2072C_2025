@@ -2,7 +2,7 @@
 #include "constants.h"
 #include "pros/adi.hpp"
 
-StratusQuo::Clamp::Clamp(pros::adi::DigitalOut p) : piston(p)
+StratusQuo::Clamp::Clamp(uint8_t clamp_port) : piston(clamp_port, false)
 {
     piston.set_value(false);
     currentState = false;

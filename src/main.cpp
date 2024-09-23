@@ -93,9 +93,6 @@ void competition_initialize()
 
 void autonomous()
 {
-	StratusQuo::dt.initialize();
-	StratusQuo::dt.pid_drive(500);
-	return;
 	switch (StratusQuo::auton)
 	{
 		case StratusQuo::SKILLS:
@@ -128,6 +125,7 @@ void autonomous()
  * task, not resume it from where it left off.
  */
 void opcontrol() {
+	StratusQuo::dt.suspend_task();
 	while (true) {
 		pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
 		                 (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
@@ -163,22 +161,28 @@ void opcontrol() {
 
 		if(StratusQuo::master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT))
 		{
-			StratusQuo::piston.set_value(false);
+			StratusQuo::piston.toggle();
 			pros::delay(20);
 		}
 		if(StratusQuo::limit_switch.get_new_press())
 		{
 			StratusQuo::piston.set_value(true);
 		}
-		if(StratusQuo::master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_X))
+		if(StratusQuo::master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A))
 		{
 			StratusQuo::scoop.toggle();
 		}
 
+		if(StratusQuo::master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B))
+		{
+			StratusQuo::in.toggle();
+		}
 		if(StratusQuo::master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y))
 		{
-			StratusQuo::dt.pid_drive(10);
+			StratusQuo::basket.toggle();
 		}
+		pros::lcd::print(5, "%.2f", StratusQuo::dt.left_front.get_position());
+		pros::lcd::print(6, "%.2f", StratusQuo::dt.right_front.get_position());
 		pros::delay(20);                               // Run for 20 ms then update
 	}
 }
