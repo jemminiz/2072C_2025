@@ -53,22 +53,28 @@ void StratusQuo::Drivetrain::driveTo(double heading)
     
 }
 
-void StratusQuo::Drivetrain::pid_drive(double heading)
+void StratusQuo::Drivetrain::pid_drive(double target)
 {
-    left_pid.target_set(heading);
-    right_pid.target_set(heading);
-    setLeftVoltage(left_pid.compute(left_front.get_position()));
-    setRightVoltage(right_pid.compute(right_front.get_position()));
-    dt_wait();
+    while(left_front.get_position() != target)
+    {
+        left_pid.target_set(target);
+        right_pid.target_set(target);
+        setLeftVoltage(left_pid.compute(left_front.get_position()));
+        setRightVoltage(right_pid.compute(right_front.get_position()));
+        dt_wait();
+    }
 }
 
 void StratusQuo::Drivetrain::turn(double theta)
 {
-    left_pid.target_set(theta);
-    right_pid.target_set(-theta);
-    setLeftVoltage(left_pid.compute(left_front.get_position()));
-    setRightVoltage(right_pid.compute(right_front.get_position()));
-    dt_wait();
+    while(left_front.get_position() != theta)
+    {
+        left_pid.target_set(theta);
+        right_pid.target_set(-theta);
+        setLeftVoltage(left_pid.compute(left_front.get_position()));
+        setRightVoltage(right_pid.compute(right_front.get_position()));
+        dt_wait();
+    }
 }
 
 void StratusQuo::Drivetrain::dt_wait()

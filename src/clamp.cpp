@@ -1,5 +1,4 @@
 #include "clamp.h"
-#include "constants.h"
 #include "pros/adi.hpp"
 
 StratusQuo::Clamp::Clamp(uint8_t clamp_port) : piston(clamp_port, false)
