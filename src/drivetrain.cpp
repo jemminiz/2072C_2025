@@ -55,10 +55,10 @@ void StratusQuo::Drivetrain::driveTo(double heading)
 
 void StratusQuo::Drivetrain::pid_drive(double target)
 {
+    left_pid.target_set(target);
+    right_pid.target_set(target);
     while(left_front.get_position() != target)
     {
-        left_pid.target_set(target);
-        right_pid.target_set(target);
         setLeftVoltage(left_pid.compute(left_front.get_position()));
         setRightVoltage(right_pid.compute(right_front.get_position()));
         dt_wait();
