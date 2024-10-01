@@ -27,15 +27,19 @@ namespace StratusQuo
     inline constexpr uint8_t BASKET_PORT ('a');
     inline constexpr bool BASKET_START_EXTENDED (false);
     inline constexpr bool INTAKE_STARTING_PISTON_STATE (true);
+    inline constexpr bool SCOOP_START_EXTENDED (false);
 
     inline constexpr int PID_DRIVE_MAX (127);
     inline constexpr int PID_DRIVE_MIN (-127);
 
     inline constexpr int PID_INTEGRAL_LIMIT (50);
 
-    inline constexpr float kP (0.45f);
-    inline constexpr float kI (.0f);
-    inline constexpr float kD (.0f);
+    inline constexpr float left_kP (1.f);
+    inline constexpr float left_kI (.0f);
+    inline constexpr float left_kD (.0f);
+    inline constexpr float right_kP (1.f);
+    inline constexpr float right_kI (.0f);
+    inline constexpr float right_kD (.0f);
 
     enum exit_output { RUNNING = 1,
                    SMALL_EXIT = 2,

@@ -9,10 +9,10 @@ namespace StratusQuo
     class Scooper
     {
         public:
-            Scooper(int8_t port);
+            Scooper(int8_t port, bool start_extended);
             void toggle();
         private:
-            pros::adi::DigitalOut scooper;
+            pros::adi::Pneumatics scooper;
             bool state = false;
     };
 }

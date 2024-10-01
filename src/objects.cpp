@@ -14,6 +14,6 @@ namespace StratusQuo
     Auton autonomous;
     auton_type auton = auton_type::GOAL_RUSH;
     Arm arm;
-    Scooper scoop(SCOOP_PORT);
+    Scooper scoop(SCOOP_PORT, SCOOP_START_EXTENDED);
     Basket basket(BASKET_PORT, BASKET_START_EXTENDED);
 }

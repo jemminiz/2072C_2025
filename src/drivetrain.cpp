@@ -40,6 +40,10 @@ void StratusQuo::Drivetrain::suspend_task()
 {
     drive_task.suspend();
 }
+void StratusQuo::Drivetrain::resume_task()
+{
+    drive_task.resume();
+}
 void StratusQuo::Drivetrain::driveTo(double heading)
 {
     //left_motor_group.move_relative(heading, 127);
@@ -57,11 +61,24 @@ void StratusQuo::Drivetrain::pid_drive(double target)
 {
     left_pid.target_set(target);
     right_pid.target_set(target);
-    while(left_front.get_position() != target)
+    int timer = 0;
+    while(true)
     {
         setLeftVoltage(left_pid.compute(left_front.get_position()));
         setRightVoltage(right_pid.compute(right_front.get_position()));
-        dt_wait();
+
+        if(left_front.get_actual_velocity() == 0)
+        {
+            timer += 10;
+
+            if(timer >= 50)
+            {
+                break;
+            }
+        }
+        else timer = 0;
+
+        pros::delay(10);
     }
 }
 
@@ -190,8 +207,8 @@ void StratusQuo::Drivetrain::initialize()
     left_front.tare_position();
     right_front.tare_position();
     imu.reset();
-    left_pid.constants_set(kP, kI, kD);
-    right_pid.constants_set(kP, kI, kD);
+    left_pid.constants_set(left_kP, left_kI, left_kD);
+    right_pid.constants_set(right_kP, right_kI, right_kD);
     left_pid.exit_condition_set(80, 50, 300, 150, 500, 500);
     right_pid.exit_condition_set(80, 50, 300, 150, 500, 500);
 };

@@ -31,13 +31,14 @@ namespace StratusQuo
             double get_rotation();
             double get_heading();
 
-            StratusQuo::PID left_pid {kP, kI, kD, 0, "Left Drive"};
-            StratusQuo::PID right_pid {kP, kI, kD, 0, "Right Drive"};
+            StratusQuo::PID left_pid {0, 0, 0, 0, "Left Drive"};
+            StratusQuo::PID right_pid {0, 0, 0, 0, "Right Drive"};
 
             void dt_wait();
             void dt_task();
             void set_target(double target);
             void suspend_task();
+            void resume_task();
             void turn(double theta);
             pros::Task drive_task;
             pros::Motor left_front;

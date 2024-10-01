@@ -93,6 +93,9 @@ void competition_initialize()
 
 void autonomous()
 {
+	StratusQuo::dt.initialize();
+	StratusQuo::dt.pid_drive(-50000000000);
+	return;
 	switch (StratusQuo::auton)
 	{
 		case StratusQuo::SKILLS:
@@ -181,6 +184,7 @@ void opcontrol() {
 		{
 			StratusQuo::basket.toggle();
 		}
+
 		pros::lcd::print(5, "%.2f", StratusQuo::dt.left_front.get_position());
 		pros::lcd::print(6, "%.2f", StratusQuo::dt.right_front.get_position());
 		pros::delay(20);                               // Run for 20 ms then update
