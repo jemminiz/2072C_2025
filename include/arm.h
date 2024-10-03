@@ -13,8 +13,7 @@ namespace StratusQuo
             void arm_down();
             void stop();
         private:
-            pros::Motor motor1;
-            pros::Motor motor2;
+            pros::Motor motor;
     };
 }
 
