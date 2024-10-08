@@ -1,5 +1,6 @@
 #pragma once 
 #include <cstdint>
+#include "EZ-Template/PID.hpp"
 #include "pros/adi.hpp"
 #include "pros/motors.hpp"
 #include "pros/rotation.hpp"
@@ -14,10 +15,15 @@ namespace StratusQuo
             );
             void arm_down();
             void arm_up();
-            void arm_move(int voltage);            
+            void arm_move(int voltage);
+            double get_rotation();
+            void brake();
+
+            void set_constants(double kP, double kI, double kD);         
         private:
             pros::Motor arm_motor;
             pros::adi::Pneumatics arm_pneumatics;
             pros::Rotation arm_sensor;
+            ez::PID arm_PID;
     };
 }

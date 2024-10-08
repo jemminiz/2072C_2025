@@ -1,4 +1,6 @@
 #include "main.h"
+#include "autons.hpp"
+#include "pros/misc.h"
 
 /////
 // For installation, upgrading, documentations, and tutorials, check out our website!
@@ -18,9 +20,9 @@ void initialize() {
   pros::delay(500);  // Stop the user from doing anything while legacy ports configure
 
   // Configure your chassis controls
-  chassis.opcontrol_curve_buttons_toggle(true);  // Enables modifying the controller curve with buttons on the joysticks
-  chassis.opcontrol_drive_activebrake_set(0);    // Sets the active brake kP. We recommend ~2.  0 will disable.
-  chassis.opcontrol_curve_default_set(0, 0);     // Defaults for curve. If using tank, only the first parameter is used. (Comment this line out if you have an SD card!)
+  StratusQuo::chassis.opcontrol_curve_buttons_toggle(true);  // Enables modifying the controller curve with buttons on the joysticks
+  StratusQuo::chassis.opcontrol_drive_activebrake_set(0);    // Sets the active brake kP. We recommend ~2.  0 will disable.
+  StratusQuo::chassis.opcontrol_curve_default_set(0, 0);     // Defaults for curve. If using tank, only the first parameter is used. (Comment this line out if you have an SD card!)
 
   // Set the drive to your own constants from autons.cpp!
   default_constants();
@@ -31,6 +33,7 @@ void initialize() {
 
   // Autonomous Selector using LLEMU
   ez::as::auton_selector.autons_add({
+      Auton("Blue Right", blue_ring_side),
       Auton("Example Drive\n\nDrive forward and come back.", drive_example),
       Auton("Example Turn\n\nTurn 3 times.", turn_example),
       Auton("Drive and Turn\n\nDrive forward, turn, come back. ", drive_and_turn),
@@ -42,7 +45,7 @@ void initialize() {
   });
 
   // Initialize chassis and auton selector
-  chassis.initialize();
+  StratusQuo::chassis.initialize();
   ez::as::initialize();
   master.rumble(".");
 }
@@ -81,10 +84,10 @@ void competition_initialize() {
  * from where it left off.
  */
 void autonomous() {
-  chassis.pid_targets_reset();                // Resets PID targets to 0
-  chassis.drive_imu_reset();                  // Reset gyro position to 0
-  chassis.drive_sensor_reset();               // Reset drive sensors to 0
-  chassis.drive_brake_set(MOTOR_BRAKE_HOLD);  // Set motors to hold.  This helps autonomous consistency
+  StratusQuo::chassis.pid_targets_reset();                // Resets PID targets to 0
+  StratusQuo::chassis.drive_imu_reset();                  // Reset gyro position to 0
+  StratusQuo::chassis.drive_sensor_reset();               // Reset drive sensors to 0
+  StratusQuo::chassis.drive_brake_set(MOTOR_BRAKE_HOLD);  // Set motors to hold.  This helps autonomous consistency
 
   ez::as::auton_selector.selected_auton_call();  // Calls selected auton from autonomous selector
 }
@@ -106,7 +109,7 @@ void opcontrol() {
   // This is preference to what you like to drive on
   pros::motor_brake_mode_e_t driver_preference_brake = MOTOR_BRAKE_COAST;
 
-  chassis.drive_brake_set(driver_preference_brake);
+  StratusQuo::chassis.drive_brake_set(driver_preference_brake);
 
   while (true) {
     // PID Tuner
@@ -117,18 +120,18 @@ void opcontrol() {
       //  * use A and Y to increment / decrement the constants
       //  * use the arrow keys to navigate the constants
       if (master.get_digital_new_press(DIGITAL_X))
-        chassis.pid_tuner_toggle();
+        StratusQuo::chassis.pid_tuner_toggle();
 
       // Trigger the selected autonomous routine
       if (master.get_digital(DIGITAL_B) && master.get_digital(DIGITAL_DOWN)) {
         autonomous();
-        chassis.drive_brake_set(driver_preference_brake);
+        StratusQuo::chassis.drive_brake_set(driver_preference_brake);
       }
 
-      chassis.pid_tuner_iterate();  // Allow PID Tuner to iterate
+      StratusQuo::chassis.pid_tuner_iterate();  // Allow PID Tuner to iterate
     }
 
-    chassis.opcontrol_tank();  // Tank control
+    StratusQuo::chassis.opcontrol_tank();  // Tank control
     // chassis.opcontrol_arcade_standard(ez::SPLIT);   // Standard split arcade
     // chassis.opcontrol_arcade_standard(ez::SINGLE);  // Standard single arcade
     // chassis.opcontrol_arcade_flipped(ez::SPLIT);    // Flipped split arcade
@@ -137,6 +140,23 @@ void opcontrol() {
     // . . .
     // Put more user control code here!
     // . . .
+
+    if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L2))
+    {
+      StratusQuo::arm.arm_down();
+    }
+    else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1))
+    {
+      StratusQuo::arm.arm_up();
+    }
+    else
+    {
+      StratusQuo::arm.brake();
+    }
+    if(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y))
+    {
+      
+    }
 
     pros::delay(ez::util::DELAY_TIME);  // This is used for timer calculations!  Keep this ez::util::DELAY_TIME
   }

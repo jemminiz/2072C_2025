@@ -1,5 +1,4 @@
-#ifndef _CONSTANTS_HPP
-#define _CONSTANTS_HPP
+#pragma once
 #include <cstdint>
 
 namespace StratusQuo
@@ -13,8 +12,12 @@ namespace StratusQuo
     inline constexpr int RIGHT_MOTOR_FRONT_PORT (11);
     inline constexpr int ARM_PORT (10);
     inline constexpr int INTAKE_PORT (7);
-    inline constexpr uint8_t IMU_PORT (12);
     #pragma endregion Smart_Ports
+
+    #pragma region Sensor_Ports
+    inline constexpr uint8_t IMU_PORT (12);
+    inline constexpr uint8_t ARM_ROTATION_PORT (38);
+    #pragma endregion Sensor_Ports
     
     #pragma region Piston_Ports
     inline constexpr uint8_t CLAMP_PORT ('g');
@@ -22,6 +25,7 @@ namespace StratusQuo
     inline constexpr uint8_t LIMIT_SWITCH_PORT ('h');
     inline constexpr uint8_t SCOOP_PORT ('f');
     inline constexpr uint8_t BASKET_PORT ('a');
+    inline constexpr uint8_t ARM_PNEUMATICS_PORT ('c');
     #pragma endregion Piston_Ports
 
     #pragma region Const_Vals
@@ -32,5 +36,3 @@ namespace StratusQuo
     inline constexpr int RPM (450);
     #pragma endregion Const_Vals
 }
-
-#endif
