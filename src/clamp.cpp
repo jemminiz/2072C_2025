@@ -3,15 +3,11 @@
 StratusQuo::Clamp::Clamp(uint8_t pneumatic_port) : clamp_pneumatics(pneumatic_port, false)
 {};
 
-void StratusQuo::Intake::outake()
+void StratusQuo::Clamp::clamp()
 {
-    intake_motor.move(-127);
+    clamp_pneumatics.toggle();
 }
-void StratusQuo::Intake::intake()
+void StratusQuo::Clamp::clamp_setvalue(bool toggle)
 {
-    intake_motor.move(127);
-}
-void StratusQuo::Intake::intake_auton(int voltage)
-{
-    intake_motor.move(voltage);
+    clamp_pneumatics.set_value(toggle);
 }
