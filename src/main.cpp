@@ -33,7 +33,10 @@ void initialize() {
 
   // Autonomous Selector using LLEMU
   ez::as::auton_selector.autons_add({
-      Auton("Blue Right", blue_ring_side),
+      Auton("Blue Ring Sig", StratusQuo::sig_blue_ring_side),
+      Auton("Blue Goal Sig", StratusQuo::sig_blue_goal_side),
+      Auton("Red Ring Sig", StratusQuo::sig_red_ring_side),
+      Auton("Red Goal Sig", StratusQuo::sig_red_goal_side),
       Auton("Example Drive\n\nDrive forward and come back.", drive_example),
       Auton("Example Turn\n\nTurn 3 times.", turn_example),
       Auton("Drive and Turn\n\nDrive forward, turn, come back. ", drive_and_turn),

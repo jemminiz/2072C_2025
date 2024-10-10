@@ -1,3 +1,4 @@
+#include "autons.hpp"
 #include "main.h"
 #include "subsystems.hpp"
 
@@ -225,15 +226,15 @@ void interfered_example() {
 // Make your own autonomous functions here!
 // . . .
 
-void red_ring_side()
+void StratusQuo::sig_red_ring_side()
 {
 
 };
-void red_goal_side()
+void StratusQuo::sig_red_goal_side()
 {
 
 };
-void blue_ring_side()
+void StratusQuo::sig_blue_ring_side()
 {
   StratusQuo::arm.arm_move(110);
   pros::delay(1250);
@@ -243,10 +244,29 @@ void blue_ring_side()
   StratusQuo::clamp.set_value(true);
   StratusQuo::chassis.pid_turn_set(-165, 127);
   StratusQuo::chassis.pid_wait();
-  StratusQuo::chassis.pid_drive_set(10, 127);
+  StratusQuo::chassis.pid_drive_set(15, 127);
+  StratusQuo::intake.move(127);
+  StratusQuo::chassis.pid_wait();
+};
+void StratusQuo::sig_blue_goal_side()
+{
+
+};
+
+void StratusQuo::local_red_ring_side()
+{
+
+};
+void StratusQuo::local_red_goal_side()
+{
+
+};
+void StratusQuo::local_blue_ring_side()
+{
+  StratusQuo::chassis.pid_drive_set(-30, 127);
   
 };
-void blue_goal_side()
+void StratusQuo::local_blue_goal_side()
 {
 
 };

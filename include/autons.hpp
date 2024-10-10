@@ -11,10 +11,17 @@ void motion_chaining();
 void combining_movements();
 void interfered_example();
 
-// My autons
-void red_ring_side();
-void red_goal_side();
-void blue_ring_side();
-void blue_goal_side();
+namespace StratusQuo
+{
+    // My autons
+    void sig_red_ring_side();
+    void sig_red_goal_side();
+    void sig_blue_ring_side();
+    void sig_blue_goal_side();
 
+    void local_red_ring_side();
+    void local_red_goal_side();
+    void local_blue_ring_side();
+    void local_blue_goal_side();
+}
 void default_constants();
