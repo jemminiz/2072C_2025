@@ -1,7 +1,7 @@
 #include "main.h"
 #include "autons.hpp"
 #include "pros/misc.h"
-
+#include "intake.h"
 /////
 // For installation, upgrading, documentations, and tutorials, check out our website!
 // https://ez-robotics.github.io/EZ-Template/
@@ -157,6 +157,15 @@ void opcontrol() {
     {
       
     }
+    if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R1))
+    {
+      StratusQuo::intake.intake();
+    }
+    if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R2))
+    {
+      StratusQuo::intake.outake();
+    }
+
 
     pros::delay(ez::util::DELAY_TIME);  // This is used for timer calculations!  Keep this ez::util::DELAY_TIME
   }

@@ -3,6 +3,7 @@
 #include "EZ-Template/drive/drive.hpp"
 #include "arm.h"
 #include "constants.hpp"
+#include "intake.h"
 
 // Your motors, sensors, etc. should go here.  Below are examples
 
@@ -11,8 +12,7 @@
 
 namespace StratusQuo
 {
-    inline pros::Motor intake(INTAKE_PORT);
-    inline pros::adi::Pneumatics intake_pneumatic(INTAKE_PISTON_PORT, INTAKE_STARTING_PISTON_STATE);
+    inline StratusQuo::Intake intake (INTAKE_PORT, INTAKE_PISTON_PORT);
     
     inline StratusQuo::Arm arm(ARM_PORT, ARM_PNEUMATICS_PORT, ARM_ROTATION_PORT);
 
