@@ -236,10 +236,25 @@ void StratusQuo::sig_red_goal_side()
 };
 void StratusQuo::sig_blue_ring_side()
 {
-  StratusQuo::chassis.pid_drive_set(-40, 90);
+  StratusQuo::chassis.pid_drive_set(-38, 70);
   StratusQuo::chassis.pid_wait();
   StratusQuo::clamp.set_value(true);
+  pros::delay(100);
   StratusQuo::chassis.pid_turn_relative_set(-90, TURN_SPEED);
+  StratusQuo::chassis.pid_wait();
+  StratusQuo::chassis.pid_drive_set(20, DRIVE_SPEED);
+  StratusQuo::intake.move(127);
+  StratusQuo::chassis.pid_wait();
+  StratusQuo::chassis.pid_turn_relative_set(-85, TURN_SPEED);
+  StratusQuo::chassis.pid_wait();
+  StratusQuo::chassis.pid_drive_set(12, DRIVE_SPEED);
+  StratusQuo::chassis.pid_wait();
+  StratusQuo::chassis.pid_drive_set(-5, DRIVE_SPEED);
+  StratusQuo::chassis.pid_wait();
+  StratusQuo::chassis.pid_turn_relative_set(-55, TURN_SPEED);
+  StratusQuo::chassis.pid_wait();
+  StratusQuo::chassis.pid_drive_set(6, DRIVE_SPEED);
+  StratusQuo::chassis.pid_wait();
   /*
   StratusQuo::arm.arm_move(110);
   pros::delay(1250);
