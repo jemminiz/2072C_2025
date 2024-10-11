@@ -236,17 +236,61 @@ void StratusQuo::sig_red_goal_side()
 };
 void StratusQuo::sig_blue_ring_side()
 {
-  StratusQuo::arm.arm_move(110);
-  pros::delay(1250);
-  StratusQuo::arm.brake();
-  StratusQuo::chassis.pid_drive_set(-50, 127);
+  StratusQuo::chassis.pid_drive_set(-40, 90);
   StratusQuo::chassis.pid_wait();
   StratusQuo::clamp.set_value(true);
-  StratusQuo::chassis.pid_turn_set(-165, 127);
+  StratusQuo::chassis.pid_turn_relative_set(-90, TURN_SPEED);
+  /*
+  StratusQuo::arm.arm_move(110);
+  pros::delay(1250);
+  StratusQuo::arm.arm_move(-110);
+  pros::delay(1250);
+  StratusQuo::arm.brake();
+
+  StratusQuo::chassis.pid_drive_set(-50, 75);
   StratusQuo::chassis.pid_wait();
-  StratusQuo::chassis.pid_drive_set(15, 127);
+  StratusQuo::clamp.set_value(true);
+  pros::delay(100);
+  StratusQuo::chassis.pid_turn_set(-105, TURN_SPEED);
+  StratusQuo::chassis.pid_wait();
+  StratusQuo::intake.move(127);
+  StratusQuo::chassis.pid_drive_set(10, DRIVE_SPEED);
+  StratusQuo::chassis.pid_wait();
+  StratusQuo::chassis.pid_turn_set(-195, TURN_SPEED);
+  StratusQuo::chassis.pid_wait();
+  
+  StratusQuo::chassis.pid_turn_set(105, TURN_SPEED);
+  StratusQuo::chassis.pid_wait();
+  StratusQuo::chassis.pid_drive_set(15, DRIVE_SPEED);
+  StratusQuo::chassis.pid_wait();
+  StratusQuo::chassis.pid_drive_set(-10, DRIVE_SPEED);
+  StratusQuo::chassis.pid_wait();*/
+  /*
+  StratusQuo::arm.arm_move(110);
+  pros::delay(1250);
+  StratusQuo::arm.arm_move(-110);
+  pros::delay(1250);
+  StratusQuo::arm.brake();
+  StratusQuo::chassis.pid_drive_set(-50000000, 90);
+  StratusQuo::chassis.pid_wait();
+  StratusQuo::clamp.set_value(true);
+  StratusQuo::chassis.pid_turn_set(-160, 127);
+  StratusQuo::chassis.pid_wait();
+  StratusQuo::chassis.pid_drive_set(12, 127);
   StratusQuo::intake.move(127);
   StratusQuo::chassis.pid_wait();
+  StratusQuo::chassis.pid_turn_set(1, 127);
+  StratusQuo::chassis.pid_wait();
+  StratusQuo::chassis.pid_drive_set(50, 127);
+  StratusQuo::chassis.pid_wait();
+  StratusQuo::chassis.pid_turn_set(10, 127);
+  StratusQuo::chassis.pid_wait();
+  StratusQuo::chassis.pid_drive_set(100, 127);
+  StratusQuo::chassis.pid_wait();
+  StratusQuo::chassis.pid_turn_set(120, 127);
+  StratusQuo::chassis.pid_wait();
+  StratusQuo::chassis.pid_drive_set(100, 127); // Go to Ladder, might not have time!
+  */
 };
 void StratusQuo::sig_blue_goal_side()
 {
