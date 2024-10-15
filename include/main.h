@@ -45,8 +45,6 @@
 
 // More includes here...
 #include "autons.hpp"
-#include "subsystems.hpp"
-
 
 /**
  * If you find doing pros::Motor() to be tedious and you'd prefer just to do
@@ -60,7 +58,6 @@
 // using namespace pros::literals;
 // using namespace okapi;
 // using namespace ez;
-using namespace okapi::literals;
 
 /**
  * Prototypes for the competition control tasks are redefined here to ensure

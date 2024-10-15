@@ -24,15 +24,16 @@ namespace StratusQuo
     inline constexpr uint8_t INTAKE_PISTON_PORT ('b');
     inline constexpr uint8_t LIMIT_SWITCH_PORT ('h');
     inline constexpr uint8_t SCOOP_PORT ('f');
-    inline constexpr uint8_t BASKET_PORT ('a');
-    inline constexpr uint8_t ARM_PNEUMATICS_PORT ('c');
+    inline constexpr uint8_t ARM_PNEUMATICS_PORT ('a');
     #pragma endregion Piston_Ports
 
     #pragma region Const_Vals
-    inline constexpr bool BASKET_START_EXTENDED (false);
-    inline constexpr bool INTAKE_STARTING_PISTON_STATE (true);
-    inline constexpr bool SCOOP_START_EXTENDED (false);
+    inline constexpr bool BASKET_INIT_STATE (false);
+    inline constexpr bool INTAKE_INIT_STATE (true);
+    inline constexpr bool SCOOP_INIT_STATE (false);
+    inline constexpr bool CLAMP_INIT_STATE (false);
     inline constexpr float WHEEL_DIAMETER (3.25);
     inline constexpr int RPM (450);
+    inline constexpr float GEAR_RATIO (0.75);
     #pragma endregion Const_Vals
 }

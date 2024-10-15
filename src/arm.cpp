@@ -1,4 +1,4 @@
-#include "arm.h"
+#include "arm.hpp"
 
 StratusQuo::Arm::Arm(uint8_t motor_port,
             uint8_t pneumatic_port,
@@ -22,6 +22,11 @@ void StratusQuo::Arm::arm_move(int voltage)
 double StratusQuo::Arm::get_rotation()
 {
     return arm_sensor.get_position();
+}
+void StratusQuo::Arm::toggle()
+{
+    arm_pneumatics.set_value(!pneumatic_state);
+    pneumatic_state = !pneumatic_state;
 }
 void StratusQuo::Arm::brake()
 {

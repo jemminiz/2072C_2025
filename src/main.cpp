@@ -1,11 +1,5 @@
 #include "main.h"
-#include "autons.hpp"
-#include "pros/misc.h"
-
-/////
-// For installation, upgrading, documentations, and tutorials, check out our website!
-// https://ez-robotics.github.io/EZ-Template/
-/////
+#include "subsystems.hpp"
 
 /**
  * Runs initialization code. This occurs as soon as the program is started.
@@ -15,43 +9,37 @@
  */
 void initialize() {
   // Print our branding over your terminal :D
-  ez::ez_template_print();
-
-  pros::delay(500);  // Stop the user from doing anything while legacy ports configure
+  ez::print_ez_template();
+  
+  pros::delay(500); // Stop the user from doing anything while legacy ports configure.
 
   // Configure your chassis controls
-  StratusQuo::chassis.opcontrol_curve_buttons_toggle(true);  // Enables modifying the controller curve with buttons on the joysticks
-  StratusQuo::chassis.opcontrol_drive_activebrake_set(0);    // Sets the active brake kP. We recommend ~2.  0 will disable.
-  StratusQuo::chassis.opcontrol_curve_default_set(0, 0);     // Defaults for curve. If using tank, only the first parameter is used. (Comment this line out if you have an SD card!)
-
-  // Set the drive to your own constants from autons.cpp!
-  default_constants();
+  chassis.toggle_modify_curve_with_controller(true); // Enables modifying the controller curve with buttons on the joysticks
+  chassis.set_active_brake(0); // Sets the active brake kP. We recommend 0.1.
+  chassis.set_curve_default(0, 0); // Defaults for curve. If using tank, only the first parameter is used. (Comment this line out if you have an SD card!)  
+  default_constants(); // Set the drive to your own constants from autons.cpp!
 
   // These are already defaulted to these buttons, but you can change the left/right curve buttons here!
-  // chassis.opcontrol_curve_buttons_left_set(pros::E_CONTROLLER_DIGITAL_LEFT, pros::E_CONTROLLER_DIGITAL_RIGHT);  // If using tank, only the left side is used.
-  // chassis.opcontrol_curve_buttons_right_set(pros::E_CONTROLLER_DIGITAL_Y, pros::E_CONTROLLER_DIGITAL_A);
+  // chassis.set_left_curve_buttons (pros::E_CONTROLLER_DIGITAL_LEFT, pros::E_CONTROLLER_DIGITAL_RIGHT); // If using tank, only the left side is used. 
+  // chassis.set_right_curve_buttons(pros::E_CONTROLLER_DIGITAL_Y,    pros::E_CONTROLLER_DIGITAL_A);
 
   // Autonomous Selector using LLEMU
-  ez::as::auton_selector.autons_add({
-      Auton("Blue Ring Sig", StratusQuo::sig_blue_ring_side),
-      Auton("Blue Goal Sig", StratusQuo::sig_blue_goal_side),
-      Auton("Red Ring Sig", StratusQuo::sig_red_ring_side),
-      Auton("Red Goal Sig", StratusQuo::sig_red_goal_side),
-      Auton("Example Drive\n\nDrive forward and come back.", drive_example),
-      Auton("Example Turn\n\nTurn 3 times.", turn_example),
-      Auton("Drive and Turn\n\nDrive forward, turn, come back. ", drive_and_turn),
-      Auton("Drive and Turn\n\nSlow down during drive.", wait_until_change_speed),
-      Auton("Swing Example\n\nSwing in an 'S' curve", swing_example),
-      Auton("Motion Chaining\n\nDrive forward, turn, and come back, but blend everything together :D", motion_chaining),
-      Auton("Combine all 3 movements", combining_movements),
-      Auton("Interference\n\nAfter driving forward, robot performs differently if interfered or not.", interfered_example),
+  ez::as::auton_selector.add_autons({
+    Auton("Example Drive\n\nDrive forward and come back.", drive_example),
+    Auton("Example Turn\n\nTurn 3 times.", turn_example),
+    Auton("Drive and Turn\n\nDrive forward, turn, come back. ", drive_and_turn),
+    Auton("Drive and Turn\n\nSlow down during drive.", wait_until_change_speed),
+    Auton("Swing Example\n\nSwing, drive, swing.", swing_example),
+    Auton("Combine all 3 movements", combining_movements),
+    Auton("Interference\n\nAfter driving forward, robot performs differently if interfered or not.", interfered_example),
   });
 
   // Initialize chassis and auton selector
-  StratusQuo::chassis.initialize();
+  chassis.initialize();
   ez::as::initialize();
-  master.rumble(".");
 }
+
+
 
 /**
  * Runs while the robot is in the disabled state of Field Management System or
@@ -61,6 +49,8 @@ void initialize() {
 void disabled() {
   // . . .
 }
+
+
 
 /**
  * Runs after initialize(), and before autonomous when connected to the Field
@@ -75,6 +65,8 @@ void competition_initialize() {
   // . . .
 }
 
+
+
 /**
  * Runs the user autonomous code. This function will be started in its own task
  * with the default priority and stack size whenever the robot is enabled via
@@ -87,13 +79,15 @@ void competition_initialize() {
  * from where it left off.
  */
 void autonomous() {
-  StratusQuo::chassis.pid_targets_reset();                // Resets PID targets to 0
-  StratusQuo::chassis.drive_imu_reset();                  // Reset gyro position to 0
-  StratusQuo::chassis.drive_sensor_reset();               // Reset drive sensors to 0
-  StratusQuo::chassis.drive_brake_set(MOTOR_BRAKE_HOLD);  // Set motors to hold.  This helps autonomous consistency
+  chassis.reset_pid_targets(); // Resets PID targets to 0
+  chassis.reset_gyro(); // Reset gyro position to 0
+  chassis.reset_drive_sensor(); // Reset drive sensors to 0
+  chassis.set_drive_brake(MOTOR_BRAKE_HOLD); // Set motors to hold.  This helps autonomous consistency.
 
-  ez::as::auton_selector.selected_auton_call();  // Calls selected auton from autonomous selector
+  ez::as::auton_selector.call_selected_auton(); // Calls selected auton from autonomous selector.
 }
+
+
 
 /**
  * Runs the operator control code. This function will be started in its own task
@@ -109,58 +103,58 @@ void autonomous() {
  * task, not resume it from where it left off.
  */
 void opcontrol() {
-  // This is preference to what you like to drive on
-  pros::motor_brake_mode_e_t driver_preference_brake = MOTOR_BRAKE_COAST;
-
-  StratusQuo::chassis.drive_brake_set(driver_preference_brake);
+  // This is preference to what you like to drive on.
+  chassis.set_drive_brake(MOTOR_BRAKE_COAST);
 
   while (true) {
-    // PID Tuner
-    // After you find values that you're happy with, you'll have to set them in auton.cpp
-    if (!pros::competition::is_connected()) {
-      // Enable / Disable PID Tuner
-      //  When enabled:
-      //  * use A and Y to increment / decrement the constants
-      //  * use the arrow keys to navigate the constants
-      if (master.get_digital_new_press(DIGITAL_X))
-        StratusQuo::chassis.pid_tuner_toggle();
 
-      // Trigger the selected autonomous routine
-      if (master.get_digital(DIGITAL_B) && master.get_digital(DIGITAL_DOWN)) {
-        autonomous();
-        StratusQuo::chassis.drive_brake_set(driver_preference_brake);
-      }
-
-      StratusQuo::chassis.pid_tuner_iterate();  // Allow PID Tuner to iterate
-    }
-
-    StratusQuo::chassis.opcontrol_tank();  // Tank control
-    // chassis.opcontrol_arcade_standard(ez::SPLIT);   // Standard split arcade
-    // chassis.opcontrol_arcade_standard(ez::SINGLE);  // Standard single arcade
-    // chassis.opcontrol_arcade_flipped(ez::SPLIT);    // Flipped split arcade
-    // chassis.opcontrol_arcade_flipped(ez::SINGLE);   // Flipped single arcade
+    chassis.tank(); // Tank control
+    // chassis.arcade_standard(ez::SPLIT); // Standard split arcade
+    // chassis.arcade_standard(ez::SINGLE); // Standard single arcade
+    // chassis.arcade_flipped(ez::SPLIT); // Flipped split arcade
+    // chassis.arcade_flipped(ez::SINGLE); // Flipped single arcade
 
     // . . .
     // Put more user control code here!
     // . . .
 
-    if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L2))
+    if(StratusQuo::limit_switch.get_new_press())
     {
-      StratusQuo::arm.arm_down();
-    }
-    else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1))
-    {
-      StratusQuo::arm.arm_up();
-    }
-    else
-    {
-      StratusQuo::arm.brake();
-    }
-    if(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y))
-    {
-      
+      StratusQuo::clamp.set_value(true);
     }
 
-    pros::delay(ez::util::DELAY_TIME);  // This is used for timer calculations!  Keep this ez::util::DELAY_TIME
+    if(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT))
+    {
+      StratusQuo::clamp.toggle();
+      pros::delay(100);
+    }
+
+    if(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y))
+    {
+      StratusQuo::arm.toggle();
+    }
+
+    //I had to change the button to A because Ez-Temp was overriding button X in driver ctrl - Ansh :3
+    if(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A))
+    {
+      StratusQuo::scooper.toggle();
+    }
+
+    if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R1))
+    {
+      StratusQuo::intake.move(127);
+    }
+
+    else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R2))
+    {
+      StratusQuo::intake.move(-127);
+    }
+    
+    else
+    {
+      StratusQuo::intake.brake();
+    }
+
+    pros::delay(ez::util::DELAY_TIME); // This is used for timer calculations!  Keep this ez::util::DELAY_TIME
   }
 }
