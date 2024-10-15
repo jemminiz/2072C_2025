@@ -25,30 +25,30 @@ const int SWING_SPEED = 90;
 // If the objects are light or the cog doesn't change much, then there isn't a concern here.
 
 void default_constants() {
-  chassis.set_slew_min_power(80, 80);
-  chassis.set_slew_distance(7, 7);
-  chassis.set_pid_constants(&chassis.headingPID, 11, 0, 20, 0);
-  chassis.set_pid_constants(&chassis.forward_drivePID, 0.45, 0, 5, 0);
-  chassis.set_pid_constants(&chassis.backward_drivePID, 0.45, 0, 5, 0);
-  chassis.set_pid_constants(&chassis.turnPID, 5, 0.003, 35, 15);
-  chassis.set_pid_constants(&chassis.swingPID, 7, 0, 45, 0);
+  StratusQuo::chassis.set_slew_min_power(80, 80);
+  StratusQuo::chassis.set_slew_distance(7, 7);
+  StratusQuo::chassis.set_pid_constants(&StratusQuo::chassis.headingPID, 11, 0, 20, 0);
+  StratusQuo::chassis.set_pid_constants(&StratusQuo::chassis.forward_drivePID, 0.45, 0, 5, 0);
+  StratusQuo::chassis.set_pid_constants(&StratusQuo::chassis.backward_drivePID, 0.45, 0, 5, 0);
+  StratusQuo::chassis.set_pid_constants(&StratusQuo::chassis.turnPID, 5, 0.003, 35, 15);
+  StratusQuo::chassis.set_pid_constants(&StratusQuo::chassis.swingPID, 7, 0, 45, 0);
 }
 
 void one_mogo_constants() {
-  chassis.set_slew_min_power(80, 80);
-  chassis.set_slew_distance(7, 7);
-  chassis.set_pid_constants(&chassis.headingPID, 11, 0, 20, 0);
-  chassis.set_pid_constants(&chassis.forward_drivePID, 0.45, 0, 5, 0);
-  chassis.set_pid_constants(&chassis.backward_drivePID, 0.45, 0, 5, 0);
-  chassis.set_pid_constants(&chassis.turnPID, 5, 0.003, 35, 15);
-  chassis.set_pid_constants(&chassis.swingPID, 7, 0, 45, 0);
+  StratusQuo::chassis.set_slew_min_power(80, 80);
+  StratusQuo::chassis.set_slew_distance(7, 7);
+  StratusQuo::chassis.set_pid_constants(&StratusQuo::chassis.headingPID, 11, 0, 20, 0);
+  StratusQuo::chassis.set_pid_constants(&StratusQuo::chassis.forward_drivePID, 0.45, 0, 5, 0);
+  StratusQuo::chassis.set_pid_constants(&StratusQuo::chassis.backward_drivePID, 0.45, 0, 5, 0);
+  StratusQuo::chassis.set_pid_constants(&StratusQuo::chassis.turnPID, 5, 0.003, 35, 15);
+  StratusQuo::chassis.set_pid_constants(&StratusQuo::chassis.swingPID, 7, 0, 45, 0);
 }
 
 
 void modified_exit_condition() {
-  chassis.set_exit_condition(chassis.turn_exit, 100, 3, 500, 7, 500, 500);
-  chassis.set_exit_condition(chassis.swing_exit, 100, 3, 500, 7, 500, 500);
-  chassis.set_exit_condition(chassis.drive_exit, 80, 50, 300, 150, 500, 500);
+  StratusQuo::chassis.set_exit_condition(StratusQuo::chassis.turn_exit, 100, 3, 500, 7, 500, 500);
+  StratusQuo::chassis.set_exit_condition(StratusQuo::chassis.swing_exit, 100, 3, 500, 7, 500, 500);
+  StratusQuo::chassis.set_exit_condition(StratusQuo::chassis.drive_exit, 80, 50, 300, 150, 500, 500);
 }
 
 
@@ -64,14 +64,14 @@ void drive_example() {
   // for slew, only enable it when the drive distance is greater then the slew distance + a few inches
 
 
-  chassis.set_drive_pid(24, DRIVE_SPEED, true);
-  chassis.wait_drive();
+  StratusQuo::chassis.set_drive_pid(24, DRIVE_SPEED, true);
+  StratusQuo::chassis.wait_drive();
 
-  chassis.set_drive_pid(-12, DRIVE_SPEED);
-  chassis.wait_drive();
+  StratusQuo::chassis.set_drive_pid(-12, DRIVE_SPEED);
+  StratusQuo::chassis.wait_drive();
 
-  chassis.set_drive_pid(-12, DRIVE_SPEED);
-  chassis.wait_drive();
+  StratusQuo::chassis.set_drive_pid(-12, DRIVE_SPEED);
+  StratusQuo::chassis.wait_drive();
 }
 
 
@@ -84,14 +84,14 @@ void turn_example() {
   // The second parameter is max speed the robot will drive at
 
 
-  chassis.set_turn_pid(90, TURN_SPEED);
-  chassis.wait_drive();
+  StratusQuo::chassis.set_turn_pid(90, TURN_SPEED);
+  StratusQuo::chassis.wait_drive();
 
-  chassis.set_turn_pid(45, TURN_SPEED);
-  chassis.wait_drive();
+  StratusQuo::chassis.set_turn_pid(45, TURN_SPEED);
+  StratusQuo::chassis.wait_drive();
 
-  chassis.set_turn_pid(0, TURN_SPEED);
-  chassis.wait_drive();
+  StratusQuo::chassis.set_turn_pid(0, TURN_SPEED);
+  StratusQuo::chassis.wait_drive();
 }
 
 
@@ -100,20 +100,20 @@ void turn_example() {
 // Combining Turn + Drive
 ///
 void drive_and_turn() {
-  chassis.set_drive_pid(24, DRIVE_SPEED, true);
-  chassis.wait_drive();
+  StratusQuo::chassis.set_drive_pid(24, DRIVE_SPEED, true);
+  StratusQuo::chassis.wait_drive();
 
-  chassis.set_turn_pid(45, TURN_SPEED);
-  chassis.wait_drive();
+  StratusQuo::chassis.set_turn_pid(45, TURN_SPEED);
+  StratusQuo::chassis.wait_drive();
 
-  chassis.set_turn_pid(-45, TURN_SPEED);
-  chassis.wait_drive();
+  StratusQuo::chassis.set_turn_pid(-45, TURN_SPEED);
+  StratusQuo::chassis.wait_drive();
 
-  chassis.set_turn_pid(0, TURN_SPEED);
-  chassis.wait_drive();
+  StratusQuo::chassis.set_turn_pid(0, TURN_SPEED);
+  StratusQuo::chassis.wait_drive();
 
-  chassis.set_drive_pid(-24, DRIVE_SPEED, true);
-  chassis.wait_drive();
+  StratusQuo::chassis.set_drive_pid(-24, DRIVE_SPEED, true);
+  StratusQuo::chassis.wait_drive();
 }
 
 
@@ -126,25 +126,25 @@ void wait_until_change_speed() {
 
 
   // When the robot gets to 6 inches, the robot will travel the remaining distance at a max speed of 40
-  chassis.set_drive_pid(24, DRIVE_SPEED, true);
-  chassis.wait_until(6);
-  chassis.set_max_speed(40); // After driving 6 inches at DRIVE_SPEED, the robot will go the remaining distance at 40 speed
-  chassis.wait_drive();
+  StratusQuo::chassis.set_drive_pid(24, DRIVE_SPEED, true);
+  StratusQuo::chassis.wait_until(6);
+  StratusQuo::chassis.set_max_speed(40); // After driving 6 inches at DRIVE_SPEED, the robot will go the remaining distance at 40 speed
+  StratusQuo::chassis.wait_drive();
 
-  chassis.set_turn_pid(45, TURN_SPEED);
-  chassis.wait_drive();
+  StratusQuo::chassis.set_turn_pid(45, TURN_SPEED);
+  StratusQuo::chassis.wait_drive();
 
-  chassis.set_turn_pid(-45, TURN_SPEED);
-  chassis.wait_drive();
+  StratusQuo::chassis.set_turn_pid(-45, TURN_SPEED);
+  StratusQuo::chassis.wait_drive();
 
-  chassis.set_turn_pid(0, TURN_SPEED);
-  chassis.wait_drive();
+  StratusQuo::chassis.set_turn_pid(0, TURN_SPEED);
+  StratusQuo::chassis.wait_drive();
 
   // When the robot gets to -6 inches, the robot will travel the remaining distance at a max speed of 40
-  chassis.set_drive_pid(-24, DRIVE_SPEED, true);
-  chassis.wait_until(-6);
-  chassis.set_max_speed(40); // After driving 6 inches at DRIVE_SPEED, the robot will go the remaining distance at 40 speed
-  chassis.wait_drive();
+  StratusQuo::chassis.set_drive_pid(-24, DRIVE_SPEED, true);
+  StratusQuo::chassis.wait_until(-6);
+  StratusQuo::chassis.set_max_speed(40); // After driving 6 inches at DRIVE_SPEED, the robot will go the remaining distance at 40 speed
+  StratusQuo::chassis.wait_drive();
 }
 
 
@@ -158,14 +158,14 @@ void swing_example() {
   // The third parameter is speed of the moving side of the drive
 
 
-  chassis.set_swing_pid(ez::LEFT_SWING, 45, SWING_SPEED);
-  chassis.wait_drive();
+  StratusQuo::chassis.set_swing_pid(ez::LEFT_SWING, 45, SWING_SPEED);
+  StratusQuo::chassis.wait_drive();
 
-  chassis.set_drive_pid(24, DRIVE_SPEED, true);
-  chassis.wait_until(12);
+  StratusQuo::chassis.set_drive_pid(24, DRIVE_SPEED, true);
+  StratusQuo::chassis.wait_until(12);
 
-  chassis.set_swing_pid(ez::RIGHT_SWING, 0, SWING_SPEED);
-  chassis.wait_drive();
+  StratusQuo::chassis.set_swing_pid(ez::RIGHT_SWING, 0, SWING_SPEED);
+  StratusQuo::chassis.wait_drive();
 }
 
 
@@ -174,20 +174,20 @@ void swing_example() {
 // Auto that tests everything
 ///
 void combining_movements() {
-  chassis.set_drive_pid(24, DRIVE_SPEED, true);
-  chassis.wait_drive();
+  StratusQuo::chassis.set_drive_pid(24, DRIVE_SPEED, true);
+  StratusQuo::chassis.wait_drive();
 
-  chassis.set_turn_pid(45, TURN_SPEED);
-  chassis.wait_drive();
+  StratusQuo::chassis.set_turn_pid(45, TURN_SPEED);
+  StratusQuo::chassis.wait_drive();
 
-  chassis.set_swing_pid(ez::RIGHT_SWING, -45, TURN_SPEED);
-  chassis.wait_drive();
+  StratusQuo::chassis.set_swing_pid(ez::RIGHT_SWING, -45, TURN_SPEED);
+  StratusQuo::chassis.wait_drive();
 
-  chassis.set_turn_pid(0, TURN_SPEED);
-  chassis.wait_drive();
+  StratusQuo::chassis.set_turn_pid(0, TURN_SPEED);
+  StratusQuo::chassis.wait_drive();
 
-  chassis.set_drive_pid(-24, DRIVE_SPEED, true);
-  chassis.wait_drive();
+  StratusQuo::chassis.set_drive_pid(-24, DRIVE_SPEED, true);
+  StratusQuo::chassis.wait_drive();
 }
 
 
@@ -199,13 +199,13 @@ void tug (int attempts) {
   for (int i=0; i<attempts-1; i++) {
     // Attempt to drive backwards
     printf("i - %i", i);
-    chassis.set_drive_pid(-12, 127);
-    chassis.wait_drive();
+    StratusQuo::chassis.set_drive_pid(-12, 127);
+    StratusQuo::chassis.wait_drive();
 
     // If failsafed...
-    if (chassis.interfered) {
-      chassis.reset_drive_sensor();
-      chassis.set_drive_pid(-2, 20);
+    if (StratusQuo::chassis.interfered) {
+      StratusQuo::chassis.reset_drive_sensor();
+      StratusQuo::chassis.set_drive_pid(-2, 20);
       pros::delay(1000);
     }
     // If robot successfully drove back, return
@@ -218,16 +218,16 @@ void tug (int attempts) {
 // If there is no interference, robot will drive forward and turn 90 degrees. 
 // If interfered, robot will drive forward and then attempt to drive backwards. 
 void interfered_example() {
- chassis.set_drive_pid(24, DRIVE_SPEED, true);
- chassis.wait_drive();
+ StratusQuo::chassis.set_drive_pid(24, DRIVE_SPEED, true);
+ StratusQuo::chassis.wait_drive();
 
- if (chassis.interfered) {
+ if (StratusQuo::chassis.interfered) {
    tug(3);
    return;
  }
 
- chassis.set_turn_pid(90, TURN_SPEED);
- chassis.wait_drive();
+ StratusQuo::chassis.set_turn_pid(90, TURN_SPEED);
+ StratusQuo::chassis.wait_drive();
 }
 
 
@@ -236,14 +236,9 @@ void interfered_example() {
 // Make your own autonomous functions here!
 // . . .
 
+#pragma region Sig_Autons
 void sig_red_ring_side()
 {
-  StratusQuo::arm.arm_move(110);
-  pros::delay(1250);
-  StratusQuo::arm.arm_move(-110);
-  pros::delay(1250);
-  StratusQuo::arm.brake();
-
   StratusQuo::chassis.set_drive_pid(-38, 70);
   StratusQuo::chassis.wait_drive();
   StratusQuo::clamp.set_value(true);
@@ -272,3 +267,13 @@ void sig_red_goal_side()
   StratusQuo::clamp.set_value(true);
   pros::delay(100);
 }
+
+void sig_blue_ring_side()
+{
+  // Woah :O
+}
+void sig_blue_goal_side()
+{
+  // Woah :O
+}
+#pragma endregion Sig_Autons
