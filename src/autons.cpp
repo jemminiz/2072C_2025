@@ -27,9 +27,9 @@ const int SWING_SPEED = 90;
 void default_constants() {
   StratusQuo::chassis.set_slew_min_power(80, 80);
   StratusQuo::chassis.set_slew_distance(7, 7);
-  StratusQuo::chassis.set_pid_constants(&StratusQuo::chassis.headingPID, 11, 0, 20, 0);
-  StratusQuo::chassis.set_pid_constants(&StratusQuo::chassis.forward_drivePID, 0.45, 0, 5, 0);
-  StratusQuo::chassis.set_pid_constants(&StratusQuo::chassis.backward_drivePID, 0.45, 0, 5, 0);
+  StratusQuo::chassis.set_pid_constants(&StratusQuo::chassis.headingPID, 11, 0, 0, 0);
+  StratusQuo::chassis.set_pid_constants(&StratusQuo::chassis.forward_drivePID, 0.45, 0, 0, 0);
+  StratusQuo::chassis.set_pid_constants(&StratusQuo::chassis.backward_drivePID, 0.45, 0, 0, 0);
   StratusQuo::chassis.set_pid_constants(&StratusQuo::chassis.turnPID, 5, 0.003, 35, 15);
   StratusQuo::chassis.set_pid_constants(&StratusQuo::chassis.swingPID, 7, 0, 45, 0);
 }
@@ -239,26 +239,7 @@ void interfered_example() {
 #pragma region Sig_Autons
 void sig_red_ring_side()
 {
-  StratusQuo::chassis.set_drive_pid(-38, 70);
-  StratusQuo::chassis.wait_drive();
-  StratusQuo::clamp.set_value(true);
-  pros::delay(100);
-  StratusQuo::chassis.set_turn_pid(-90, TURN_SPEED);
-  StratusQuo::chassis.wait_drive();
-  StratusQuo::chassis.set_turn_pid(-70, DRIVE_SPEED);
-  StratusQuo::intake.move(127);
-  StratusQuo::chassis.wait_drive();
-  StratusQuo::chassis.set_turn_pid(-155, TURN_SPEED);
-  StratusQuo::chassis.wait_drive();
-  StratusQuo::chassis.set_drive_pid(12, DRIVE_SPEED);
-  StratusQuo::chassis.wait_drive();
-  StratusQuo::chassis.set_drive_pid(-5, DRIVE_SPEED);
-  StratusQuo::chassis.wait_drive();
-  StratusQuo::chassis.set_turn_pid(-110, TURN_SPEED);
-  StratusQuo::chassis.wait_drive();
-  StratusQuo::chassis.set_drive_pid(6, DRIVE_SPEED);
-  StratusQuo::chassis.wait_drive();
-  StratusQuo::intake.brake();
+  // Woah :O
 }
 void sig_red_goal_side()
 {
@@ -270,7 +251,29 @@ void sig_red_goal_side()
 
 void sig_blue_ring_side()
 {
-  // Woah :O
+  StratusQuo::chassis.set_drive_pid(-45, 70);
+  StratusQuo::chassis.wait_drive();
+  StratusQuo::clamp.set_value(true);
+  pros::delay(100);
+  StratusQuo::chassis.set_turn_pid(-95, TURN_SPEED);
+  StratusQuo::chassis.wait_drive();
+  StratusQuo::chassis.set_drive_pid(25, DRIVE_SPEED);
+  StratusQuo::intake.move(127);
+  StratusQuo::chassis.wait_drive();
+  StratusQuo::chassis.set_turn_pid(-170, TURN_SPEED);
+  StratusQuo::chassis.wait_drive();
+  StratusQuo::chassis.set_drive_pid(15, DRIVE_SPEED);
+  StratusQuo::chassis.wait_drive();
+  StratusQuo::chassis.set_drive_pid(-5, DRIVE_SPEED);
+  StratusQuo::chassis.wait_drive();
+  StratusQuo::chassis.set_turn_pid(-150, TURN_SPEED);
+  StratusQuo::chassis.wait_drive();
+  pros::delay(200);
+  StratusQuo::chassis.set_drive_pid(8, DRIVE_SPEED);
+  StratusQuo::chassis.wait_drive();
+  StratusQuo::chassis.set_turn_pid(60, TURN_SPEED);
+  pros::delay(500);
+  StratusQuo::intake.brake();
 }
 void sig_blue_goal_side()
 {

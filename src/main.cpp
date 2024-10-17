@@ -1,4 +1,5 @@
 #include "main.h"
+#include "autons.hpp"
 #include "pros/misc.h"
 #include "subsystems.hpp"
 
@@ -26,6 +27,7 @@ void initialize() {
 
   // Autonomous Selector using LLEMU
   ez::as::auton_selector.add_autons({
+    Auton("Blue Ring AWP", sig_blue_ring_side),
     Auton("Example Drive\n\nDrive forward and come back.", drive_example),
     Auton("Example Turn\n\nTurn 3 times.", turn_example),
     Auton("Drive and Turn\n\nDrive forward, turn, come back. ", drive_and_turn),
@@ -119,6 +121,9 @@ void opcontrol() {
     // Put more user control code here!
     // . . .
 
+    if(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B))
+      autonomous();
+
     if(StratusQuo::limit_switch.get_new_press())
     {
       StratusQuo::clamp.set_value(true);
@@ -144,7 +149,14 @@ void opcontrol() {
     }
     if(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y))
     {
+      StratusQuo::intake.move(60);
+      pros::delay(100);
+      StratusQuo::arm.arm_up();
+      pros::delay(500);
       StratusQuo::arm.toggle();
+      StratusQuo::arm.arm_down();
+      pros::delay(500);
+      StratusQuo::arm.brake();
     }
 
     //I had to change the button to A because Ez-Temp was overriding button X in driver ctrl - Ansh :3
