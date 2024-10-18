@@ -240,6 +240,35 @@ void interfered_example() {
 void sig_red_ring_side()
 {
   // Woah :O
+  StratusQuo::chassis.set_drive_pid(-45, 70);
+  StratusQuo::chassis.wait_drive();
+  StratusQuo::clamp.set_value(true);
+  pros::delay(100);
+  StratusQuo::chassis.set_turn_pid(95, TURN_SPEED);
+  StratusQuo::chassis.wait_drive();
+  StratusQuo::chassis.set_drive_pid(25, DRIVE_SPEED);
+  StratusQuo::intake.move(127);
+  StratusQuo::chassis.wait_drive();
+  StratusQuo::chassis.set_turn_pid(180, TURN_SPEED);
+  StratusQuo::chassis.wait_drive();
+  StratusQuo::chassis.set_drive_pid(15, DRIVE_SPEED);
+  StratusQuo::chassis.wait_drive();
+  StratusQuo::chassis.set_drive_pid(-5, DRIVE_SPEED);
+  StratusQuo::chassis.wait_drive();
+  StratusQuo::chassis.set_turn_pid(160, TURN_SPEED);
+  StratusQuo::chassis.wait_drive();
+  pros::delay(200);
+  StratusQuo::chassis.set_drive_pid(9, DRIVE_SPEED);
+  StratusQuo::chassis.wait_drive();
+  pros::delay(500);
+  StratusQuo::chassis.set_turn_pid(-50, 50);
+  pros::delay(500);
+  StratusQuo::chassis.wait_drive();
+  StratusQuo::chassis.set_drive_pid(65, 70);
+  StratusQuo::intake.toggle();
+  StratusQuo::chassis.wait_drive();
+  StratusQuo::intake.toggle();
+  
 }
 void sig_red_goal_side()
 {
@@ -260,20 +289,25 @@ void sig_blue_ring_side()
   StratusQuo::chassis.set_drive_pid(25, DRIVE_SPEED);
   StratusQuo::intake.move(127);
   StratusQuo::chassis.wait_drive();
-  StratusQuo::chassis.set_turn_pid(-170, TURN_SPEED);
+  StratusQuo::chassis.set_turn_pid(-180, TURN_SPEED);
   StratusQuo::chassis.wait_drive();
   StratusQuo::chassis.set_drive_pid(15, DRIVE_SPEED);
   StratusQuo::chassis.wait_drive();
   StratusQuo::chassis.set_drive_pid(-5, DRIVE_SPEED);
   StratusQuo::chassis.wait_drive();
-  StratusQuo::chassis.set_turn_pid(-150, TURN_SPEED);
+  StratusQuo::chassis.set_turn_pid(-160, TURN_SPEED);
   StratusQuo::chassis.wait_drive();
   pros::delay(200);
-  StratusQuo::chassis.set_drive_pid(8, DRIVE_SPEED);
+  StratusQuo::chassis.set_drive_pid(9, DRIVE_SPEED);
   StratusQuo::chassis.wait_drive();
-  StratusQuo::chassis.set_turn_pid(60, TURN_SPEED);
   pros::delay(500);
-  StratusQuo::intake.brake();
+  StratusQuo::chassis.set_turn_pid(50, 50);
+  pros::delay(500);
+  StratusQuo::chassis.wait_drive();
+  StratusQuo::chassis.set_drive_pid(65, 70);
+  StratusQuo::intake.toggle();
+  StratusQuo::chassis.wait_drive();
+  StratusQuo::intake.toggle();
 }
 void sig_blue_goal_side()
 {

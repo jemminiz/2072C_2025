@@ -3,14 +3,13 @@
 #include "arm.hpp"
 #include "clamp.hpp"
 #include "constants.hpp"
+#include "intake.hpp"
 #include "pros/adi.hpp"
-#include "pros/motors.hpp"
 #include "scooper.hpp"
 
 namespace StratusQuo
 {
-    inline pros::Motor intake(INTAKE_PORT);
-    inline pros::ADIDigitalOut intake_pneumatic(INTAKE_PISTON_PORT, INTAKE_INIT_STATE);
+    inline StratusQuo::Intake intake(INTAKE_PORT, INTAKE_PISTON_PORT, INTAKE_INIT_STATE);
     
     inline StratusQuo::Arm arm(ARM_PORT, ARM_PNEUMATICS_PORT, ARM_ROTATION_PORT);
 
