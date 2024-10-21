@@ -15,7 +15,7 @@ namespace StratusQuo
     #pragma endregion Smart_Ports
 
     #pragma region Sensor_Ports
-    inline constexpr uint8_t IMU_PORT (12);
+    inline constexpr uint8_t IMU_PORT (13);
     inline constexpr uint8_t ARM_ROTATION_PORT (21);
     #pragma endregion Sensor_Ports
     

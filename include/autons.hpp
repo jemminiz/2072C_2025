@@ -24,3 +24,5 @@ void local_blue_goal_side();
 void default_constants();
 void one_mogo_constants();
 void two_mogo_constants();
+
+void print();

@@ -20,6 +20,10 @@ namespace StratusQuo
             void brake();
             void toggle();
 
+            void stop();
+
+            void macro_task();
+
             void set_constants(double kP, double kI, double kD);         
         private:
             pros::Motor arm_motor;

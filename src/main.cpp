@@ -28,6 +28,7 @@ void initialize() {
   // Autonomous Selector using LLEMU
   ez::as::auton_selector.add_autons({
     Auton("Blue Ring AWP", sig_blue_ring_side),
+    Auton("Red Ring AWP", sig_red_ring_side),
     Auton("Example Drive\n\nDrive forward and come back.", drive_example),
     Auton("Example Turn\n\nTurn 3 times.", turn_example),
     Auton("Drive and Turn\n\nDrive forward, turn, come back. ", drive_and_turn),
@@ -51,6 +52,7 @@ void initialize() {
  */
 void disabled() {
   // . . .
+  StratusQuo::arm.stop();
 }
 
 
@@ -108,6 +110,10 @@ void autonomous() {
 void opcontrol() {
   // This is preference to what you like to drive on.
   StratusQuo::chassis.set_drive_brake(MOTOR_BRAKE_COAST);
+  /*
+  void (StratusQuo::Arm::*macro_func)() = &StratusQuo::Arm::macro_task;
+  auto bound_function = std::bind(macro_func, &StratusQuo::arm);
+  pros::Task macro(bound_function);*/ // For later!
 
   while (true) {
 
@@ -179,5 +185,13 @@ void opcontrol() {
     }
 
     pros::delay(ez::util::DELAY_TIME); // This is used for timer calculations!  Keep this ez::util::DELAY_TIME
+  }
+}
+
+void print()
+{
+  while(true)
+  {
+    std::cout << StratusQuo::chassis.get_gyro() << endl;
   }
 }
