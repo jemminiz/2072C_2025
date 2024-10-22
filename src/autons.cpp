@@ -1,4 +1,8 @@
-
+// ************575381*****************
+// Jonathan Emminizer
+// autons.cpp
+// 10/21/2024
+// ***********************************
 
 /////
 // For instalattion, upgrading, documentations and tutorials, check out website!
@@ -8,6 +12,7 @@
 
 #include "autons.hpp"
 #include "clamp.hpp"
+#include "intake.hpp"
 #include "pros/rtos.hpp"
 #include "subsystems.hpp"
 const int DRIVE_SPEED = 110; // This is 110/127 (around 87% of max speed).  We don't suggest making this 127.
@@ -289,15 +294,7 @@ int limit_switch_task(){
 void sig_blue_ring_side()
 {
   StratusQuo::chassis.set_drive_pid(-45, 70);
-  //ansh code start here
-  
   pros::Task t(limit_switch_task);
-  // else {
-  //   return;
-  // }
-
-
-  //ansh code end here
   StratusQuo::chassis.wait_drive();
   StratusQuo::clamp.set_value(true);
   pros::delay(100);
@@ -306,10 +303,11 @@ void sig_blue_ring_side()
   StratusQuo::chassis.set_drive_pid(26, DRIVE_SPEED);
   StratusQuo::intake.move(127);
   StratusQuo::chassis.wait_drive();
-  StratusQuo::chassis.set_turn_pid(-180, TURN_SPEED);
+  StratusQuo::chassis.set_turn_pid(-175, TURN_SPEED);
   StratusQuo::chassis.wait_drive();
-  StratusQuo::chassis.set_drive_pid(17, DRIVE_SPEED);
+  StratusQuo::chassis.set_drive_pid(21, DRIVE_SPEED);
   StratusQuo::chassis.wait_drive();
+  pros::delay(200);
   StratusQuo::chassis.set_drive_pid(-7, DRIVE_SPEED);
   StratusQuo::chassis.wait_drive();
   StratusQuo::chassis.set_turn_pid(-155, TURN_SPEED);
@@ -318,16 +316,10 @@ void sig_blue_ring_side()
   StratusQuo::chassis.set_drive_pid(10, DRIVE_SPEED);
   StratusQuo::chassis.wait_drive();
   pros::delay(500);
-  // StratusQuo::chassis.set_turn_pid(-315, 40);
-  // pros::delay(500);
-  // StratusQuo::chassis.wait_drive();
-  // StratusQuo::chassis.set_drive_pid(65, DRIVE_SPEED);
-  // StratusQuo::intake.toggle();
-  // StratusQuo::chassis.wait_drive();
-  // StratusQuo::intake.toggle();
-  // pros::delay(250);
-  // StratusQuo::clamp.set_value(false);
-  // StratusQuo::chassis.set_drive_pid(0, 0);
+  StratusQuo::chassis.set_turn_pid(52,TURN_SPEED);
+  StratusQuo::intake.toggle();
+  StratusQuo::chassis.wait_drive();
+  StratusQuo::chassis.set_drive_pid(65, DRIVE_SPEED);
 }
 void sig_blue_goal_side()
 {
