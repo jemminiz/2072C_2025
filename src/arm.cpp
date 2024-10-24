@@ -21,6 +21,10 @@ void StratusQuo::Arm::arm_move(int voltage)
 {
     arm_motor.move(voltage);
 }
+void StratusQuo::Arm::move_to(int pos)
+{
+    arm_motor.move_relative(pos, 1000);
+}
 double StratusQuo::Arm::get_rotation()
 {
     return arm_sensor.get_position();

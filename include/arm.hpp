@@ -19,6 +19,7 @@ namespace StratusQuo
             double get_rotation();
             void brake();
             void toggle();
+            void move_to(int pos);
 
             void stop();
 
