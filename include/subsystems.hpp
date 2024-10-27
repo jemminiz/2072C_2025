@@ -5,6 +5,7 @@
 #include "lemlib/chassis/chassis.hpp"
 #include "constants.hpp"
 #include "lemlib/chassis/trackingWheel.hpp"
+#include "limit_switch.hpp"
 #include "pros/misc.h"
 #include "scooper.hpp"
 namespace StratusQuo
@@ -51,4 +52,5 @@ namespace StratusQuo
     inline StratusQuo::Clamp clamp(CLAMP_PORT, CLAMP_INIT_STATE);
     inline StratusQuo::Intake intake(INTAKE_PORT, INTAKE_PISTON_PORT, INTAKE_INIT_STATE);
     inline StratusQuo::Scooper scooper(SCOOP_PORT, SCOOP_INIT_STATE);
+    inline StratusQuo::Limit_Switch limit_switch(LIMIT_SWITCH_PORT);
 }
