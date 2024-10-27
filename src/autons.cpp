@@ -1,5 +1,5 @@
 #include "autons.hpp"
-#include "subsystems.hpp"
+#include "subsystems.hpp" // IWYU pragma: keep
 #pragma region Sig_Autons
 
 void StratusQuo::sig_red_ring_side()
