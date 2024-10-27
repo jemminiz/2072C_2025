@@ -1,36 +1,54 @@
 #pragma once
-
-#include "EZ-Template/drive/drive.hpp"
-#include "arm.h"
+#include "arm.hpp"
+#include "clamp.hpp"
+#include "intake.hpp"
+#include "lemlib/chassis/chassis.hpp"
 #include "constants.hpp"
-
-// Your motors, sensors, etc. should go here.  Below are examples
-
-// inline pros::Motor intake(1);
-// inline pros::adi::DigitalIn limit_switch('A');
-
+#include "lemlib/chassis/trackingWheel.hpp"
+#include "pros/misc.h"
+#include "scooper.hpp"
 namespace StratusQuo
 {
-    inline pros::Motor intake(INTAKE_PORT);
-    inline pros::adi::Pneumatics intake_pneumatic(INTAKE_PISTON_PORT, INTAKE_STARTING_PISTON_STATE);
-    
-    inline StratusQuo::Arm arm(ARM_PORT, ARM_PNEUMATICS_PORT, ARM_ROTATION_PORT);
+    inline pros::MotorGroup left_motors (left_motor_ports, pros::MotorGearset::blue);
+    inline pros::MotorGroup right_motors (right_motor_ports, pros::MotorGearset::blue);
+    inline lemlib::Drivetrain drive(&left_motors, &right_motors, 12.9, lemlib::Omniwheel::NEW_325, 450, 2);
+    inline pros::Imu imu (IMU_PORT);
+    inline pros::Rotation vertical (VERTICAL_PORT);
+    inline pros::Rotation horizontal (HORIZONTAL_PORT);
+    inline lemlib::TrackingWheel vertical_wheel (&vertical, lemlib::Omniwheel::NEW_275, -1);
+    inline lemlib::TrackingWheel horizontal_wheel (&horizontal, lemlib::Omniwheel::NEW_275, -1);
+    inline lemlib::OdomSensors sensors (&vertical_wheel, nullptr, &horizontal_wheel, nullptr, &imu);
+    // lateral PID controller
+    inline lemlib::ControllerSettings lateral_controller(10, // proportional gain (kP)
+                                              0, // integral gain (kI)
+                                              3, // derivative gain (kD)
+                                              0, // anti windup
+                                              0, // small error range, in inches
+                                              0, // small error range timeout, in milliseconds
+                                              0, // large error range, in inches
+                                              0, // large error range timeout, in milliseconds
+                                              0 // maximum acceleration (slew)
+    );
 
-    inline pros::adi::Pneumatics clamp(CLAMP_PORT, false);
+    // angular PID controller
+    inline lemlib::ControllerSettings angular_controller(2, // proportional gain (kP)
+                                              0, // integral gain (kI)
+                                              10, // derivative gain (kD)
+                                              0, // anti windup
+                                              0, // small error range, in degrees
+                                              0, // small error range timeout, in milliseconds
+                                              0, // large error range, in degrees
+                                              0, // large error range timeout, in milliseconds
+                                              0 // maximum acceleration (slew)
+    );
 
-    inline pros::adi::Pneumatics scooper(SCOOP_PORT, SCOOP_START_EXTENDED);
+    inline lemlib::Chassis chassis (drive, lateral_controller, angular_controller, sensors);
 
-    inline pros::adi::DigitalIn limit_switch(LIMIT_SWITCH_PORT);
 
-    inline pros::v5::Imu imu(IMU_PORT);
+    inline pros::Controller master(pros::E_CONTROLLER_MASTER);
 
-    inline ez::Drive chassis(
-    // These are your drive motors, the first motor is used for sensing!
-    {LEFT_MOTOR_BACK_PORT, LEFT_MOTOR_MID_PORT, LEFT_MOTOR_FRONT_PORT},     // Left Chassis Ports (negative port will reverse it!)
-    {RIGHT_MOTOR_BACK_PORT, RIGHT_MOTOR_MID_PORT, RIGHT_MOTOR_FRONT_PORT},  // Right Chassis Ports (negative port will reverse it!)
-
-    IMU_PORT,      // IMU Port
-    WHEEL_DIAMETER,  // Wheel Diameter (Remember, 4" wheels without screw holes are actually 4.125!)
-    RPM);   // Wheel RPM
-
+    inline StratusQuo::Arm arm(ARM_PORT, ARM_PNEUMATICS_PORT, JACKS_INIT_STATE);
+    inline StratusQuo::Clamp clamp(CLAMP_PORT, CLAMP_INIT_STATE);
+    inline StratusQuo::Intake intake(INTAKE_PORT, INTAKE_PISTON_PORT, INTAKE_INIT_STATE);
+    inline StratusQuo::Scooper scooper(SCOOP_PORT, SCOOP_INIT_STATE);
 }
