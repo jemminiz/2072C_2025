@@ -53,4 +53,17 @@ namespace StratusQuo
     inline StratusQuo::Intake intake(INTAKE_PORT, INTAKE_PISTON_PORT, INTAKE_INIT_STATE);
     inline StratusQuo::Scooper scooper(SCOOP_PORT, SCOOP_INIT_STATE);
     inline StratusQuo::Limit_Switch limit_switch(LIMIT_SWITCH_PORT);
+
+    inline void limit_switch_task(void* params)
+    {
+        if(((StratusQuo::Limit_Switch*)params)->get_new_press())
+        {
+            StratusQuo::clamp.set_value(true);
+            pros::delay(200);
+        }
+    }
+    inline void arm_task_fn(void* params)
+    {
+        
+    }
 }

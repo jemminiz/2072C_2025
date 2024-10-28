@@ -4,6 +4,7 @@
 #include "liblvgl/llemu.hpp"
 #include "pros/llemu.hpp"
 #include "pros/misc.h"
+#include "pros/rtos.h"
 #include "subsystems.hpp"
 
 /**
@@ -30,13 +31,15 @@ void on_center_button() {
  */
 void initialize() {
 	pros::lcd::initialize();
-	while (true) { // infinite loop
+	/*while (true) { // infinite loop
         // print measurements from the rotation sensor
 		pros::lcd::print(0, "Horizontal Rotation Sensor: %i", StratusQuo::horizontal.get_position());
         pros::lcd::print(1, "Vertical Rotation Sensor: %i", StratusQuo::vertical.get_position());
         pros::delay(10); // delay to save resources. DO NOT REMOVE
-	}
+	}*/ // Commented out for testing purposes - want to see if task works properly
 	StratusQuo::chassis.calibrate();
+	pros::Task ls_task (StratusQuo::limit_switch_task, (static_cast<void*>(&StratusQuo::limit_switch)), TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Limit switch task");
+	pros::Task arm_task (StratusQuo::arm_task_fn, (static_cast<void*>(&StratusQuo::arm)), TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Arm task");
 }
 
 /**
@@ -90,8 +93,6 @@ void autonomous()
  * task, not resume it from where it left off.
  */
 void opcontrol() {
-
-
 	while (true) {
 		pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
 		                 (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
