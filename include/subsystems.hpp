@@ -12,7 +12,7 @@ namespace StratusQuo
 {
     inline pros::MotorGroup left_motors (left_motor_ports, pros::MotorGearset::blue);
     inline pros::MotorGroup right_motors (right_motor_ports, pros::MotorGearset::blue);
-    inline lemlib::Drivetrain drive(&left_motors, &right_motors, 12.9, lemlib::Omniwheel::NEW_325, 450, 2);
+    inline lemlib::Drivetrain drive(&left_motors, &right_motors, 11.8, lemlib::Omniwheel::NEW_325, 450, 2);
     inline pros::Imu imu (IMU_PORT);
     inline pros::Rotation vertical (VERTICAL_PORT);
     inline pros::Rotation horizontal (HORIZONTAL_PORT);
