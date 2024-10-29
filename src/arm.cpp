@@ -19,3 +19,7 @@ void StratusQuo::Arm::brake()
 {
     motor.brake();
 }
+void StratusQuo::Arm::toggle()
+{
+    piston.toggle();
+}

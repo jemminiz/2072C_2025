@@ -6,8 +6,13 @@ StratusQuo::Clamp::Clamp(uint8_t pneumatic_port, bool starting_config) : piston(
 void StratusQuo::Clamp::toggle()
 {
     piston.toggle();
+    current_val = !current_val;
 }
-void StratusQuo::Clamp::set_value(bool toggle)
+void StratusQuo::Clamp::extend()
 {
-    piston.set_value(toggle);
+    piston.extend();
+}
+void StratusQuo::Clamp::retract()
+{
+    piston.retract();
 }

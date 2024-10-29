@@ -42,28 +42,113 @@ namespace StratusQuo
                                               0, // large error range timeout, in milliseconds
                                               0 // maximum acceleration (slew)
     );
+    
+    typedef struct robo_t
+    {
+        StratusQuo::Arm arm;
+        StratusQuo::Clamp clamp;
+        StratusQuo::Intake intake;
+        StratusQuo::Scooper scooper;
+        StratusQuo::Limit_Switch limit_switch;
+        pros::Controller master;
+        lemlib::Chassis chassis;
 
-    inline lemlib::Chassis chassis (drive, lateral_controller, angular_controller, sensors);
 
+        robo_t() : arm(ARM_PORT, ARM_PNEUMATICS_PORT, JACKS_INIT_STATE),
+                   clamp(CLAMP_PORT, CLAMP_INIT_STATE),
+                   intake(INTAKE_PORT, INTAKE_PISTON_PORT, INTAKE_INIT_STATE),
+                   scooper(SCOOP_PORT, SCOOP_INIT_STATE),
+                   limit_switch(LIMIT_SWITCH_PORT),
+                   master(pros::E_CONTROLLER_MASTER),
+                   chassis(drive, lateral_controller, angular_controller, sensors)
+        {
+        }
+    } Robot;
 
-    inline pros::Controller master(pros::E_CONTROLLER_MASTER);
-
-    inline StratusQuo::Arm arm(ARM_PORT, ARM_PNEUMATICS_PORT, JACKS_INIT_STATE);
-    inline StratusQuo::Clamp clamp(CLAMP_PORT, CLAMP_INIT_STATE);
-    inline StratusQuo::Intake intake(INTAKE_PORT, INTAKE_PISTON_PORT, INTAKE_INIT_STATE);
-    inline StratusQuo::Scooper scooper(SCOOP_PORT, SCOOP_INIT_STATE);
-    inline StratusQuo::Limit_Switch limit_switch(LIMIT_SWITCH_PORT);
+    inline Robot robot;
 
     inline void limit_switch_task(void* params)
     {
-        if(((StratusQuo::Limit_Switch*)params)->get_new_press())
+        auto robot = ((StratusQuo::Robot*)params);
+        uint32_t time;
+        while(true)
         {
-            StratusQuo::clamp.set_value(true);
-            pros::delay(200);
+            if(robot->limit_switch.get_new_press())
+            {
+                time = pros::millis();
+                robot->clamp.extend();
+                pros::Task::delay_until(&time, 200);
+            }
         }
     }
     inline void arm_task_fn(void* params)
     {
-        
+        auto robot = ((StratusQuo::Robot*)params);
+        uint32_t time;
+        while(true)
+        {
+            if(robot->master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y)) // Macro :D
+            {
+                time = pros::millis();
+                robot->arm.move(127);
+                pros::Task::delay_until(&time, 200); // Find a better timing for this
+                robot->arm.toggle();
+                robot->arm.move(-127);
+                time = pros::millis();
+                pros::Task::delay_until(&time, 200); // Same as above
+                robot->arm.brake();
+            }
+            if(robot->master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) robot->arm.move(127);
+            else if(robot->master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) robot->arm.move(-127);
+            else robot->arm.move(0); // User Control
+            time = pros::millis();
+            pros::Task::delay_until(&time, 20);
+        }
+    }
+    inline void drive_task_fn(void* params)
+    {
+        auto robot = ((Robot*)params);
+        uint32_t time;
+        while(true)
+        {
+            time = pros::millis();
+            robot->chassis.tank(robot->master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y), robot->master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y));
+            pros::Task::delay_until(&time, 20);
+        }
+    } 
+    inline void intake_task_fn(void* params)
+    {
+        auto robot = ((Robot*)params);
+        uint32_t time;
+        while(true)
+        {
+            time = pros::millis();
+            if(robot->master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) robot->intake.move(127);
+            else if(robot->master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) robot->intake.move(-127);
+            else robot->intake.move(0);
+            if(robot->master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)) robot->intake.toggle();
+            pros::Task::delay_until(&time, 20);
+        }
+    }
+    inline void scooper_task_fn(void* params)
+    {
+        auto robot = ((Robot*)params);
+        uint32_t time;
+        while(true)
+        {
+            time = pros::millis();
+            if(robot->master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A)) robot->scooper.toggle();
+            pros::Task::delay_until(&time, 20);
+        }
+    }
+    inline void clamp_task_fn(void* params)
+    {
+        auto robot = ((Robot*) params);
+        uint32_t time;
+        while(true)
+        {
+            time = pros::millis();
+            if(robot->master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT)) robot->clamp.toggle();
+        }
     }
 }
