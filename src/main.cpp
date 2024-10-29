@@ -38,7 +38,6 @@ void initialize() {
 	}*/ // Commented out for testing purposes - want to see if task works properly
 	StratusQuo::robot.chassis.calibrate();
 	pros::Task ls_task (StratusQuo::limit_switch_task, (static_cast<void*>(&StratusQuo::robot)), TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Limit switch task");
-	pros::Task arm_task (StratusQuo::arm_task_fn, (static_cast<void*>(&StratusQuo::robot.arm)), TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Arm task");
 }
 
 /**
