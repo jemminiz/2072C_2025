@@ -79,6 +79,11 @@ namespace StratusQuo
                 robot->clamp.extend();
                 pros::Task::delay_until(&time, 200);
             }
+            if(robot->master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT))
+            {
+                time = pros::millis();
+                pros::Task::delay_until(&time, 300);
+            }
         }
     }
     inline void arm_task_fn(void* params)
@@ -148,7 +153,11 @@ namespace StratusQuo
         while(true)
         {
             time = pros::millis();
-            if(robot->master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT)) robot->clamp.toggle();
+            if(robot->master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT))
+            {
+                robot->clamp.toggle();
+                
+            }
         }
     }
 }
