@@ -43,6 +43,12 @@ namespace StratusQuo
                                               0 // maximum acceleration (slew)
     );
     
+    enum Side
+    {
+        RED,
+        BLUE
+    };
+
     typedef struct robo_t
     {
         StratusQuo::Arm arm;
@@ -52,6 +58,7 @@ namespace StratusQuo
         StratusQuo::Limit_Switch limit_switch;
         pros::Controller master;
         lemlib::Chassis chassis;
+        Side side = BLUE;
 
 
         robo_t() : arm(ARM_PORT, ARM_PNEUMATICS_PORT, JACKS_INIT_STATE),
