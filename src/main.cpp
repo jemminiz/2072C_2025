@@ -3,7 +3,6 @@
 #include "lemlib/api.hpp" // IWYU pragma: keep
 #include "liblvgl/llemu.hpp"
 #include "pros/llemu.hpp"
-#include "pros/misc.h"
 #include "pros/rtos.h"
 #include "subsystems.hpp"
 
@@ -37,9 +36,8 @@ void initialize() {
         pros::lcd::print(1, "Vertical Rotation Sensor: %i", StratusQuo::vertical.get_position());
         pros::delay(10); // delay to save resources. DO NOT REMOVE
 	}*/ // Commented out for testing purposes - want to see if task works properly
-	StratusQuo::chassis.calibrate();
-	pros::Task ls_task (StratusQuo::limit_switch_task, (static_cast<void*>(&StratusQuo::limit_switch)), TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Limit switch task");
-	pros::Task arm_task (StratusQuo::arm_task_fn, (static_cast<void*>(&StratusQuo::arm)), TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Arm task");
+	StratusQuo::robot.chassis.calibrate();
+	pros::Task ls_task (StratusQuo::limit_switch_task, (static_cast<void*>(&StratusQuo::robot)), TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Limit switch task");
 }
 
 /**
@@ -93,45 +91,51 @@ void autonomous()
  * task, not resume it from where it left off.
  */
 void opcontrol() {
+	pros::Task drive_task(StratusQuo::drive_task_fn, ((void*)&StratusQuo::robot), TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT);
+	pros::Task arm_task(StratusQuo::arm_task_fn, ((void*)&StratusQuo::robot), TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT);
+	pros::Task intake_task(StratusQuo::intake_task_fn, ((void*)&StratusQuo::robot), TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT);
+	pros::Task scooper_task(StratusQuo::scooper_task_fn, ((void*)&StratusQuo::robot), TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT);
+	pros::Task clamp_task(StratusQuo::clamp_task_fn, ((void*)&StratusQuo::robot), TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT);
 	while (true) {
 		pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
 		                 (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
 		                 (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);  // Prints status of the emulated screen LCDs
-		StratusQuo::chassis.tank(StratusQuo::master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y), StratusQuo::master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y));
-		if(StratusQuo::master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT))
+		/*
+		StratusQuo::robot.chassis.tank(StratusQuo::robot.master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y), StratusQuo::robot.master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y));
+		if(StratusQuo::robot.master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT))
 		{
-			StratusQuo::clamp.toggle();
+			StratusQuo::robot.clamp.toggle();
 		}
-		if(StratusQuo::master.get_digital(pros::E_CONTROLLER_DIGITAL_L1))
+		if(StratusQuo::robot.master.get_digital(pros::E_CONTROLLER_DIGITAL_L1))
     	{
-      		StratusQuo::arm.up();
+      		StratusQuo::robot.arm.up();
     	}
-		else if(StratusQuo::master.get_digital(pros::E_CONTROLLER_DIGITAL_L2))
+		else if(StratusQuo::robot.master.get_digital(pros::E_CONTROLLER_DIGITAL_L2))
     	{
-      		StratusQuo::arm.down();
-    	}
-		else
-    	{
-      		StratusQuo::arm.brake();
-    	}
-
-		if(StratusQuo::master.get_digital(pros::E_CONTROLLER_DIGITAL_R1))
-    	{
-      		StratusQuo::intake.move(127);
-    	}
-		else if(StratusQuo::master.get_digital(pros::E_CONTROLLER_DIGITAL_R2))
-    	{
-      		StratusQuo::intake.move(-127);
+      		StratusQuo::robot.arm.down();
     	}
 		else
     	{
-      		StratusQuo::intake.brake();
+      		StratusQuo::robot.arm.brake();
     	}
 
-		if(StratusQuo::master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A))
+		if(StratusQuo::robot.master.get_digital(pros::E_CONTROLLER_DIGITAL_R1))
     	{
-      		StratusQuo::scooper.toggle();
+      		StratusQuo::robot.intake.move(127);
     	}
-		pros::delay(25);                               // Run for 20 ms then update
+		else if(StratusQuo::robot.master.get_digital(pros::E_CONTROLLER_DIGITAL_R2))
+    	{
+      		StratusQuo::robot.intake.move(-127);
+    	}
+		else
+    	{
+      		StratusQuo::robot.intake.brake();
+    	}
+
+		if(StratusQuo::robot.master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A))
+    	{
+      		StratusQuo::robot.scooper.toggle();
+    	}
+		pros::delay(25);                               // Run for 20 ms then update */ // Commented everything out to test tasks.
 	}
 }
