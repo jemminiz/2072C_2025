@@ -17,5 +17,5 @@ namespace StratusQuo
     inline rd::Selector::routine_t red_ring("Red Ring Side", StratusQuo::sig_red_ring_side);
     inline rd::Selector::routine_t blue_goal("Blue Goal Side", StratusQuo::sig_blue_goal_side);
     inline rd::Selector::routine_t blue_ring("Blue Ring Side", StratusQuo::sig_blue_ring_side);
-    inline rd::Selector auton_selector("Auton Selection", {StratusQuo::red_goal, StratusQuo::red_ring, StratusQuo::blue_goal, StratusQuo::blue_ring});;
+    inline rd::Selector auton_selector("Auton Selection", {StratusQuo::red_goal, StratusQuo::red_ring, StratusQuo::blue_goal, StratusQuo::blue_ring});
 }
