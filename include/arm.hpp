@@ -5,6 +5,10 @@
 #include <cstdint>
 namespace StratusQuo
 {
+    enum Arm_State
+    {
+        ZERO, ABOVE_ARM, LOADING, SCORING
+    };
     class Arm
     {
         public:
@@ -15,8 +19,10 @@ namespace StratusQuo
             void down();
             void move(int voltage);
             void brake();
+            void change_state(Arm_State state);
         private:
             pros::Motor motor;
             pros::adi::Pneumatics piston;
+            Arm_State currentState = ZERO;
     };
 }
