@@ -37,7 +37,7 @@ void initialize() {
         pros::delay(10); // delay to save resources. DO NOT REMOVE
 	}*/ // Commented out for testing purposes - want to see if task works properly
 	StratusQuo::robot.chassis.calibrate();
-	pros::Task ls_task (StratusQuo::limit_switch_task, (static_cast<void*>(&StratusQuo::robot)), TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Limit switch task");
+	pros::Task ls_task (StratusQuo::limit_switch_task, ((void*)(&StratusQuo::robot)), TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Limit switch task");
 }
 
 /**
@@ -74,7 +74,9 @@ void competition_initialize()
  */
 void autonomous()
 {
-	StratusQuo::auton_selector.run_auton();
+	StratusQuo::robot.chassis.setPose(0, 0, 0);
+	StratusQuo::robot.chassis.moveToPoint(0, 10, 1000); // Tuning Angular Controller!
+	//StratusQuo::auton_selector.run_auton();
 }
 
 /**
@@ -96,6 +98,7 @@ void opcontrol() {
 	pros::Task intake_task(StratusQuo::intake_task_fn, ((void*)&StratusQuo::robot), TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT);
 	pros::Task scooper_task(StratusQuo::scooper_task_fn, ((void*)&StratusQuo::robot), TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT);
 	pros::Task clamp_task(StratusQuo::clamp_task_fn, ((void*)&StratusQuo::robot), TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT);
+	StratusQuo::robot.arm.initialize();
 	while (true) {
 		pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
 		                 (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,

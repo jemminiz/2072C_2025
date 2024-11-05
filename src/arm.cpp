@@ -1,6 +1,6 @@
 #include "arm.hpp"
 
-StratusQuo::Arm::Arm(int motor_port, uint8_t pneumatic_port, bool starting_config) : motor(motor_port), piston(pneumatic_port, starting_config)
+StratusQuo::Arm::Arm(int motor_port, uint8_t pneumatic_port, bool starting_config, int sensor_port) : motor(motor_port), piston(pneumatic_port, starting_config), sensor(sensor_port)
 {};
 
 void StratusQuo::Arm::up()
@@ -22,4 +22,14 @@ void StratusQuo::Arm::brake()
 void StratusQuo::Arm::toggle()
 {
     piston.toggle();
+}
+void StratusQuo::Arm::initialize()
+{
+    sensor.reset();
+    sensor.reset_position();
+}
+
+double StratusQuo::Arm::get_rotation()
+{
+    return sensor.get_angle();
 }

@@ -16,25 +16,25 @@ namespace StratusQuo
     inline pros::Imu imu (IMU_PORT);
     inline pros::Rotation vertical (VERTICAL_PORT);
     inline pros::Rotation horizontal (HORIZONTAL_PORT);
-    inline lemlib::TrackingWheel vertical_wheel (&vertical, lemlib::Omniwheel::NEW_275, -1);
-    inline lemlib::TrackingWheel horizontal_wheel (&horizontal, lemlib::Omniwheel::NEW_275, -1);
+    inline lemlib::TrackingWheel vertical_wheel (&vertical, lemlib::Omniwheel::NEW_275, 0);
+    inline lemlib::TrackingWheel horizontal_wheel (&horizontal, lemlib::Omniwheel::NEW_275,  8.75 - (14.8125 / 2));
     inline lemlib::OdomSensors sensors (&vertical_wheel, nullptr, &horizontal_wheel, nullptr, &imu);
     // lateral PID controller
-    inline lemlib::ControllerSettings lateral_controller(10, // proportional gain (kP)
+    inline lemlib::ControllerSettings lateral_controller(19, // proportional gain (kP) +3
                                               0, // integral gain (kI)
-                                              3, // derivative gain (kD)
+                                              100, // derivative gain (kD) +10
                                               0, // anti windup
                                               0, // small error range, in inches
                                               0, // small error range timeout, in milliseconds
                                               0, // large error range, in inches
                                               0, // large error range timeout, in milliseconds
                                               0 // maximum acceleration (slew)
-    );
+    ); // Might need more tuning at a later date
 
     // angular PID controller
-    inline lemlib::ControllerSettings angular_controller(2, // proportional gain (kP)
+    inline lemlib::ControllerSettings angular_controller(8, // proportional gain (kP) +3
                                               0, // integral gain (kI)
-                                              10, // derivative gain (kD)
+                                              60, // derivative gain (kD) +10
                                               0, // anti windup
                                               0, // small error range, in degrees
                                               0, // small error range timeout, in milliseconds
@@ -61,7 +61,7 @@ namespace StratusQuo
         Side side = BLUE;
 
 
-        robo_t() : arm(ARM_PORT, ARM_PNEUMATICS_PORT, JACKS_INIT_STATE),
+        robo_t() : arm(ARM_PORT, ARM_PNEUMATICS_PORT, JACKS_INIT_STATE, ARM_ROTATION_PORT),
                    clamp(CLAMP_PORT, CLAMP_INIT_STATE),
                    intake(INTAKE_PORT, INTAKE_PISTON_PORT, INTAKE_INIT_STATE),
                    scooper(SCOOP_PORT, SCOOP_INIT_STATE),
@@ -84,7 +84,7 @@ namespace StratusQuo
             {
                 time = pros::millis();
                 robot->clamp.extend();
-                pros::Task::delay_until(&time, 200);
+                pros::Task::delay_until(&time, 400);
             }
             if(robot->master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT))
             {
@@ -103,11 +103,11 @@ namespace StratusQuo
             {
                 time = pros::millis();
                 robot->arm.move(127);
-                pros::Task::delay_until(&time, 200); // Find a better timing for this
+                pros::Task::delay_until(&time, 600); // Find a better timing for this
                 robot->arm.toggle();
                 robot->arm.move(-127);
                 time = pros::millis();
-                pros::Task::delay_until(&time, 200); // Same as above
+                pros::Task::delay_until(&time, 600); // Same as above
                 robot->arm.brake();
             }
             if(robot->master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) robot->arm.move(127);

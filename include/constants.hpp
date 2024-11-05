@@ -18,8 +18,8 @@ namespace StratusQuo
     inline constexpr int ARM_PORT (10);
     inline constexpr int INTAKE_PORT (7);
 
-    inline constexpr int8_t VERTICAL_PORT (23);
-    inline constexpr int8_t HORIZONTAL_PORT (22);
+    inline constexpr int8_t VERTICAL_PORT (-6);
+    inline constexpr int8_t HORIZONTAL_PORT (-9);
     #pragma endregion Smart_Ports
 
     #pragma region Sensor_Ports
