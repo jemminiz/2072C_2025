@@ -20,7 +20,7 @@ namespace StratusQuo
     inline lemlib::TrackingWheel horizontal_wheel (&horizontal, lemlib::Omniwheel::NEW_275,  8.75 - (14.8125 / 2));
     inline lemlib::OdomSensors sensors (&vertical_wheel, nullptr, &horizontal_wheel, nullptr, &imu);
     // lateral PID controller
-    inline lemlib::ControllerSettings lateral_controller(19, // proportional gain (kP) +3
+    inline lemlib::ControllerSettings lateral_controller(16, // proportional gain (kP) +3
                                               0, // integral gain (kI)
                                               100, // derivative gain (kD) +10
                                               0, // anti windup

@@ -1,0 +1,38 @@
+52.478, -64.035, 100
+50.478, -64.023, 100
+48.478, -64.011, 100
+46.478, -63.998, 100
+44.478, -63.986, 100
+42.478, -63.974, 100
+40.478, -63.962, 100
+38.478, -63.95, 100
+36.478, -63.938, 100
+34.478, -63.925, 97.475
+32.478, -63.913, 94.833
+30.478, -63.901, 92.116
+28.478, -63.889, 89.316
+26.478, -63.877, 86.426
+24.479, -63.865, 83.435
+22.479, -63.852, 80.333
+20.479, -63.84, 77.106
+18.479, -63.828, 73.739
+16.479, -63.816, 70.21
+14.479, -63.804, 66.494
+12.479, -63.792, 62.557
+10.74, -63.194, 58.706
+9.53, -61.604, 54.212
+8.646, -59.814, 49.313
+7.903, -57.957, 43.861
+7.049, -56.149, 37.629
+6.082, -54.399, 30.133
+5.036, -52.694, 20
+4.241, -51.474, 0
+4.241, -51.474, 0
+-6.679, -34.718, 0
+endData
+127
+100
+200
+52.478, -64.035, 31.877, -63.91, 31.877, -63.91, 11.276, -63.784
+11.276, -63.784, 7.507, -59.764, 9.768, -59.764, 4.241, -51.474
+#PATH.JERRYIO-DATA {"appVersion":"0.8.3","format":"LemLib v0.5","gc":{"robotWidth":11.811023622047244,"robotHeight":11.811023622047244,"robotIsHolonomic":false,"showRobot":true,"uol":2.54,"pointDensity":2,"controlMagnetDistance":0.7750015500031,"fieldImage":{"displayName":"V5RC 2025 - High Stakes","signature":"V5RC 2025 - High Stakes","origin":{"__type":"built-in"}},"coordinateSystem":"VEX Gaming Positioning System"},"paths":[{"segments":[{"controls":[{"uid":"WKiQOgwEqq","x":52.478,"y":-64.035,"lock":false,"visible":true,"heading":90,"__type":"end-point"},{"uid":"woXdnChE3e","x":11.275540439846788,"y":-63.784184645015664,"lock":false,"visible":true,"heading":0,"__type":"end-point"}],"speedProfiles":[],"lookaheadKeyframes":[],"uid":"qUsEbe2Oqu"},{"controls":[{"uid":"woXdnChE3e","x":11.275540439846788,"y":-63.784184645015664,"lock":false,"visible":true,"heading":0,"__type":"end-point"},{"uid":"16FSeJQ0ob","x":7.506977458614573,"y":-59.7643841317013,"lock":false,"visible":true,"__type":"control"},{"uid":"xP0Km99kfp","x":9.768115247353903,"y":-59.7643841317013,"lock":false,"visible":true,"__type":"control"},{"uid":"XEPYFrEhm6","x":4.240889541546652,"y":-51.473545572990425,"lock":false,"visible":true,"heading":135,"__type":"end-point"}],"speedProfiles":[],"lookaheadKeyframes":[],"uid":"DklXLGJkVF"}],"pc":{"speedLimit":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":127,"label":"127"},"step":1,"from":20,"to":100},"bentRateApplicableRange":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":1,"label":"1"},"step":0.001,"from":0,"to":0.1},"maxDecelerationRate":127},"name":"Blue Pos","uid":"BCfrkIPdc1","lock":false,"visible":true}]}

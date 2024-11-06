@@ -1,4 +1,5 @@
 #include "autons.hpp"
+#include "lemlib/chassis/chassis.hpp"
 #include "subsystems.hpp" // IWYU pragma: keep
 
 lemlib::Pose defaultPose(0, 0, 0);
@@ -18,7 +19,34 @@ void StratusQuo::sig_blue_ring_side()
 }
 void StratusQuo::sig_blue_goal_side()
 {
-  StratusQuo::robot.chassis.setPose(defaultPose);
+  using namespace StratusQuo;
+  robot.chassis.setPose(5, 12, 180);
+  robot.chassis.moveToPoint(5, 36, 1000, {.forwards = false});
+  robot.chassis.waitUntilDone();
+  pros::delay(100);
+  robot.chassis.moveToPoint(20.588, 68, 1000, {.forwards = false, .maxSpeed = 90});
+  robot.chassis.waitUntilDone();
+  robot.clamp.extend();
+  robot.intake.move(-127);
+  pros::delay(200);
+  robot.intake.move(127);
+  robot.chassis.moveToPoint(21, 48, 1000);
+  pros::delay(1500);
+  robot.clamp.retract();
+  robot.intake.brake();
+  robot.chassis.moveToPoint(21, 40, 1000);
+  robot.chassis.waitUntilDone();
+  robot.chassis.moveToPoint(50, 39, 1000, {.forwards = false});
+  robot.chassis.waitUntilDone();
+  pros::delay(200);
+  robot.clamp.extend();
+
+  /*
+  robot.chassis.moveToPoint(46, 45, 1000, {.forwards = false, .maxSpeed = 90});
+  robot.clamp.retract();
+  pros::delay(400);
+  robot.clamp.extend();
+  */ // Handled incorrectly!
 }
 #pragma endregion Sig_Autons
 
