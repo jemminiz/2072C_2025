@@ -98,6 +98,7 @@ void opcontrol() {
 	pros::Task clamp_task(StratusQuo::clamp_task_fn, ((void*)&StratusQuo::robot), TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT);
 	pros::Task ls_task (StratusQuo::limit_switch_task, ((void*)(&StratusQuo::robot)), TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Limit switch task");
 	StratusQuo::robot.arm.initialize();
+	StratusQuo::auton_selector.focus();
 	while (true) {
 		pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
 		                 (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,

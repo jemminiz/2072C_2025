@@ -16,7 +16,7 @@ namespace StratusQuo
     inline pros::Imu imu (IMU_PORT);
     inline pros::Rotation vertical (VERTICAL_PORT);
     inline pros::Rotation horizontal (HORIZONTAL_PORT);
-    inline lemlib::TrackingWheel vertical_wheel (&vertical, lemlib::Omniwheel::NEW_275, 0);
+    inline lemlib::TrackingWheel vertical_wheel (&vertical, lemlib::Omniwheel::NEW_275, .5);
     inline lemlib::TrackingWheel horizontal_wheel (&horizontal, lemlib::Omniwheel::NEW_275,  8.75 - (14.8125 / 2));
     inline lemlib::OdomSensors sensors (&vertical_wheel, nullptr, &horizontal_wheel, nullptr, &imu);
     // lateral PID controller
