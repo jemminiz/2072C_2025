@@ -31,7 +31,7 @@ void StratusQuo::sig_blue_goal_side()
   pros::delay(200);
   robot.intake.move(127);
   robot.chassis.moveToPoint(21, 48, 1000);
-  pros::delay(1500);
+  pros::delay(2000);
   robot.clamp.retract();
   robot.intake.brake();
   robot.chassis.moveToPoint(21, 40, 1000);
@@ -54,7 +54,7 @@ void StratusQuo::sig_blue_goal_side()
   robot.chassis.waitUntilDone();
   robot.intake.toggle();
   pros::delay(100);
-  robot.chassis.moveToPoint(66, 36.5, 500, {.forwards = false});
+  robot.chassis.moveToPoint(64, 36.5, 500, {.forwards = false});
 
   /*
   robot.chassis.moveToPoint(46, 45, 1000, {.forwards = false, .maxSpeed = 90});

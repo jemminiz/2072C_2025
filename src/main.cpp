@@ -73,7 +73,9 @@ void competition_initialize()
  */
 void autonomous()
 {
-	StratusQuo::sig_blue_goal_side();
+	StratusQuo::robot.chassis.setPose(0, 0, 0);
+	StratusQuo::robot.chassis.moveToPose(0, 48, 0, 1000000);
+	//StratusQuo::sig_blue_goal_side();
 	//StratusQuo::auton_selector.run_auton();
 }
 
