@@ -21,10 +21,10 @@ void StratusQuo::sig_blue_goal_side()
 {
   using namespace StratusQuo;
   robot.chassis.setPose(5, 12, 180);
-  robot.chassis.moveToPoint(5, 36, 1000, {.forwards = false});
+  robot.chassis.moveToPoint(5, 34, 1000, {.forwards = false});
   robot.chassis.waitUntilDone();
   pros::delay(100);
-  robot.chassis.moveToPoint(20.588, 68, 1000, {.forwards = false, .maxSpeed = 90});
+  robot.chassis.moveToPoint(19, 60, 1000, {.forwards = false, .maxSpeed = 90});
   robot.chassis.waitUntilDone();
   robot.clamp.extend();
   robot.intake.move(-127);
