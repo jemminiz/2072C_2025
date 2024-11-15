@@ -22,7 +22,7 @@ void StratusQuo::sig_blue_goal_side()
 {
   using namespace StratusQuo;
   robot.chassis.setPose(5, 12, 180);
-  robot.chassis.moveToPoint(5, 25, 1100, {.forwards = false});
+  robot.chassis.moveToPoint(5, 26, 1100, {.forwards = false});
   robot.chassis.waitUntilDone();
   double dist = std::sqrt((54.58 - 25) * (54.58 - 25) + (17.1 - 5) * (17.1 - 5));
   pros::delay(100);
@@ -39,17 +39,22 @@ void StratusQuo::sig_blue_goal_side()
   robot.clamp.retract();
   robot.intake.brake();
   robot.chassis.turnToHeading(270, 1000);
-  robot.chassis.moveToPoint(45, 44, 1000, {.forwards = false, .maxSpeed = 60});
+  robot.chassis.moveToPoint(45, 52, 1000, {.forwards = false, .maxSpeed = 60});
   robot.chassis.waitUntilDone();
   robot.intake.move(-127);
   robot.clamp.extend();
   pros::delay(200);
   robot.intake.move(127);
   robot.intake.toggle();
-  robot.chassis.moveToPoint(70, 27, 2500);
+  robot.chassis.moveToPoint(70, 40, 2500);
   robot.chassis.waitUntilDone();
   robot.intake.toggle();
   robot.chassis.moveToPoint(63, 24.3, 1000, {.forwards = false});
+  robot.arm.move(127);
+    pros::delay(2000);
+  robot.clamp.retract();
+  robot.chassis.moveToPoint(53, 40, 2000);
+  robot.chassis.moveToPoint(53, 90, 5000);
   /*
   robot.chassis.moveToPoint(46, 45, 1000, {.forwards = false, .maxSpeed = 90});
   robot.clamp.retract();
