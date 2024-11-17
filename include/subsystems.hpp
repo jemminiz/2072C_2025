@@ -14,11 +14,7 @@ namespace StratusQuo
     inline pros::MotorGroup right_motors (right_motor_ports, pros::MotorGearset::blue);
     inline lemlib::Drivetrain drive(&left_motors, &right_motors, 11.8, lemlib::Omniwheel::NEW_325, 450, 2);
     inline pros::Imu imu (IMU_PORT);
-    inline pros::Rotation vertical (VERTICAL_PORT);
-    inline pros::Rotation horizontal (HORIZONTAL_PORT);
-    inline lemlib::TrackingWheel vertical_wheel (&vertical, lemlib::Omniwheel::NEW_2, .5);
-    inline lemlib::TrackingWheel horizontal_wheel (&horizontal, lemlib::Omniwheel::NEW_2,  8.75 - (14.8125 / 2));
-    inline lemlib::OdomSensors sensors (&vertical_wheel, nullptr, &horizontal_wheel, nullptr, &imu);
+    inline lemlib::OdomSensors sensors (nullptr, nullptr, nullptr, nullptr, &imu);
     // lateral PID controller
     inline lemlib::ControllerSettings lateral_controller(34, // proportional gain (kP) +3 31
                                               0, // integral gain (kI)
