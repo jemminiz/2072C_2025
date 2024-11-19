@@ -14,7 +14,7 @@ namespace StratusQuo
             int setKD(float newKD);
             int moveTo(float target, std::function<int(float power)> powerAdjustmentFunc);
         private:
-            float P = 0.f, I = 0.f, D = 0.f;
+            float kP = 0.f, kI = 0.f, kD = 0.f;
             std::function<double()> positionFeedback;
     };
 }
