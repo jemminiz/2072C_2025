@@ -71,7 +71,7 @@ int StratusQuo::PID::moveTo(float target, std::function<int(float power)> powerA
         prev_position = position;
         position = positionFeedback();
         
-        pros::delay(dT);
+        pros::delay(dT); // Factored out of derivative and integral calculation!
     }
     return 0;
 }
