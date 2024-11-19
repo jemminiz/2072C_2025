@@ -8,20 +8,20 @@ StratusQuo::PID::PID(float kP, float kI, float kD)
     P = kP;
     I = kI;
     D = kD;
-    currentFeedback = nullptr;
+    positionFeedback = nullptr;
 }
 StratusQuo::PID::PID(float kP, float kI, float kD, std::function<double()> callback)
 {
     P = kP;
     I = kI;
     D = kD;
-    currentFeedback = callback;
+    positionFeedback = callback;
 }
 
-int StratusQuo::PID::setCurrentFeedback(std::function<double()> callback)
+int StratusQuo::PID::setPositionFeedback(std::function<double()> callback)
 {
     if(!callback) return 1;
-    currentFeedback = callback;
+    positionFeedback = callback;
     return 0;
 }
 int StratusQuo::PID::setKP(float newKP)
@@ -45,29 +45,31 @@ int StratusQuo::PID::setKD(float newKD)
 
 int StratusQuo::PID::moveTo(float target, std::function<int(float power)> powerAdjustmentFunc)
 {
-    if(!currentFeedback) return 1;
+    if(!positionFeedback) return 1;
 
     bool condition = true;
-    float current = currentFeedback();
-    float prev_current = 0.f;
+    float position = positionFeedback(); // current position!
+    float prev_position = 0.f;
     float power = 0.f;
     float dT = 10.f;
 
-    float proportional = target;
+    float set_point = target + position;
+    float error = set_point;
     float integral = 0.f;
     float derivative = 0.f;
     while (condition)
     {
         // calculate derivative on measurement instead of error to avoid "derivative kick"
         // https://www.isa.org/intech-home/2023/june-2023/features/fundamentals-pid-control
-        proportional = current - prev_current; // TODO: Find current 
-        integral += proportional;
-        if(proportional == 0) integral = 0;
-        if (proportional * P >= 127) integral = 0;
-        power = proportional * P + integral * I + derivative * D;
+        error -= position;
+        integral += error;
+        if(error == 0) integral = 0;
+        if (error * P >= 127) integral = 0;
+        derivative = position - prev_position;
+        power = error * P + integral * I + derivative * D;
         powerAdjustmentFunc(power);
-        prev_current = current;
-        current = currentFeedback();
+        prev_position = position;
+        position = positionFeedback();
         
         pros::delay(dT);
     }
