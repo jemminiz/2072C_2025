@@ -4,8 +4,26 @@
 StratusQuo::PID::PID()
 {}
 StratusQuo::PID::PID(float kP, float kI, float kD)
-{}
+{
+    P = kP;
+    I = kI;
+    D = kD;
+    currentFeedback = nullptr;
+}
+StratusQuo::PID::PID(float kP, float kI, float kD, std::function<double()> callback)
+{
+    P = kP;
+    I = kI;
+    D = kD;
+    currentFeedback = callback;
+}
 
+int StratusQuo::PID::setCurrentFeedback(std::function<double()> callback)
+{
+    if(!callback) return 1;
+    currentFeedback = callback;
+    return 0;
+}
 int StratusQuo::PID::setKP(float newKP)
 {
     if(newKP >= 0) P = newKP;
@@ -27,9 +45,10 @@ int StratusQuo::PID::setKD(float newKD)
 
 int StratusQuo::PID::moveTo(float target, std::function<int(float power)> powerAdjustmentFunc)
 {
+    if(!currentFeedback) return 1;
+
     bool condition = true;
-    float prevError = 0.f;
-    float current = 0.f;
+    float current = currentFeedback();
     float prev_current = 0.f;
     float power = 0.f;
     float dT = 10.f;
@@ -47,7 +66,9 @@ int StratusQuo::PID::moveTo(float target, std::function<int(float power)> powerA
         if (proportional * P >= 127) integral = 0;
         power = proportional * P + integral * I + derivative * D;
         powerAdjustmentFunc(power);
-        prevError = proportional;
+        prev_current = current;
+        current = currentFeedback();
+        
         pros::delay(dT);
     }
     return 0;
