@@ -71,6 +71,18 @@ int StratusQuo::PID::calculate(float target)
     return power;
 }
 
+bool StratusQuo::PID::canGetPosition()
+{
+    bool notThere = !positionFeedback;
+    return !notThere;
+}
+
+std::function<double()> StratusQuo::PID::getPositionFeedback()
+{
+    return positionFeedback;
+}
+
+
 /*
  *  // TODO: DELETE ME
  *  moveTo(500, [this](float power) { this->motor->setPower(power);}); -- Lambda function

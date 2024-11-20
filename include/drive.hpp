@@ -10,12 +10,16 @@ namespace StratusQuo
         public:
             Drivetrain() = delete;
             Drivetrain(pros::MotorGroup* left_motors, pros::MotorGroup* right_motors);
-            Drivetrain(pros::MotorGroup* left_motors, pros::MotorGroup* right_motors, pros::Imu* inertial);
-            int drive_to(float voltage);
+            Drivetrain(pros::MotorGroup* left_motors, pros::MotorGroup* right_motors, pros::Imu* imu);
+            Drivetrain(pros::MotorGroup* left_motors, pros::MotorGroup* right_motors, pros::Imu* imu, PID pid);
+            int drive_to(int voltage);
+            int set_drive_voltage(int voltage);
         private:
             pros::MotorGroup* left = nullptr;
             pros::MotorGroup* right = nullptr;
             pros::Imu* imu = nullptr;
-            PID pid;
+            PID left_pid;
+            PID right_pid;
+            pros::Task drive_pid_task;
     };
 }
