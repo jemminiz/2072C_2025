@@ -37,3 +37,10 @@ int StratusQuo::Drivetrain::drive_to(int target)
     right_pid.move_to(target, [this](std::int32_t voltage) { return right->move(voltage); });
     return 0;
 }
+
+int StratusQuo::Drivetrain::set_drive_voltage(int voltage)
+{
+    left->move(voltage);
+    right->move(voltage);
+    return 0;
+}
