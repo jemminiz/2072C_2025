@@ -11,7 +11,7 @@ namespace StratusQuo
             Drivetrain() = delete;
             Drivetrain(pros::MotorGroup* left_motors, pros::MotorGroup* right_motors);
             Drivetrain(pros::MotorGroup* left_motors, pros::MotorGroup* right_motors, pros::Imu* inertial);
-            int set_power(float voltage);
+            int drive_to(float voltage);
         private:
             pros::MotorGroup* left = nullptr;
             pros::MotorGroup* right = nullptr;

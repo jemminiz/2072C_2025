@@ -1,4 +1,5 @@
 #pragma once
+#include <cstdint>
 #include <functional>
 namespace StratusQuo
 {
@@ -12,9 +13,11 @@ namespace StratusQuo
             int setKP(float newKP);
             int setKI(float newKI);
             int setKD(float newKD);
-            int moveTo(float target, std::function<int(float power)> powerAdjustmentFunc);
+            int move_to(float target, std::function<std::int32_t(std::int32_t voltage)> set_voltage);
         private:
             float kP = 0.f, kI = 0.f, kD = 0.f;
             std::function<double()> positionFeedback;
+            float prev_position = 0.f;
+            int calculate(float target);
     };
 }

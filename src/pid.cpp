@@ -1,5 +1,4 @@
 #include "pid.hpp"
-#include "pros/rtos.hpp"
 
 StratusQuo::PID::PID()
 {}
@@ -43,37 +42,33 @@ int StratusQuo::PID::setKD(float newKD)
     return 0;
 }
 
-int StratusQuo::PID::moveTo(float target, std::function<int(float power)> powerAdjustmentFunc)
+int StratusQuo::PID::move_to(float target, std::function<std::int32_t(std::int32_t voltage)> set_voltage)
 {
-    if(!positionFeedback) return 1;
-
-    bool condition = true;
-    float position = positionFeedback(); // current position!
-    float prev_position = 0.f;
-    float power = 0.f;
-    float dT = 10.f;
-
-    float set_point = target + position;
-    float error = set_point;
-    float integral = 0.f;
-    float derivative = 0.f;
-    while (condition)
-    {
-        // calculate derivative on measurement instead of error to avoid "derivative kick"
-        // https://www.isa.org/intech-home/2023/june-2023/features/fundamentals-pid-control
-        error -= position;
-        integral += error;
-        if(error == 0) integral = 0;
-        if (error * kP >= 127) integral = 0;
-        derivative = position - prev_position;
-        power = error * kP + integral * kI + derivative * kD;
-        powerAdjustmentFunc(power);
-        prev_position = position;
-        position = positionFeedback();
-        
-        pros::delay(dT); // Factored out of derivative and integral calculation!
-    }
+    set_voltage(calculate(target));
     return 0;
+}
+
+int StratusQuo::PID::calculate(float target)
+{
+    if(!positionFeedback) return 0;
+
+    float position = positionFeedback(); // current position!
+    float power = 0.f;
+
+    float set_point = target;
+    float error = set_point - position;
+    float integral = error;
+    float derivative = 0.f;
+    if(error == 0) integral = 0;
+    if (error * kP >= 127) integral = 0;
+
+    // calculate derivative on measurement instead of error to avoid "derivative kick"
+    // https://www.isa.org/intech-home/2023/june-2023/features/fundamentals-pid-control
+    derivative = position - prev_position;
+
+    power = error * kP + integral * kI + derivative * kD;
+    prev_position = position;
+    return power;
 }
 
 /*
