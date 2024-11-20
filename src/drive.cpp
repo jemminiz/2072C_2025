@@ -1,15 +1,17 @@
 #include "drive.hpp"
 #include <cstdint>
 
-StratusQuo::Drivetrain::Drivetrain(pros::MotorGroup* left_motors, pros::MotorGroup* right_motors) : left(left_motors), right(right_motors), drive_pid_task(nullptr)
+StratusQuo::Drivetrain::Drivetrain(pros::MotorGroup* left_motors, pros::MotorGroup* right_motors) : left(left_motors), right(right_motors)
 {
     left_pid = PID();
     right_pid = PID();
+    drive_pid_task = new pros::Task([this]() {this->task_loop();});
 }
-StratusQuo::Drivetrain::Drivetrain(pros::MotorGroup* left_motors, pros::MotorGroup* right_motors, pros::Imu* imu) : left(left_motors), right(right_motors), imu(imu), drive_pid_task(nullptr)
+StratusQuo::Drivetrain::Drivetrain(pros::MotorGroup* left_motors, pros::MotorGroup* right_motors, pros::Imu* imu) : left(left_motors), right(right_motors), imu(imu)
 {
     left_pid = PID();
     right_pid = PID();
+    drive_pid_task = new pros::Task([this]() {this->task_loop();});
 }
 StratusQuo::Drivetrain::Drivetrain(pros::MotorGroup* left_motors, pros::MotorGroup* right_motors, pros::Imu* imu, PID pid) : left(left_motors), right(right_motors), imu(imu), left_pid(pid), right_pid(pid)
 {
