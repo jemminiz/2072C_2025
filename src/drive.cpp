@@ -15,10 +15,10 @@ StratusQuo::Drivetrain::Drivetrain(pros::MotorGroup* left_motors, pros::MotorGro
 }
 StratusQuo::Drivetrain::Drivetrain(pros::MotorGroup* left_motors, pros::MotorGroup* right_motors, pros::Imu* imu, PID pid) : left(left_motors), right(right_motors), imu(imu), left_pid(pid), right_pid(pid)
 {
-    if(!pid.canGetPosition())
+    if(!pid.can_get_position())
     {
         uint32_t time = pros::millis();
-        pid.setPositionFeedback([this, &time]()-> std::int32_t { return left->get_raw_position(&time); }); // Use left motor, specifically index 0, as default position return
+        pid.set_position_feedback([this, &time]()-> std::int32_t { return left->get_raw_position(&time); }); // Use left motor, specifically index 0, as default position return
     }
     drive_pid_task = new pros::Task([this]() {this->task_loop();});
 }

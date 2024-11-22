@@ -4,82 +4,81 @@ StratusQuo::PID::PID()
 {}
 StratusQuo::PID::PID(float kP, float kI, float kD)
 {
-    this->kP = kP;
-    this->kI = kI;
-    this->kD = kD;
-    positionFeedback = nullptr;
+    this->_kP = kP;
+    this->_kI = kI;
+    this->_kD = kD;
+    _position_feedback = nullptr;
 }
 StratusQuo::PID::PID(float kP, float kI, float kD, std::function<double()> callback)
 {
-    this->kP = kP;
-    this->kI = kI;
-    this->kD = kD;
-    positionFeedback = callback;
+    this->_kP = kP;
+    this->_kI = kI;
+    this->_kD = kD;
+    _position_feedback = callback;
 }
 
-int StratusQuo::PID::setPositionFeedback(std::function<double()> callback)
+int StratusQuo::PID::set_position_feedback(std::function<double()> callback)
 {
     if(!callback) return 1;
-    positionFeedback = callback;
+    _position_feedback = callback;
     return 0;
 }
-int StratusQuo::PID::setKP(float newKP)
+int StratusQuo::PID::set_kP(float new_kP)
 {
-    if(newKP >= 0) kP = newKP;
+    if(new_kP >= 0) _kP = new_kP;
     else return 1;
     return 0;
 }
-int StratusQuo::PID::setKI(float newKI)
+int StratusQuo::PID::set_kI(float new_kI)
 {
-    if(newKI >= 0) kI = newKI;
+    if(new_kI >= 0) _kI = new_kI;
     else return 1;
     return 0;
 }
-int StratusQuo::PID::setKD(float newKD)
+int StratusQuo::PID::set_kD(float new_kD)
 {
-    if(newKD >= 0) kD = newKD;
-    else return 1;
+    if(new_kD < 0) return 1;
+    _kD = new_kD;
     return 0;
 }
 
 int StratusQuo::PID::move_to(float target, std::function<std::int32_t(std::int32_t voltage)> set_voltage)
 {
-    set_voltage(calculate(target));
+    set_voltage(_calculate(target));
     return 0;
 }
 
-int StratusQuo::PID::calculate(float target)
+int StratusQuo::PID::_calculate(float target)
 {
-    if(!positionFeedback) return 0;
+    if(!_position_feedback) return 0;
 
-    float position = positionFeedback(); // current position!
-    float power = 0.f;
+    float _position_ = _position_feedback(); // current position!
+    float _power_ = 0.f;
 
-    float set_point = target;
-    float error = set_point - position;
-    float integral = error;
-    float derivative = 0.f;
-    if(error == 0) integral = 0;
-    if (error * kP >= 127) integral = 0;
+    float _set_point_ = target;
+    float _error_ = _set_point_ - _position_;
+    float _integral_ = _error_;
+    float _derivative_ = 0.f;
+    if(_error_ == 0) _integral_ = 0;
+    if (_error_ * _kP >= 127) _integral_ = 0;
 
     // calculate derivative on measurement instead of error to avoid "derivative kick"
     // https://www.isa.org/intech-home/2023/june-2023/features/fundamentals-pid-control
-    derivative = position - prev_position;
+    _derivative_ = _position_ - _prev_position;
 
-    power = error * kP + integral * kI + derivative * kD;
-    prev_position = position;
-    return power;
+    _power_ = _error_ * _kP + _integral_ * _kI + _derivative_ * _kD;
+    _prev_position = _position_;
+    return _power_;
 }
 
-bool StratusQuo::PID::canGetPosition()
+const bool StratusQuo::PID::can_get_position()
 {
-    bool notThere = !positionFeedback;
-    return !notThere;
+    return static_cast<bool>(_position_feedback);
 }
 
-std::function<double()> StratusQuo::PID::getPositionFeedback()
+const std::function<double()> StratusQuo::PID::get_position_feedback()
 {
-    return positionFeedback;
+    return _position_feedback;
 }
 
 
