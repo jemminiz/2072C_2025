@@ -1,46 +1,6 @@
 [
     {
         "arguments": [
-            "src/main.cpp",
-            "bin/main.cpp.o",
-            "-o",
-            "-Wno-deprecated-enum-enum-conversion",
-            "--std=gnu++20",
-            "-funwind-tables",
-            "-fdiagnostics-color",
-            "-fdata-sections",
-            "-ffunction-sections",
-            "-Wno-psabi",
-            "-D_PROS_INCLUDE_LIBLVGL_LLEMU_HPP",
-            "-D_PROS_INCLUDE_LIBLVGL_LLEMU_H",
-            "-D_POSIX_MONOTONIC_CLOCK",
-            "-D_POSIX_TIMERS",
-            "-D_UNIX98_THREAD_MUTEX_ATTRIBUTES",
-            "-D_POSIX_THREADS",
-            "-g",
-            "-Os",
-            "-mfloat-abi=softfp",
-            "-mfpu=neon-fp16",
-            "-mcpu=cortex-a9",
-            "-iquote./include/./",
-            "-iquote./include/okapi/squiggles",
-            "-iquote./include",
-            "-isystem/home/jemminiz/.config/VSCodium/User/globalStorage/sigbots.pros/install/pros-toolchain-linux/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/include",
-            "-isystem/home/jemminiz/.config/VSCodium/User/globalStorage/sigbots.pros/install/pros-toolchain-linux/bin/../lib/gcc/arm-none-eabi/13.3.1/include-fixed",
-            "-isystem/home/jemminiz/.config/VSCodium/User/globalStorage/sigbots.pros/install/pros-toolchain-linux/bin/../lib/gcc/arm-none-eabi/13.3.1/include",
-            "-isystem/home/jemminiz/.config/VSCodium/User/globalStorage/sigbots.pros/install/pros-toolchain-linux/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/include/c++/13.3.1/backward",
-            "-isystem/home/jemminiz/.config/VSCodium/User/globalStorage/sigbots.pros/install/pros-toolchain-linux/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/include/c++/13.3.1/arm-none-eabi/thumb/v7-a+simd/softfp",
-            "-isystem/home/jemminiz/.config/VSCodium/User/globalStorage/sigbots.pros/install/pros-toolchain-linux/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/include/c++/13.3.1",
-            "armv7ar-none-none-eabi",
-            "-target",
-            "-c",
-            "clang++"
-        ],
-        "directory": "/home/jemminiz/Downloads/EZ-Template-Example-Project",
-        "file": "src/main.cpp"
-    },
-    {
-        "arguments": [
             "clang++",
             "-c",
             "-target",
@@ -153,11 +113,11 @@
             "--std=gnu++20",
             "-Wno-deprecated-enum-enum-conversion",
             "-o",
-            "bin/autons.cpp.o",
-            "src/autons.cpp"
+            "bin/clamp.cpp.o",
+            "src/clamp.cpp"
         ],
         "directory": "/home/jemminiz/Documents/Code/Rebuild Code",
-        "file": "src/autons.cpp"
+        "file": "src/clamp.cpp"
     },
     {
         "arguments": [
@@ -233,11 +193,11 @@
             "--std=gnu++20",
             "-Wno-deprecated-enum-enum-conversion",
             "-o",
-            "bin/clamp.cpp.o",
-            "src/clamp.cpp"
+            "bin/lady_brown.cpp.o",
+            "src/lady_brown.cpp"
         ],
         "directory": "/home/jemminiz/Documents/Code/Rebuild Code",
-        "file": "src/clamp.cpp"
+        "file": "src/lady_brown.cpp"
     },
     {
         "arguments": [
@@ -273,10 +233,10 @@
             "--std=gnu++20",
             "-Wno-deprecated-enum-enum-conversion",
             "-o",
-            "bin/lady_brown.cpp.o",
-            "src/lady_brown.cpp"
+            "bin/autons.cpp.o",
+            "src/autons.cpp"
         ],
         "directory": "/home/jemminiz/Documents/Code/Rebuild Code",
-        "file": "src/lady_brown.cpp"
+        "file": "src/autons.cpp"
     }
 ]
