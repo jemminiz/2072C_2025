@@ -99,9 +99,9 @@ void opcontrol() {
     }
     else
     {
-      if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) StratusQuo::lady_brown.target_set(StratusQuo::LB_POSITION[1]);
-      else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) StratusQuo::lady_brown.target_set(StratusQuo::LB_POSITION[2]);
-      else StratusQuo::lady_brown.target_set(StratusQuo::LB_POSITION[0]);
+      if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) StratusQuo::lady_brown.target_set(StratusQuo::LOADING);
+      else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) StratusQuo::lady_brown.target_set(StratusQuo::SCORING);
+      else StratusQuo::lady_brown.target_set(StratusQuo::DOWN);
     }
 
     pros::delay(ez::util::DELAY_TIME);  // This is used for timer calculations!  Keep this ez::util::DELAY_TIME

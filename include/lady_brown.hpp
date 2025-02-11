@@ -3,7 +3,12 @@
 #include "pros/motors.hpp"
 namespace StratusQuo
 {
-    inline int LB_POSITION[3] = {0, 100, 300};
+    typedef enum 
+    {
+        DOWN = 0,
+        LOADING = 100,
+        SCORING = 3000
+    } LB_POSITION;
     class Lady_Brown
     {
         public:
@@ -22,7 +27,7 @@ namespace StratusQuo
             void set_exit_conditions(double small_error_time, double small_error, double big_error_time = 0, double big_error = 0, int velocity_exit_time = 0, int mA_timeout = 0);
             void target_set(int target);
         private:
-            int _position = LB_POSITION[0];
+            int _position = DOWN;
             pros::Motor _motor;
             pros::Rotation _rotation;
             ez::PID _pid;
