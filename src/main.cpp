@@ -15,7 +15,7 @@ pros::Task lady_brown_task([](){
   {
     if(is_position_based)
     {
-      StratusQuo::lady_brown.move(StratusQuo::lady_brown.compute(StratusQuo::lady_brown.get_position()));
+      StratusQuo::lady_brown.move(StratusQuo::lady_brown.compute(StratusQuo::lady_brown.get_position() / 100)); // Divide by 100 because reads in centidegrees
     }
     else
     {
