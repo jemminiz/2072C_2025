@@ -9,14 +9,13 @@ bool L2_is_pressed = false;
 int lady_brown_speed = 0;
 
 pros::Task lady_brown_task([](){
+  pros::delay(2000);
   int current_position = 0;
   while(true)
   {
     if(is_position_based)
     {
-      // How should this work
-      if(L1_is_pressed) StratusQuo::lady_brown.move_to(StratusQuo::LB_POSITION[(abs(current_position - 1)) % 3]);
-      else if(L2_is_pressed) StratusQuo::lady_brown.move_to(StratusQuo::LB_POSITION[(abs(current_position + 1)) % 3]);
+      StratusQuo::lady_brown.move(StratusQuo::lady_brown.compute(StratusQuo::lady_brown.get_position()));
     }
     else
     {
@@ -37,6 +36,7 @@ void initialize() {
   default_constants();
 
   StratusQuo::lady_brown.tare_position();
+  StratusQuo::lady_brown.set_exit_conditions(80, 50, 300, 150, 500, 500);
 
   StratusQuo::chassis.drive_imu_calibrate(false);
   StratusQuo::chassis.drive_sensor_reset();
@@ -91,9 +91,18 @@ void opcontrol() {
 
     StratusQuo::chassis.opcontrol_tank();
     
-    if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) StratusQuo::intake.move(127);
-    else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) StratusQuo::intake.move(-127);
-    else StratusQuo::intake.brake();
+    if(!is_position_based)
+    {
+      if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) StratusQuo::intake.move(127);
+      else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) StratusQuo::intake.move(-127);
+      else StratusQuo::intake.brake();
+    }
+    else
+    {
+      if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) StratusQuo::lady_brown.target_set(StratusQuo::LB_POSITION[1]);
+      else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) StratusQuo::lady_brown.target_set(StratusQuo::LB_POSITION[2]);
+      else StratusQuo::lady_brown.target_set(StratusQuo::LB_POSITION[0]);
+    }
 
     pros::delay(ez::util::DELAY_TIME);  // This is used for timer calculations!  Keep this ez::util::DELAY_TIME
   }
