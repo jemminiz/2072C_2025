@@ -8,4 +8,4 @@ inline const int LADY_BROWN_PORT = 12;
 inline const uint8_t INTAKE_PISTON_PORT = 'a';
 inline const uint8_t CLAMP_PORT = 'b';
 inline const ez::PID LADY_BROWN_PID(3.0, 0, 10.0);
-inline const pros::Rotation LADY_BROWN_ROTATION(21);
+inline const pros::Rotation LADY_BROWN_ROTATION(-20);
