@@ -7,6 +7,25 @@ bool is_position_based = false;
 bool L1_is_pressed = false;
 bool L2_is_pressed = false;
 int lady_brown_speed = 0;
+std::atomic<bool> set_clamp = false;
+
+pros::Task limit_switch_task([]() {
+  pros::delay(2000);
+  bool changed = false;
+  while(true)
+  {
+    if(((StratusQuo::left_limit_switch.get_new_press() && StratusQuo::right_limit_switch.get_value()) ||
+        (StratusQuo::left_limit_switch.get_value() && StratusQuo::right_limit_switch.get_new_press())) && is_auto_clamp_enabled.load())
+    {
+      set_clamp.store(true);
+      changed = true;
+    }
+    StratusQuo::clamp.set(set_clamp.load());
+    if(changed) pros::delay(1000);
+    changed = false;
+    pros::delay(50);
+  }
+});
 
 pros::Task lady_brown_task([](){
   pros::delay(2000);
