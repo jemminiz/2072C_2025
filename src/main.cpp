@@ -122,18 +122,26 @@ void opcontrol() {
     pid_tuner();
 
     StratusQuo::chassis.opcontrol_tank();
+    if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) StratusQuo::intake.move(127);
+    else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) StratusQuo::intake.move(-127);
+    else StratusQuo::intake.brake();
     
     if(!is_position_based)
     {
-      if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) StratusQuo::intake.move(127);
-      else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) StratusQuo::intake.move(-127);
-      else StratusQuo::intake.brake();
+      if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) StratusQuo::lady_brown.move(127);
+      else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) StratusQuo::lady_brown.move(-127);
+      else StratusQuo::lady_brown.brake();
     }
     else
     {
       if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) StratusQuo::lady_brown.target_set(StratusQuo::LOADING);
       else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) StratusQuo::lady_brown.target_set(StratusQuo::SCORING);
       else StratusQuo::lady_brown.target_set(StratusQuo::DOWN);
+    }
+
+    if(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT))
+    {
+      set_clamp.store(!StratusQuo::clamp.get_state());
     }
 
     pros::delay(ez::util::DELAY_TIME);  // This is used for timer calculations!  Keep this ez::util::DELAY_TIME

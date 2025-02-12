@@ -9,6 +9,7 @@ namespace StratusQuo
             Clamp() = delete;
             Clamp(uint8_t clamp_port);
             int set(bool val);
+            bool get_state();
         private:
             ez::Piston _clamp_piston;
     };

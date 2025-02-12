@@ -8,3 +8,8 @@ int StratusQuo::Clamp::set(bool val)
     _clamp_piston.set(val);
     return 0;
 }
+
+bool StratusQuo::Clamp::get_state()
+{
+    return _clamp_piston.get();
+}

@@ -1,5 +1,6 @@
 #include "lady_brown.hpp"
 #include "EZ-Template/util.hpp"
+#include "pros/motors.h"
 
 StratusQuo::Lady_Brown::Lady_Brown(const int port, const ez::PID pid, const pros::Rotation rotation) : _motor(port), _pid(pid), _rotation(rotation)
 {};
@@ -52,6 +53,7 @@ void StratusQuo::Lady_Brown::pid_wait()
 void StratusQuo::Lady_Brown::set_exit_conditions(double small_error_time, double small_error, double big_error_time, double big_error, int velocity_exit_time, int mA_timeout)
 {
     _pid.exit_condition_set(small_error_time, small_error, big_error_time, big_error, velocity_exit_time, mA_timeout);
+    _motor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 }
 
 void StratusQuo::Lady_Brown::target_set(int target)
