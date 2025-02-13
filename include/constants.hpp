@@ -11,7 +11,7 @@ inline const uint8_t INTAKE_PISTON_PORT = 'b';
 inline const uint8_t CLAMP_PORT = 'a';
 inline const uint8_t LEFT_LIMIT_SWITCH_PORT = 'c';
 inline const uint8_t RIGHT_LIMIT_SWITCH_PORT = 'd';
-inline const ez::PID LADY_BROWN_PID(3.0, 0, 10.0);
+inline const ez::PID LADY_BROWN_PID(0.5, 0, 10.0);
 inline const pros::Rotation LADY_BROWN_ROTATION(-21);
 
 inline std::atomic<bool> is_auto_clamp_enabled(true);
