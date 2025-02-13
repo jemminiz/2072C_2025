@@ -42,7 +42,7 @@ double StratusQuo::Lady_Brown::compute(double current)
 
 double StratusQuo::Lady_Brown::get_position()
 {
-    return _rotation.get_position() / (48.0/24);
+    return _rotation.get_position() / (36.0/12);
 }
 
 void StratusQuo::Lady_Brown::pid_wait()
