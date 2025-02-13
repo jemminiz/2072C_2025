@@ -16,7 +16,6 @@ int StratusQuo::Lady_Brown::move(int8_t voltage)
 int StratusQuo::Lady_Brown::move_to(int position)
 {
     _pid.target_set(position);
-    ez::exit_output exit = ez::RUNNING;
     while (_pid.exit_condition({_motor}, false) == ez::RUNNING)
     {
         _motor.move(_pid.compute(_rotation.get_position()));
