@@ -1,6 +1,6 @@
 #pragma once
 
-#include "EZ-Template/PID.hpp"
+#include "pros/rotation.hpp"
 #include <cstdint>
 #include <atomic>
 
@@ -13,7 +13,6 @@ inline const uint8_t CLAMP_PORT = 'a';
 inline const uint8_t LEFT_LIMIT_SWITCH_PORT = 'c';
 inline const uint8_t RIGHT_LIMIT_SWITCH_PORT = 'd';
 
-inline const ez::PID LADY_BROWN_PID(0.65, 0, 0.0);
 inline const pros::Rotation LADY_BROWN_ROTATION(-21);
 
 inline std::atomic<bool> is_auto_clamp_enabled(true);

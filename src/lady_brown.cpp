@@ -15,18 +15,18 @@ int StratusQuo::Lady_Brown::move(int8_t voltage)
 
 int StratusQuo::Lady_Brown::move_to(int position)
 {
+    /*
     _pid.target_set(position);
-    while (_pid.exit_condition({_motor}, false) == ez::RUNNING)
-    {
-        _motor.move(_pid.compute(_rotation.get_position()));
-        pros::delay(ez::util::DELAY_TIME);
-    }
+    pid_wait();
+    */
+    _motor.move_absolute(position, 2000);
     return 0;
 }
 
 int StratusQuo::Lady_Brown::tare_position()
 {
     _rotation.reset_position();
+    _motor.tare_position();
     return 0;
 }
 

@@ -9,6 +9,8 @@ namespace StratusQuo
         LOADING = 100,
         SCORING = 3000
     } LB_POSITION;
+
+    inline const ez::PID LADY_BROWN_PID{0.04, 0, .1, 0, "Lift"};;
     class Lady_Brown
     {
         public:

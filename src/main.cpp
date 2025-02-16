@@ -1,11 +1,13 @@
 #include "main.h"
 #include "lady_brown.hpp"
+#include "pros/misc.h"
 #include "robodash.hpp"
 #include "subsystems.hpp"
 
 bool is_position_based = false;
 bool L1_is_pressed = false;
 bool L2_is_pressed = false;
+bool DOWN_is_pressed = false;
 int lady_brown_speed = 0;
 std::atomic<bool> set_clamp = false;
 
@@ -27,26 +29,7 @@ pros::Task limit_switch_task([]() {
   }
 });
 
-pros::Task lady_brown_task([](){
-  pros::delay(2000);
-  int current_position = 0;
-  while(true)
-  {
-    if(is_position_based)
-    {
-      StratusQuo::lady_brown.move(StratusQuo::lady_brown.compute(StratusQuo::lady_brown.get_position() / 100)); // Divide by 100 because reads in centidegrees
-    }
-    else
-    {
-      if(L1_is_pressed) StratusQuo::lady_brown.move(127);
-      else if(L2_is_pressed) StratusQuo::lady_brown.move(-127);
-      else StratusQuo::lady_brown.brake();
-    }
-    pros::delay(50);
-  }
-});
-
-
+/*
 pros::Task screen_task([]() {
   pros::delay(2000);
   while(true)
@@ -57,6 +40,7 @@ pros::Task screen_task([]() {
     console.clear();
   }
 });
+*/
 
 void initialize() {
   pros::delay(500);
@@ -116,9 +100,10 @@ void opcontrol() {
   StratusQuo::chassis.drive_brake_set(MOTOR_BRAKE_COAST);
 
   while (true) {
-    if(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)) is_position_based = !is_position_based;
+    if(/*master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)*/ false) is_position_based = !is_position_based;
     L1_is_pressed = master.get_digital(pros::E_CONTROLLER_DIGITAL_L1);
     L2_is_pressed = master.get_digital(pros::E_CONTROLLER_DIGITAL_L2);
+    DOWN_is_pressed = master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN);
     pid_tuner();
 
     StratusQuo::chassis.opcontrol_tank();
@@ -128,7 +113,8 @@ void opcontrol() {
     
     if(!is_position_based)
     {
-      if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) StratusQuo::lady_brown.move(127);
+      if(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)) StratusQuo::lady_brown.move_to(1000);
+      else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) StratusQuo::lady_brown.move(127);
       else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) StratusQuo::lady_brown.move(-127);
       else StratusQuo::lady_brown.brake();
     }

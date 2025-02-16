@@ -13,7 +13,7 @@ namespace StratusQuo
     inline ez::Drive chassis(
     {-4, -7, 18},
     {1, 2, -3},
-    7,
+    20,
     2.75,
     450);
 
