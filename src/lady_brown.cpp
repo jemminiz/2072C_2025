@@ -14,6 +14,12 @@ int StratusQuo::Lady_Brown::move(int8_t voltage)
     return 0;
 }
 
+int StratusQuo::Lady_Brown::move_to(double position)
+{
+    _motor.move_absolute(position, 100);
+    return 0;
+}
+
 int StratusQuo::Lady_Brown::compute_error(double error, double current)
 {
     return _pid.compute_error(error, current);
@@ -39,7 +45,7 @@ double StratusQuo::Lady_Brown::compute(double current)
 
 double StratusQuo::Lady_Brown::get_position()
 {
-    return _rotation.get_position();
+    return _motor.get_position();
 }
 
 ez::exit_output StratusQuo::Lady_Brown::get_exit_condition()

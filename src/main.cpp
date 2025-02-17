@@ -34,17 +34,11 @@ pros::Task lady_brown_task([]() {
   while(true)
   {
     double currPose = StratusQuo::lady_brown.get_position()/100.0;
-    if(L1_is_pressed)
+    if(DOWN_is_pressed)
     {
-      while(StratusQuo::lady_brown.get_exit_condition() == ez::RUNNING)
-      {
-        double power = StratusQuo::lady_brown.compute_error(StratusQuo::LB_POSITION::LOADING - currPose, currPose);
-        StratusQuo::lady_brown.move(power);
-        currPose = StratusQuo::lady_brown.get_position();
-        pros::delay(10);
-      }
+      StratusQuo::lady_brown.move_to(StratusQuo::LB_POSITIONS[1]);
     }
-    else if(DOWN_is_pressed)
+    else if(L1_is_pressed)
     {
       StratusQuo::lady_brown.move(127);
     }
@@ -134,7 +128,7 @@ void opcontrol() {
     if(/*master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)*/ false) is_position_based = !is_position_based;
     L1_is_pressed = master.get_digital(pros::E_CONTROLLER_DIGITAL_L1);
     L2_is_pressed = master.get_digital(pros::E_CONTROLLER_DIGITAL_L2);
-    DOWN_is_pressed = master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN);
+    DOWN_is_pressed = master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN);
     pid_tuner();
 
     StratusQuo::chassis.opcontrol_tank();

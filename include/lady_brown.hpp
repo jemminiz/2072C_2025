@@ -2,16 +2,12 @@
 #include "EZ-Template/api.hpp" // IWYU pragma: keep
 #include "EZ-Template/util.hpp"
 #include "pros/motors.hpp"
+#include <vector>
 namespace StratusQuo
 {
-    typedef enum 
-    {
-        DOWN = 0,
-        LOADING = 1000,
-        SCORING = 3000
-    } LB_POSITION;
+    inline std::vector<double> LB_POSITIONS({0, 0.2275, 1});
 
-    inline ez::PID LADY_BROWN_PID{1, 0, 12.5, 10, "Lift"};;
+    inline ez::PID LADY_BROWN_PID{.5, 0, 12.5, 10, "Lift"};
     class Lady_Brown
     {
         public:
@@ -34,7 +30,6 @@ namespace StratusQuo
             int compute_error(double error, double current);
             ez::exit_output get_exit_condition();
         private:
-            int _position = DOWN;
             pros::Motor _motor;
             pros::Rotation _rotation;
             ez::PID _pid;
