@@ -34,17 +34,17 @@ pros::Task lady_brown_task([]() {
   while(true)
   {
     double currPose = StratusQuo::lady_brown.get_position()/100.0;
-    if(DOWN_is_pressed)
+    if(L1_is_pressed)
     {
       while(StratusQuo::lady_brown.get_exit_condition() == ez::RUNNING)
       {
         double power = StratusQuo::lady_brown.compute_error(StratusQuo::LB_POSITION::LOADING - currPose, currPose);
         StratusQuo::lady_brown.move(power);
         currPose = StratusQuo::lady_brown.get_position();
-        pros::delay(20);
+        pros::delay(10);
       }
     }
-    else if(L1_is_pressed)
+    else if(DOWN_is_pressed)
     {
       StratusQuo::lady_brown.move(127);
     }
@@ -82,6 +82,8 @@ void initialize() {
 
   StratusQuo::lady_brown.tare_position();
   StratusQuo::lady_brown.set_exit_conditions(80, 50, 300, 150, 500, 500);
+
+  StratusQuo::chassis.pid_tuner_pids.push_back({"Lift", &StratusQuo::LADY_BROWN_PID.constants});
 
   StratusQuo::chassis.drive_imu_calibrate(false);
   StratusQuo::chassis.drive_sensor_reset();

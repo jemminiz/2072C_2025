@@ -7,11 +7,11 @@ namespace StratusQuo
     typedef enum 
     {
         DOWN = 0,
-        LOADING = 100,
+        LOADING = 1000,
         SCORING = 3000
     } LB_POSITION;
 
-    inline const ez::PID LADY_BROWN_PID{2.2, 0, .1, 0, "Lift"};;
+    inline ez::PID LADY_BROWN_PID{1, 0, 12.5, 10, "Lift"};;
     class Lady_Brown
     {
         public:
