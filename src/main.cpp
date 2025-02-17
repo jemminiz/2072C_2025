@@ -36,9 +36,9 @@ pros::Task lady_brown_task([]() {
     double currPose = StratusQuo::lady_brown.get_position()/100.0;
     if(DOWN_is_pressed)
     {
-      while(static_cast<double>(StratusQuo::LB_POSITION::LOADING) - currPose != 0)
+      while(StratusQuo::LB_POSITION::LOADING - currPose != 0)
       {
-        double power = StratusQuo::lady_brown.compute_error(static_cast<double>(StratusQuo::LB_POSITION::LOADING) - currPose, currPose);
+        double power = StratusQuo::lady_brown.compute_error(StratusQuo::LB_POSITION::LOADING - currPose, currPose);
         StratusQuo::lady_brown.move(power);
         pros::delay(2);
       }
