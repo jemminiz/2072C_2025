@@ -42,6 +42,11 @@ double StratusQuo::Lady_Brown::get_position()
     return _rotation.get_position();
 }
 
+ez::exit_output StratusQuo::Lady_Brown::get_exit_condition()
+{
+    return _pid.exit_condition();
+}
+
 double StratusQuo::Lady_Brown::get_voltage()
 {
     return _motor.get_voltage();

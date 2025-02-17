@@ -1,5 +1,6 @@
 #pragma once
 #include "EZ-Template/api.hpp" // IWYU pragma: keep
+#include "EZ-Template/util.hpp"
 #include "pros/motors.hpp"
 namespace StratusQuo
 {
@@ -10,7 +11,7 @@ namespace StratusQuo
         SCORING = 3000
     } LB_POSITION;
 
-    inline const ez::PID LADY_BROWN_PID{0.04, 0, .1, 0, "Lift"};;
+    inline const ez::PID LADY_BROWN_PID{2.2, 0, .1, 0, "Lift"};;
     class Lady_Brown
     {
         public:
@@ -31,6 +32,7 @@ namespace StratusQuo
             void target_set(double target);
             double get_voltage();
             int compute_error(double error, double current);
+            ez::exit_output get_exit_condition();
         private:
             int _position = DOWN;
             pros::Motor _motor;

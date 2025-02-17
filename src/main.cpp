@@ -36,11 +36,11 @@ pros::Task lady_brown_task([]() {
     double currPose = StratusQuo::lady_brown.get_position()/100.0;
     if(DOWN_is_pressed)
     {
-      while(StratusQuo::LB_POSITION::LOADING - currPose != 0)
+      while(StratusQuo::lady_brown.get_exit_condition() == ez::RUNNING)
       {
         double power = StratusQuo::lady_brown.compute_error(StratusQuo::LB_POSITION::LOADING - currPose, currPose);
         StratusQuo::lady_brown.move(power);
-        pros::delay(2);
+        pros::delay(20);
       }
     }
     else if(L1_is_pressed)
