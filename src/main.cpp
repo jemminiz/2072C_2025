@@ -29,18 +29,46 @@ pros::Task limit_switch_task([]() {
   }
 });
 
-/*
+pros::Task lady_brown_task([]() {
+  pros::delay(2000);
+  while(true)
+  {
+    double currPose = StratusQuo::lady_brown.get_position()/100.0;
+    if(DOWN_is_pressed)
+    {
+      while(static_cast<double>(StratusQuo::LB_POSITION::LOADING) - currPose != 0)
+      {
+        double power = StratusQuo::lady_brown.compute_error(static_cast<double>(StratusQuo::LB_POSITION::LOADING) - currPose, currPose);
+        StratusQuo::lady_brown.move(power);
+        pros::delay(2);
+      }
+    }
+    else if(L1_is_pressed)
+    {
+      StratusQuo::lady_brown.move(127);
+    }
+    else if(L2_is_pressed)
+    {
+      StratusQuo::lady_brown.move(-127);
+    }
+    else StratusQuo::lady_brown.brake();
+    
+    pros::delay(20);
+  }
+});
+
 pros::Task screen_task([]() {
   pros::delay(2000);
   while(true)
   {
     console.focus();
-    console.print(std::to_string(StratusQuo::lady_brown.get_position()));
+    console.println(std::to_string(StratusQuo::lady_brown.get_voltage()));
+    console.println(std::to_string(StratusQuo::lady_brown.get_position()));
+    console.print(std::to_string(StratusQuo::lady_brown.get_target_position()));
     pros::delay(75);
     console.clear();
   }
 });
-*/
 
 void initialize() {
   pros::delay(500);
@@ -110,20 +138,6 @@ void opcontrol() {
     if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) StratusQuo::intake.move(127);
     else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) StratusQuo::intake.move(-127);
     else StratusQuo::intake.brake();
-    
-    if(!is_position_based)
-    {
-      if(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)) StratusQuo::lady_brown.move_to(1000);
-      else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) StratusQuo::lady_brown.move(127);
-      else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) StratusQuo::lady_brown.move(-127);
-      else StratusQuo::lady_brown.brake();
-    }
-    else
-    {
-      if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) StratusQuo::lady_brown.target_set(StratusQuo::LOADING);
-      else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) StratusQuo::lady_brown.target_set(StratusQuo::SCORING);
-      else StratusQuo::lady_brown.target_set(StratusQuo::DOWN);
-    }
 
     if(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT))
     {

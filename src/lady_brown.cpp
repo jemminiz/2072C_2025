@@ -1,8 +1,9 @@
 #include "lady_brown.hpp"
 #include "EZ-Template/util.hpp"
+#include "pros/abstract_motor.hpp"
 #include "pros/motors.h"
 
-StratusQuo::Lady_Brown::Lady_Brown(const int port, const ez::PID pid, const pros::Rotation rotation) : _motor(port), _pid(pid), _rotation(rotation)
+StratusQuo::Lady_Brown::Lady_Brown(const int port, const ez::PID pid, const pros::Rotation rotation) : _motor(port, pros::MotorGearset::green, pros::MotorUnits::rotations), _pid(pid), _rotation(rotation)
 {
     _motor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 };
@@ -13,14 +14,9 @@ int StratusQuo::Lady_Brown::move(int8_t voltage)
     return 0;
 }
 
-int StratusQuo::Lady_Brown::move_to(int position)
+int StratusQuo::Lady_Brown::compute_error(double error, double current)
 {
-    /*
-    _pid.target_set(position);
-    pid_wait();
-    */
-    _motor.move_absolute(position, 2000);
-    return 0;
+    return _pid.compute_error(error, current);
 }
 
 int StratusQuo::Lady_Brown::tare_position()
@@ -43,7 +39,12 @@ double StratusQuo::Lady_Brown::compute(double current)
 
 double StratusQuo::Lady_Brown::get_position()
 {
-    return _rotation.get_position() / (36.0/12);
+    return _rotation.get_position();
+}
+
+double StratusQuo::Lady_Brown::get_voltage()
+{
+    return _motor.get_voltage();
 }
 
 void StratusQuo::Lady_Brown::pid_wait()
@@ -56,7 +57,12 @@ void StratusQuo::Lady_Brown::set_exit_conditions(double small_error_time, double
     _pid.exit_condition_set(small_error_time, small_error, big_error_time, big_error, velocity_exit_time, mA_timeout);
 }
 
-void StratusQuo::Lady_Brown::target_set(int target)
+void StratusQuo::Lady_Brown::target_set(double target)
 {
     _pid.target_set(target);
+}
+
+double StratusQuo::Lady_Brown::get_target_position()
+{
+    return _motor.get_target_position();
 }
