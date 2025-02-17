@@ -40,6 +40,7 @@ pros::Task lady_brown_task([]() {
       {
         double power = StratusQuo::lady_brown.compute_error(StratusQuo::LB_POSITION::LOADING - currPose, currPose);
         StratusQuo::lady_brown.move(power);
+        currPose = StratusQuo::lady_brown.get_position();
         pros::delay(20);
       }
     }
