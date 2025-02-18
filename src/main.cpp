@@ -24,11 +24,10 @@ pros::Task limit_switch_task([]() {
         (StratusQuo::left_limit_switch.get_value() && StratusQuo::right_limit_switch.get_new_press())) && is_auto_clamp_enabled.load())
     {
       set_clamp.store(true);
-      changed = true;
     }
     StratusQuo::clamp.set(set_clamp.load());
-    if(changed) pros::delay(1000);
-    changed = false;
+    if(set_clamp.load() != changed) pros::delay(1000);
+    changed = set_clamp.load();
     pros::delay(50);
   }
 });
