@@ -5,10 +5,14 @@
 #include "subsystems.hpp"
 
 bool is_position_based = false;
+bool color_sort_is_enabled = true;
 bool L1_is_pressed = false;
 bool L2_is_pressed = false;
+bool R1_is_pressed = false;
+bool R2_is_pressed = false;
 bool DOWN_is_pressed = false;
 int lady_brown_speed = 0;
+
 std::atomic<bool> set_clamp = false;
 
 pros::Task limit_switch_task([]() {
@@ -26,6 +30,35 @@ pros::Task limit_switch_task([]() {
     if(changed) pros::delay(1000);
     changed = false;
     pros::delay(50);
+  }
+});
+
+pros::Task intake_task([]() {
+  pros::delay(2000);
+  while(true)
+  {
+    // Color sort
+    if(color_sort_is_enabled)
+    {
+      StratusQuo::optical.set_integration_time(5);
+      StratusQuo::optical.set_led_pwm(100);
+
+      auto color = StratusQuo::optical.get_hue();
+      if(is_red_team.load() && color > 190 && color < 250)
+      {
+        StratusQuo::intake.move_hooks(-127);
+        pros::delay(500);
+      }
+      if(!is_red_team.load() && color < 10)
+      {
+        StratusQuo::intake.move_hooks(-127);
+        pros::delay(500);
+      }
+    }
+
+    StratusQuo::intake.move_hooks(hook_voltage.load());
+    StratusQuo::intake.move_rollers(roller_voltage.load());
+    pros::delay(20);
   }
 });
 
@@ -48,7 +81,7 @@ pros::Task lady_brown_task([]() {
     }
     else StratusQuo::lady_brown.brake();
     
-    pros::delay(20);
+    pros::delay(50);
   }
 });
 
@@ -57,9 +90,7 @@ pros::Task screen_task([]() {
   while(true)
   {
     console.focus();
-    console.println(std::to_string(StratusQuo::lady_brown.get_voltage()));
-    console.println(std::to_string(StratusQuo::lady_brown.get_position()));
-    console.print(std::to_string(StratusQuo::lady_brown.get_target_position()));
+    console.println(std::to_string(StratusQuo::optical.get_hue()));
     pros::delay(75);
     console.clear();
   }
@@ -128,13 +159,15 @@ void opcontrol() {
     if(/*master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)*/ false) is_position_based = !is_position_based;
     L1_is_pressed = master.get_digital(pros::E_CONTROLLER_DIGITAL_L1);
     L2_is_pressed = master.get_digital(pros::E_CONTROLLER_DIGITAL_L2);
+    R1_is_pressed = master.get_digital(pros::E_CONTROLLER_DIGITAL_R1);
+    R2_is_pressed = master.get_digital(pros::E_CONTROLLER_DIGITAL_R2);
     DOWN_is_pressed = master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN);
     pid_tuner();
 
     StratusQuo::chassis.opcontrol_tank();
-    if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) StratusQuo::intake.move(127);
-    else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) StratusQuo::intake.move(-127);
-    else StratusQuo::intake.brake();
+    if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) set_intake(127);
+    else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) set_intake(-127);
+    else set_intake(0);
 
     if(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT))
     {

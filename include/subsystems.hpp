@@ -22,4 +22,5 @@ namespace StratusQuo
     inline Lady_Brown lady_brown(LADY_BROWN_PORT, LADY_BROWN_PID, LADY_BROWN_ROTATION);
     inline pros::adi::DigitalIn left_limit_switch(LEFT_LIMIT_SWITCH_PORT);
     inline pros::adi::DigitalIn right_limit_switch(RIGHT_LIMIT_SWITCH_PORT);
+    inline pros::Optical optical(6);
 }
