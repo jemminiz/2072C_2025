@@ -1,6 +1,6 @@
 #pragma once
 #include "autons.hpp"
-#include "robodash/api.h"
+#include "robodash/api.h" // IWYU pragma: keep
 
 inline rd::Selector auton_selector({
     {"Drive Example", drive_example},
