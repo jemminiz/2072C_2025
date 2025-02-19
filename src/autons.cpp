@@ -1,5 +1,6 @@
 #include "autons.hpp"
 #include "EZ-Template/util.hpp"
+#include "lady_brown.hpp"
 #include "main.h" // IWYU pragma: keep
 #include "subsystems.hpp"
 
@@ -413,9 +414,12 @@ void StratusQuo::blue_ring_side()
   chassis.pid_drive_set(48_in, 110);
   intake.toggle_piston();
   set_hooks(0);
+  lady_brown.move_to(LB_POSITIONS[1]);
+  while (!((lady_brown.get_position() < LB_POSITIONS[1] + 0.05) && (lady_brown.get_position() > LB_POSITIONS[1] - 0.05))) {
+    pros::delay(2);
+  }
   chassis.pid_wait();
   set_hooks(127);
-  lady_brown.move_to(LB_POSITIONS[1]);
   intake.toggle_piston();
 }
 
