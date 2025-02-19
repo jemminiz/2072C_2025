@@ -65,9 +65,9 @@ pros::Task screen_task([]() {
   while(true)
   {
     //console.focus();
-    console.println(std::to_string(StratusQuo::lady_brown.get_position()));
+    debug.println(std::to_string(StratusQuo::lady_brown.get_position()));
     pros::delay(75);
-    console.clear();
+    debug.clear();
   }
 });
 
