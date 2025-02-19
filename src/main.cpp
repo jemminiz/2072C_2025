@@ -60,29 +60,6 @@ pros::Task intake_task([]() {
   }
 });
 
-pros::Task lady_brown_task([]() {
-  pros::delay(2000);
-  while(true)
-  {
-    double currPose = StratusQuo::lady_brown.get_position()/100.0;
-    if(DOWN_is_pressed)
-    {
-      StratusQuo::lady_brown.move_to(1);
-    }
-    else if(L1_is_pressed)
-    {
-      StratusQuo::lady_brown.move(127);
-    }
-    else if(L2_is_pressed)
-    {
-      StratusQuo::lady_brown.move(-127);
-    }
-    else StratusQuo::lady_brown.brake();
-    
-    pros::delay(50);
-  }
-});
-
 pros::Task screen_task([]() {
   pros::delay(2000);
   while(true)
@@ -127,7 +104,10 @@ void autonomous() {
   StratusQuo::chassis.drive_brake_set(MOTOR_BRAKE_HOLD);
 
   if(auton_selector.get_auton()) auton_selector.run_auton();
-  else StratusQuo::blue_ring_side(); //StratusQuo::chassis.pid_drive_set(-6_in, 110); 
+  else 
+  {
+    StratusQuo::lady_brown.move_to(StratusQuo::LB_POSITIONS[1]);//StratusQuo::blue_ring_side(); //StratusQuo::chassis.pid_drive_set(-6_in, 110); 
+  }
 }
 
 void pid_tuner() {
@@ -175,6 +155,23 @@ void opcontrol() {
     if(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A))
     {
       StratusQuo::doinker.set(!StratusQuo::doinker.get());
+    }
+
+    if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1))
+    {
+      StratusQuo::lady_brown.move(127);
+    }
+    else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L2))
+    {
+      StratusQuo::lady_brown.move(-127);
+    }
+    else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN))
+    {
+      StratusQuo::lady_brown.move_to(StratusQuo::LB_POSITIONS[1]);
+    }
+    else 
+    {
+      StratusQuo::lady_brown.brake();
     }
     pros::delay(ez::util::DELAY_TIME);  // This is used for timer calculations!  Keep this ez::util::DELAY_TIME
   }

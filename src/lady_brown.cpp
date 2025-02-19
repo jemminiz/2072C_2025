@@ -2,6 +2,7 @@
 #include "EZ-Template/util.hpp"
 #include "pros/abstract_motor.hpp"
 #include "pros/motors.h"
+#include "robodash.hpp"
 
 StratusQuo::Lady_Brown::Lady_Brown(const int port, const ez::PID pid, const pros::Rotation rotation) : _motor(port, pros::MotorGearset::green, pros::MotorUnits::rotations), _pid(pid), _rotation(rotation)
 {
@@ -16,15 +17,7 @@ int StratusQuo::Lady_Brown::move(int8_t voltage)
 
 int StratusQuo::Lady_Brown::move_to(double position)
 {
-    pros::Task lb_pos_task([this, &position]() {
-        double curr = get_position();
-        while(curr > position + 0.01 || curr < position - 0.01)
-        {
-            _motor.move_absolute(position, 127);
-            curr = get_position();
-        }
-        brake();
-    });
+    _motor.move_absolute(position, 200);
     return 0;
 }
 
