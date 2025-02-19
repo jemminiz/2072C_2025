@@ -1,4 +1,7 @@
+#include "autons.hpp"
+#include "EZ-Template/util.hpp"
 #include "main.h" // IWYU pragma: keep
+#include "subsystems.hpp"
 
 /////
 // For installation, upgrading, documentations, and tutorials, check out our website!
@@ -15,9 +18,9 @@ const int SWING_SPEED = 110;
 ///
 void default_constants() {
   // P, I, D, and Start I
-  StratusQuo::chassis.pid_drive_constants_set(20.0, 0.0, 100.0);         // Fwd/rev constants, used for odom and non odom motions
-  StratusQuo::chassis.pid_heading_constants_set(11.0, 0.0, 20.0);        // Holds the robot straight while going forward without odom
-  StratusQuo::chassis.pid_turn_constants_set(3.0, 0.05, 20.0, 15.0);     // Turn in place constants
+  StratusQuo::chassis.pid_drive_constants_set(24.0, 0.0, 100.0);         // Fwd/rev constants, used for odom and non odom motions
+  StratusQuo::chassis.pid_heading_constants_set(3.0, 0.0, 20.0);        // Holds the robot straight while going forward without odom
+  StratusQuo::chassis.pid_turn_constants_set(4.4, 0.05, 20.0, 15.0);     // Turn in place constants
   StratusQuo::chassis.pid_swing_constants_set(6.0, 0.0, 65.0);           // Swing constants
   StratusQuo::chassis.pid_odom_angular_constants_set(6.5, 0.0, 52.5);    // Angular control for odom motions
   StratusQuo::chassis.pid_odom_boomerang_constants_set(5.8, 0.0, 32.5);  // Angular control for boomerang motions
@@ -334,7 +337,7 @@ void measure_offsets() {
     StratusQuo::chassis.pid_targets_reset();
     StratusQuo::chassis.drive_imu_reset();
     StratusQuo::chassis.drive_sensor_reset();
-    StratusQuo::chassis.drive_brake_set(MOTOR_BRAKE_HOLD);
+    StratusQuo::chassis.drive_brake_set(pros::E_MOTOR_BRAKE_HOLD);
     StratusQuo::chassis.odom_xyt_set(0_in, 0_in, 0_deg);
     double imu_start = StratusQuo::chassis.odom_theta_get();
     double target = i % 2 == 0 ? 90 : 270;  // Switch the turn target every run from 270 to 90
@@ -376,3 +379,55 @@ void measure_offsets() {
 // . . .
 // Make your own autonomous functions here!
 // . . .
+
+void StratusQuo::blue_ring_side()
+{
+  using namespace StratusQuo;
+  is_red_team.store(false);
+  chassis.drive_angle_set(180);
+  chassis.pid_drive_set(-20_in, 110);
+  chassis.pid_wait_quick();
+  chassis.pid_drive_set(-8_in, 40);
+  chassis.pid_wait();
+  set_clamp.store(true);
+  pros::delay(200);
+  chassis.pid_turn_set(45_deg, 80);
+  chassis.pid_wait();
+  set_intake(127);
+  chassis.pid_drive_set(22_in, 110);
+  chassis.pid_wait();
+  chassis.pid_swing_set(ez::LEFT_SWING, 90_deg, 90);
+  chassis.pid_wait();
+  chassis.pid_drive_set(8_in, 110);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-8_in, 110);
+  chassis.pid_wait();
+  chassis.pid_swing_set(ez::LEFT_SWING, 180_deg, 90);
+  chassis.pid_wait();
+  chassis.pid_drive_set(24_in, 110);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-12_in, 70);
+  chassis.pid_wait();
+  chassis.pid_turn_set(247_deg, 60);
+  chassis.pid_wait();
+  chassis.pid_drive_set(48_in, 110);
+  intake.toggle_piston();
+  set_hooks(0);
+  chassis.pid_wait();
+  set_hooks(127);
+  lady_brown.move_to(LB_POSITIONS[1]);
+  intake.toggle_piston();
+}
+
+void StratusQuo::skills()
+{
+  using namespace StratusQuo;
+  is_red_team.store(true);
+  lady_brown.move_to(2);
+  /*
+  chassis.pid_drive_set(-12_in, 110);
+  chassis.pid_wait();
+  set_clamp.store(true);
+  intake.move_hooks(-127);*/
+
+}

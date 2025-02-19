@@ -16,7 +16,15 @@ int StratusQuo::Lady_Brown::move(int8_t voltage)
 
 int StratusQuo::Lady_Brown::move_to(double position)
 {
-    _motor.move_absolute(position, 100);
+    pros::Task lb_pos_task([this, &position]() {
+        double curr = get_position();
+        while(curr > position + 0.01 || curr < position - 0.01)
+        {
+            _motor.move_absolute(position, 127);
+            curr = get_position();
+        }
+        brake();
+    });
     return 0;
 }
 

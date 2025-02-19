@@ -16,3 +16,13 @@ void odom_pure_pursuit_wait_until_example();
 void odom_boomerang_example();
 void odom_boomerang_injected_pure_pursuit_example();
 void measure_offsets();
+
+namespace StratusQuo
+{
+    void red_ring_side();
+    void blue_ring_side();
+    void red_goal_rush();
+    void blue_goal_rush();
+
+    void skills();
+}

@@ -14,3 +14,4 @@ namespace StratusQuo
             ez::Piston _clamp_piston;
     };
 }
+inline std::atomic<bool> set_clamp = false;

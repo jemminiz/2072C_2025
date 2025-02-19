@@ -1,7 +1,9 @@
 #pragma once
+#include "autons.hpp"
 #include "robodash/api.h"
 
 inline rd::Selector auton_selector({
-    {"First auto", [](){}}
+    {"Drive Example", drive_example},
+    {"Turn Example", turn_example}
 });
 inline rd::Console console("Debug");

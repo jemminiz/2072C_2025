@@ -1,4 +1,5 @@
 #include "main.h"
+#include "autons.hpp"
 #include "lady_brown.hpp"
 #include "pros/misc.h"
 #include "robodash.hpp"
@@ -12,8 +13,6 @@ bool R1_is_pressed = false;
 bool R2_is_pressed = false;
 bool DOWN_is_pressed = false;
 int lady_brown_speed = 0;
-
-std::atomic<bool> set_clamp = false;
 
 pros::Task limit_switch_task([]() {
   pros::delay(2000);
@@ -68,7 +67,7 @@ pros::Task lady_brown_task([]() {
     double currPose = StratusQuo::lady_brown.get_position()/100.0;
     if(DOWN_is_pressed)
     {
-      StratusQuo::lady_brown.move_to(StratusQuo::LB_POSITIONS[1]);
+      StratusQuo::lady_brown.move_to(1);
     }
     else if(L1_is_pressed)
     {
@@ -88,8 +87,8 @@ pros::Task screen_task([]() {
   pros::delay(2000);
   while(true)
   {
-    console.focus();
-    console.println(std::to_string(StratusQuo::optical.get_hue()));
+    //console.focus();
+    console.println(std::to_string(StratusQuo::lady_brown.get_position()));
     pros::delay(75);
     console.clear();
   }
@@ -128,7 +127,7 @@ void autonomous() {
   StratusQuo::chassis.drive_brake_set(MOTOR_BRAKE_HOLD);
 
   if(auton_selector.get_auton()) auton_selector.run_auton();
-  else StratusQuo::chassis.pid_drive_set(-6_in, 110);
+  else StratusQuo::blue_ring_side(); //StratusQuo::chassis.pid_drive_set(-6_in, 110); 
 }
 
 void pid_tuner() {
@@ -136,7 +135,7 @@ void pid_tuner() {
     if (master.get_digital_new_press(DIGITAL_X))
       StratusQuo::chassis.pid_tuner_toggle();
 
-    if (master.get_digital(DIGITAL_B) && master.get_digital(DIGITAL_DOWN)) {
+    if (master.get_digital(DIGITAL_B)) {
       pros::motor_brake_mode_e_t preference = StratusQuo::chassis.drive_brake_get();
       autonomous();
       StratusQuo::chassis.drive_brake_set(preference);
@@ -173,6 +172,10 @@ void opcontrol() {
       set_clamp.store(!StratusQuo::clamp.get_state());
     }
 
+    if(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A))
+    {
+      StratusQuo::doinker.set(!StratusQuo::doinker.get());
+    }
     pros::delay(ez::util::DELAY_TIME);  // This is used for timer calculations!  Keep this ez::util::DELAY_TIME
   }
 }
