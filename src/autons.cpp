@@ -1,5 +1,6 @@
 #include "autons.hpp"
 #include "EZ-Template/util.hpp"
+#include "intake.hpp"
 #include "lady_brown.hpp"
 #include "main.h" // IWYU pragma: keep
 #include "subsystems.hpp"
@@ -395,7 +396,7 @@ void StratusQuo::blue_ring_side()
   chassis.pid_turn_set(45_deg, 80);
   chassis.pid_wait();
   set_intake(127);
-  chassis.pid_drive_set(22_in, 110);
+  chassis.pid_drive_set(19.85_in, 110);
   chassis.pid_wait();
   chassis.pid_swing_set(ez::LEFT_SWING, 90_deg, 90);
   chassis.pid_wait();
@@ -404,14 +405,10 @@ void StratusQuo::blue_ring_side()
   chassis.pid_drive_set(-8_in, 110);
   chassis.pid_wait();
   chassis.pid_swing_set(ez::LEFT_SWING, 180_deg, 90);
+  chassis.pid_wait_quick();
+  chassis.pid_swing_set(ez::LEFT_SWING, 247_deg, 70, 25);
   chassis.pid_wait();
-  chassis.pid_drive_set(24_in, 110);
-  chassis.pid_wait();
-  chassis.pid_drive_set(-12_in, 70);
-  chassis.pid_wait();
-  chassis.pid_turn_set(247_deg, 60);
-  chassis.pid_wait();
-  chassis.pid_drive_set(48_in, 110);
+  chassis.pid_drive_set(36_in, 110);
   intake.toggle_piston();
   set_hooks(0);
   lady_brown.move_to(LB_POSITIONS[1]);
@@ -421,17 +418,156 @@ void StratusQuo::blue_ring_side()
   chassis.pid_wait();
   set_hooks(127);
   intake.toggle_piston();
+  chassis.pid_drive_set(-3_in, 40);
+  chassis.pid_wait();
+  chassis.pid_drive_set(6_in, 110);
+  chassis.pid_wait();
+  chassis.pid_swing_set(ez::RIGHT_SWING, 180_deg, 90);
+  chassis.pid_wait();
+  set_intake(0);
+  chassis.pid_drive_set(4_in, 110);
+  chassis.pid_wait();
+  pros::delay(500);
+  lady_brown.move_to(LB_POSITIONS[2]);
+  while (!((lady_brown.get_position() < LB_POSITIONS[2] + 5) && (lady_brown.get_position() > LB_POSITIONS[2] - 5))) {
+    pros::delay(2);
+  }
+  chassis.pid_drive_set(-6_in, 110);
+  chassis.pid_wait_quick_chain();
+  lady_brown.move_to(360);
+  while (!((lady_brown.get_position() < 360 + 5) && (lady_brown.get_position() > 360 - 5))) {
+    pros::delay(2);
+  }
+  chassis.pid_turn_set(-5_deg, 110);
+  chassis.pid_wait_quick_chain();
+  chassis.pid_drive_set(12_in, 127);
+  pros::delay(75);
+  lady_brown.move(127);
+}
+
+void StratusQuo::red_ring_side()
+{
+  chassis.odom_theta_flip();
+  chassis.odom_x_flip();
+  blue_ring_side();
+}
+
+void StratusQuo::red_goal_rush()
+{
+  using namespace StratusQuo;
+  is_red_team = true;
+  color_sort_is_enabled = false;
+  lady_brown.set_position(90);
+  lady_brown.move_to(200);
+  chassis.pid_drive_set(42_in, 90);
+  lady_brown.move_to(720, 62);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-4_in, 90);
+  chassis.pid_wait();
+  chassis.pid_swing_set(ez::RIGHT_SWING, 75_deg, 70);
+  lady_brown.move_to(5, 200);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-8_in, 110);
+  chassis.pid_wait();
+  pros::delay(200);
+  set_clamp.store(true);
+  pros::delay(200);
+  chassis.pid_drive_set(27_in, 110);
+  set_intake(127);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-24_in, 110);
+  chassis.pid_wait();
+  chassis.pid_turn_set(-75_deg, 70);
+  chassis.pid_wait();
+  set_intake(0);
+  chassis.pid_drive_set(18_in, 80);
+  chassis.pid_wait();
+  right_doinker.set(!right_doinker.get());
+  pros::delay(300);
+  chassis.pid_swing_set(ez::LEFT_SWING, -45_deg, 80);
+  chassis.pid_wait();
+  left_doinker.set(!left_doinker.get());
+  pros::delay(500);
+  chassis.pid_drive_set(-48_in, 110);
+  chassis.pid_wait();
+  chassis.pid_drive_set(1_in, 40);
+  chassis.pid_wait();
+  left_doinker.set(!left_doinker.get());
+  right_doinker.set(!right_doinker.get());
+}
+
+void StratusQuo::blue_goal_rush()
+{
+  chassis.odom_theta_flip();
+  chassis.odom_x_flip();
+  red_goal_rush();
 }
 
 void StratusQuo::skills()
 {
   using namespace StratusQuo;
+  chassis.drive_angle_set(230_deg);
   is_red_team.store(true);
-  lady_brown.move_to(2);
-  /*
-  chassis.pid_drive_set(-12_in, 110);
+  lady_brown.set_position(90);
+  lady_brown.move_to(640);
+  while (!((lady_brown.get_position() < 640 + 5) && (lady_brown.get_position() > 640 - 5))) {
+    pros::delay(2);
+  }
+  chassis.pid_drive_set(-9_in, 110);
+  lady_brown.move_to(5);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-6_in, 50);
   chassis.pid_wait();
   set_clamp.store(true);
-  intake.move_hooks(-127);*/
+  pros::delay(200); // Clamp
 
+  set_hooks(-127);
+  chassis.pid_swing_set(ez::LEFT_SWING, 390_deg, 50); // Turn to angle
+  chassis.pid_wait();
+
+  set_intake(127);
+  chassis.pid_drive_set(56_in, 110);
+  chassis.pid_wait(); // Pick up first ring
+
+  lady_brown.move_to(70, 600);
+  while (!((lady_brown.get_position() < 70 + .5) && (lady_brown.get_position() > 70 - .5))) {
+    pros::delay(2);
+  } // LB up for wall stake ring
+
+  chassis.pid_drive_set(30_in, 110);
+  chassis.pid_wait();
+  set_intake(40); // Sets intake slower than max for lady brown loading
+  chassis.pid_drive_set(-36_in, 110);
+  chassis.pid_wait();
+  chassis.pid_turn_set(90_deg, 80);
+  chassis.pid_wait(); // Turn to wall stake
+
+  set_intake(0);
+  lady_brown.move_to(140);
+  while (!((lady_brown.get_position() < 140 + .5) && (lady_brown.get_position() > 140 - .5))) {
+    pros::delay(2);
+  }
+  chassis.pid_drive_set(18_in, 110);
+  set_rollers(127);
+  chassis.pid_wait();
+  lady_brown.move_to(600);
+  while (!((lady_brown.get_position() < 600 + 5) && (lady_brown.get_position() > 600 - 5))) {
+    pros::delay(2);
+  } // Score on wall stake
+
+  chassis.pid_drive_set(-30_in, 110);
+  lady_brown.move_to(5);
+  chassis.pid_turn_set(180_deg, 60);
+  chassis.pid_wait();
+  set_intake(127);
+  chassis.pid_drive_set(60_in, 110);
+  chassis.pid_wait();
+  chassis.pid_turn_set(45_deg, 80);
+  chassis.pid_wait();
+  chassis.pid_drive_set(18_in, 110);
+  chassis.pid_wait();
+  chassis.pid_turn_set(-15_deg, 80);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-12_in, 110);
+  chassis.pid_wait();
 }

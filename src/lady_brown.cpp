@@ -2,9 +2,8 @@
 #include "EZ-Template/util.hpp"
 #include "pros/abstract_motor.hpp"
 #include "pros/motors.h"
-#include "robodash.hpp"
 
-StratusQuo::Lady_Brown::Lady_Brown(const int port, const ez::PID pid, const pros::Rotation rotation) : _motor(port, pros::MotorGearset::green, pros::MotorUnits::rotations), _pid(pid), _rotation(rotation)
+StratusQuo::Lady_Brown::Lady_Brown(const int port, const ez::PID pid, const pros::Rotation rotation) : _motor(port, pros::MotorGearset::green, pros::MotorUnits::degrees), _pid(pid), _rotation(rotation)
 {
     _motor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 };
@@ -15,9 +14,9 @@ int StratusQuo::Lady_Brown::move(int8_t voltage)
     return 0;
 }
 
-int StratusQuo::Lady_Brown::move_to(double position)
+int StratusQuo::Lady_Brown::move_to(double position, double velocity)
 {
-    _motor.move_absolute(position, 200);
+    _motor.move_absolute(position, velocity);
     return 0;
 }
 
@@ -77,4 +76,9 @@ void StratusQuo::Lady_Brown::target_set(double target)
 double StratusQuo::Lady_Brown::get_target_position()
 {
     return _motor.get_target_position();
+}
+
+int StratusQuo::Lady_Brown::set_position(double pos)
+{
+    return _motor.set_zero_position(pos);
 }

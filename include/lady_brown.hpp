@@ -5,7 +5,7 @@
 #include <vector>
 namespace StratusQuo
 {
-    inline std::vector<double> LB_POSITIONS({0, 0.2275, 1});
+    inline std::vector<double> LB_POSITIONS({0, 66, 600});
 
     inline ez::PID LADY_BROWN_PID{.5, 0, 12.5, 10, "Lift"};
     class Lady_Brown
@@ -16,8 +16,9 @@ namespace StratusQuo
             Lady_Brown(int port, ez::PID pid);
             Lady_Brown(const int port, const ez::PID pid, const pros::Rotation rotation);
             int move(int8_t voltage);
-            int move_to(double position);
+            int move_to(double position, double velocity = 200);
             double get_position();
+            int set_position(double position);
             int tare_position();
             int brake();
             double compute(double current);

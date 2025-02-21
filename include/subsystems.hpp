@@ -24,5 +24,6 @@ namespace StratusQuo
     inline pros::adi::DigitalIn right_limit_switch(RIGHT_LIMIT_SWITCH_PORT);
     inline pros::Optical optical(6);
 
-    inline ez::Piston doinker(DOINKER_PORT);
+    inline ez::Piston right_doinker(DOINKER_PORT);
+    inline ez::Piston left_doinker(RIGHT_DOINKER_PORT);
 }

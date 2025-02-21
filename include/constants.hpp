@@ -13,6 +13,7 @@ inline const uint8_t CLAMP_PORT = 'a';
 inline const uint8_t LEFT_LIMIT_SWITCH_PORT = 'c';
 inline const uint8_t RIGHT_LIMIT_SWITCH_PORT = 'b';
 inline const uint8_t DOINKER_PORT = 'd';
+inline const uint8_t RIGHT_DOINKER_PORT = 'f';
 
 inline const pros::Rotation LADY_BROWN_ROTATION(-21);
 

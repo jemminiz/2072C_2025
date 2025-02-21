@@ -8,6 +8,7 @@
 inline std::atomic_int8_t roller_voltage = 0;
 inline std::atomic_int8_t hook_voltage = 0;
 inline std::atomic_bool is_red_team = false;
+inline bool color_sort_is_enabled = true;
 
 inline void set_intake(std::atomic_int8_t voltage)
 {

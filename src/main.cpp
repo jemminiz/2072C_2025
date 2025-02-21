@@ -6,7 +6,6 @@
 #include "subsystems.hpp"
 
 bool is_position_based = false;
-bool color_sort_is_enabled = true;
 bool L1_is_pressed = false;
 bool L2_is_pressed = false;
 bool R1_is_pressed = false;
@@ -53,6 +52,7 @@ pros::Task intake_task([]() {
         pros::delay(500);
       }
     }
+    else StratusQuo::optical.set_led_pwm(0);
 
     StratusQuo::intake.move_hooks(hook_voltage.load());
     StratusQuo::intake.move_rollers(roller_voltage.load());
@@ -64,7 +64,7 @@ pros::Task screen_task([]() {
   pros::delay(2000);
   while(true)
   {
-    //console.focus();
+    debug.focus();
     debug.println(std::to_string(StratusQuo::lady_brown.get_position()));
     pros::delay(75);
     debug.clear();
@@ -103,10 +103,12 @@ void autonomous() {
   StratusQuo::chassis.odom_xyt_set(0_in, 0_in, 0_deg);
   StratusQuo::chassis.drive_brake_set(MOTOR_BRAKE_HOLD);
 
+  color_sort_is_enabled = true;
+
   if(auton_selector.get_auton()) auton_selector.run_auton();
   else 
   {
-    StratusQuo::lady_brown.move_to(StratusQuo::LB_POSITIONS[1]);//StratusQuo::blue_ring_side(); //StratusQuo::chassis.pid_drive_set(-6_in, 110); 
+    StratusQuo::skills(); //StratusQuo::chassis.pid_drive_set(-6_in, 110); 
   }
 }
 
@@ -134,6 +136,7 @@ void opcontrol() {
   StratusQuo::chassis.drive_brake_set(MOTOR_BRAKE_COAST);
 
   while (true) {
+    color_sort_is_enabled = false;
     if(/*master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)*/ false) is_position_based = !is_position_based;
     L1_is_pressed = master.get_digital(pros::E_CONTROLLER_DIGITAL_L1);
     L2_is_pressed = master.get_digital(pros::E_CONTROLLER_DIGITAL_L2);
@@ -154,7 +157,7 @@ void opcontrol() {
 
     if(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A))
     {
-      StratusQuo::doinker.set(!StratusQuo::doinker.get());
+      StratusQuo::left_doinker.set(!StratusQuo::left_doinker.get());
     }
 
     if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1))
@@ -168,6 +171,10 @@ void opcontrol() {
     else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN))
     {
       StratusQuo::lady_brown.move_to(StratusQuo::LB_POSITIONS[1]);
+    }
+    else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_UP))
+    {
+      StratusQuo::lady_brown.move_to(5);
     }
     else 
     {
