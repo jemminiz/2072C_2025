@@ -64,7 +64,7 @@ pros::Task screen_task([]() {
   pros::delay(2000);
   while(true)
   {
-    debug.focus();
+    //debug.focus();
     debug.println(std::to_string(StratusQuo::lady_brown.get_position()));
     pros::delay(75);
     debug.clear();
@@ -108,7 +108,7 @@ void autonomous() {
   if(auton_selector.get_auton()) auton_selector.run_auton();
   else 
   {
-    StratusQuo::skills(); //StratusQuo::chassis.pid_drive_set(-6_in, 110); 
+    StratusQuo::red_ring_side();//StratusQuo::chassis.pid_drive_set(-6_in, 110); 
   }
 }
 

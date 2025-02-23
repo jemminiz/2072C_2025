@@ -1,5 +1,6 @@
 #include "autons.hpp"
 #include "EZ-Template/util.hpp"
+#include "clamp.hpp"
 #include "intake.hpp"
 #include "lady_brown.hpp"
 #include "main.h" // IWYU pragma: keep
@@ -447,9 +448,58 @@ void StratusQuo::blue_ring_side()
 
 void StratusQuo::red_ring_side()
 {
-  chassis.odom_theta_flip();
-  chassis.odom_x_flip();
-  blue_ring_side();
+  using namespace StratusQuo;
+  is_red_team.store(true);
+  chassis.drive_angle_set(180);
+  chassis.pid_drive_set(-20_in, 110);
+  chassis.pid_wait_quick();
+  chassis.pid_drive_set(-8_in, 40);
+  chassis.pid_wait();
+  set_clamp.store(true);
+  pros::delay(200);
+  chassis.pid_turn_set(315_deg, 80);
+  chassis.pid_wait();
+  set_intake(127);
+  chassis.pid_drive_set(24_in, 110);
+  chassis.pid_wait();
+  chassis.pid_swing_set(ez::RIGHT_SWING, 270_deg, 90);
+  chassis.pid_wait();
+  chassis.pid_drive_set(12_in, 110);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-12_in, 110);
+  chassis.pid_wait();
+  chassis.pid_swing_set(ez::RIGHT_SWING, 180_deg, 90);
+  chassis.pid_wait_quick();
+  chassis.pid_swing_set(ez::RIGHT_SWING, 113_deg, 70, 25);
+  chassis.pid_wait();
+  chassis.pid_drive_set(36_in, 110);
+  chassis.pid_wait_until(12_in);
+  intake.toggle_piston();
+  set_hooks(0);
+  lady_brown.move_to(LB_POSITIONS[1] + 20);
+  while (!((lady_brown.get_position() < LB_POSITIONS[1] + 20.05) && (lady_brown.get_position() > LB_POSITIONS[1] + 19.95))) {
+    pros::delay(2);
+  }
+  chassis.pid_wait();
+  chassis.pid_drive_set(16_in, 40);
+  set_hooks(127);
+  chassis.pid_wait();
+  intake.toggle_piston();
+  chassis.pid_turn_set(180_deg, 80);
+  chassis.pid_wait();
+  chassis.pid_drive_set(6_in, 110);
+  pros::delay(750);
+  set_hooks(-5);
+  lady_brown.move_to(580);
+  chassis.pid_wait();
+  while (!((lady_brown.get_position() < 580 + 0.05) && (lady_brown.get_position() > 580 + 0.05))) {
+    pros::delay(2);
+  }
+  chassis.pid_drive_set(-6_in, 110);
+  chassis.pid_wait();
+  chassis.pid_turn_set(0_deg, 80);
+  chassis.pid_wait();
+  lady_brown.move(127);
 }
 
 void StratusQuo::red_goal_rush()
@@ -501,6 +551,39 @@ void StratusQuo::blue_goal_rush()
   chassis.odom_theta_flip();
   chassis.odom_x_flip();
   red_goal_rush();
+}
+
+void StratusQuo::red_goal_side_basic()
+{
+  using namespace StratusQuo;
+  chassis.drive_angle_set(180_deg);
+  chassis.pid_drive_set(-18_in, 110);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-6_in, 40);
+  chassis.pid_wait();
+  set_clamp.store(true);
+  pros::delay(200);
+  chassis.pid_turn_set(90_deg, 80);
+  set_intake(127);
+  chassis.pid_wait();
+  chassis.pid_drive_set(24_in, 110);
+  chassis.pid_wait();
+  chassis.pid_turn_set(150_deg, 80);
+  chassis.pid_wait();
+  chassis.pid_drive_set(24_in, 110);
+  chassis.pid_wait();
+  chassis.pid_turn_set(0_deg, 80);
+  set_clamp.store(false);
+  chassis.pid_drive_set(48_in, 110);
+  chassis.pid_wait();
+}
+
+void StratusQuo::blue_goal_side_basic()
+{
+  using namespace StratusQuo;
+  chassis.odom_theta_flip();
+  chassis.odom_x_flip();
+  red_goal_side_basic();
 }
 
 void StratusQuo::skills()

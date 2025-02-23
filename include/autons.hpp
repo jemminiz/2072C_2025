@@ -23,6 +23,8 @@ namespace StratusQuo
     void blue_ring_side();
     void red_goal_rush();
     void blue_goal_rush();
+    void red_goal_side_basic();
+    void blue_goal_side_basic();
 
     void skills();
 }
