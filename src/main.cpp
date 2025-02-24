@@ -1,9 +1,9 @@
 #include "main.h"
 #include "autons.hpp"
-#include "lady_brown.hpp"
 #include "pros/misc.h"
 #include "robodash.hpp"
 #include "subsystems.hpp"
+#include "constants.hpp"
 #include <string>
 
 bool is_position_based = false;
@@ -69,19 +69,26 @@ pros::Task intake_task([]() {
       auto color = StratusQuo::optical.get_hue();
       if(is_red_team.load() && color > 190 && color < 250)
       {
-        StratusQuo::intake.move_hooks(-127);
+        StratusQuo::hooks.move(-127);
         pros::delay(500);
       }
       if(!is_red_team.load() && color < 10)
       {
-        StratusQuo::intake.move_hooks(-127);
+        StratusQuo::hooks.move(-127);
         pros::delay(500);
       }
     }
     else StratusQuo::optical.set_led_pwm(0);
 
-    StratusQuo::intake.move_hooks(hook_voltage.load());
-    StratusQuo::intake.move_rollers(roller_voltage.load());
+    StratusQuo::hooks.move(hook_voltage.load());
+    StratusQuo::rollers.move(roller_voltage.load());
+
+    if(hook_voltage.load() == 0 && roller_voltage.load() == 0)
+    {
+      StratusQuo::hooks.brake();
+      StratusQuo::rollers.brake();
+    }
+
     pros::delay(20);
   }
 });
@@ -108,9 +115,9 @@ void initialize() {
   default_constants();
 
   StratusQuo::lady_brown.tare_position();
-  StratusQuo::lady_brown.set_exit_conditions(80, 50, 300, 150, 500, 500);
+  StratusQuo::lady_brown_pid.exit_condition_set(80, 50, 300, 150, 500, 500);
 
-  StratusQuo::chassis.pid_tuner_pids.push_back({"Lift", &StratusQuo::LADY_BROWN_PID.constants});
+  StratusQuo::chassis.pid_tuner_pids.push_back({"Lift", &StratusQuo::lady_brown_pid.constants});
 
   StratusQuo::chassis.drive_imu_calibrate(false);
   StratusQuo::chassis.drive_sensor_reset();
@@ -160,7 +167,9 @@ void pid_tuner() {
 }
 
 void opcontrol() {
-  StratusQuo::chassis.drive_brake_set(MOTOR_BRAKE_COAST);
+  using namespace StratusQuo;
+  chassis.drive_brake_set(MOTOR_BRAKE_COAST);
+  lady_brown_pid.target_set(66); // Set target to load position
 
   while (true) {
     color_sort_is_enabled = false;
@@ -171,7 +180,7 @@ void opcontrol() {
     DOWN_is_pressed = master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN);
     pid_tuner();
 
-    StratusQuo::chassis.opcontrol_tank();
+    chassis.opcontrol_tank();
     if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) set_intake(127);
     else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) set_intake(-127);
     else set_intake(0);
@@ -183,32 +192,32 @@ void opcontrol() {
 
     if(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A))
     {
-      StratusQuo::right_doinker.set(!StratusQuo::right_doinker.get());
+      right_doinker.set(!right_doinker.get());
     }
 
     if(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B))
     {
-      StratusQuo::intake.toggle_piston();
+      intake_piston.set(!intake_piston.get());
     }
 
     if(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT))
     {
-      StratusQuo::lady_brown.tare_position();
+      lady_brown.tare_position();
     }
 
     if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1))
     {
-      StratusQuo::lady_brown.move(127);
+      lady_brown.move(127);
     }
     else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L2))
     {
-      StratusQuo::lady_brown.move(-127);
+      lady_brown.move(-127);
     }
     else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN))
     {
-      StratusQuo::lady_brown.move_to(66);
+      lady_brown.move_absolute(lady_brown_pid.compute(lady_brown_rotation.get_position()), 200);
     }
-    else StratusQuo::lady_brown.brake();
+    else lady_brown.brake();
     pros::delay(ez::util::DELAY_TIME);  // This is used for timer calculations!  Keep this ez::util::DELAY_TIME
   }
 }

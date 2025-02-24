@@ -2,10 +2,7 @@
 
 #include "EZ-Template/api.hpp" // IWYU pragma: keep
 #include "api.h" // IWYU pragma: keep
-#include "intake.hpp"
 #include "clamp.hpp"
-#include "constants.hpp"
-#include "lady_brown.hpp"
 #include "pros/adi.hpp"
 
 namespace StratusQuo
@@ -17,13 +14,20 @@ namespace StratusQuo
     2.75,
     450);
 
-    inline Intake intake(ROLLER_PORT, HOOK_PORT, INTAKE_PISTON_PORT);
-    inline Clamp clamp(CLAMP_PORT);
-    inline Lady_Brown lady_brown(LADY_BROWN_PORT, LADY_BROWN_PID, LADY_BROWN_ROTATION);
-    inline pros::adi::DigitalIn left_limit_switch(LEFT_LIMIT_SWITCH_PORT);
-    inline pros::adi::DigitalIn right_limit_switch(RIGHT_LIMIT_SWITCH_PORT);
-    inline pros::Optical optical(6);
+    inline pros::Motor rollers(9);
+    inline pros::Motor hooks(8);
 
-    inline ez::Piston right_doinker(DOINKER_PORT);
-    inline ez::Piston left_doinker(RIGHT_DOINKER_PORT);
+    inline pros::Motor lady_brown(10);
+    inline const pros::Rotation lady_brown_rotation(16);
+    inline ez::PID lady_brown_pid(0, 0, 0, 0);
+
+    inline pros::Optical optical(6);
+    inline pros::adi::DigitalIn left_limit_switch('c');
+    inline pros::adi::DigitalIn right_limit_switch('b');
+
+    inline ez::Piston intake_piston('e');
+    inline ez::Piston right_doinker('d');
+    inline ez::Piston left_doinker('f');
+    
+    inline Clamp clamp('a');
 }

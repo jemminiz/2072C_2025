@@ -1,8 +1,7 @@
 #include "autons.hpp"
 #include "EZ-Template/util.hpp"
 #include "clamp.hpp"
-#include "intake.hpp"
-#include "lady_brown.hpp"
+#include "constants.hpp"
 #include "main.h" // IWYU pragma: keep
 #include "subsystems.hpp"
 
@@ -412,7 +411,7 @@ void StratusQuo::blue_ring_side()
   chassis.pid_drive_set(36_in, 110);
   //intake.toggle_piston();
   chassis.pid_wait();
-  set_hooks(127);
+  hook_voltage.store(127);
   //intake.toggle_piston();
   chassis.pid_drive_set(-3_in, 40);
   chassis.pid_wait();
@@ -429,13 +428,13 @@ void StratusQuo::blue_ring_side()
   chassis.pid_drive_set(4_in, 110);
   chassis.pid_wait();
   pros::delay(500);
-  lady_brown.move_to(LB_POSITIONS[2]);
+  lady_brown.move_absolute(LB_POSITIONS[2]);
   while (!((lady_brown.get_position() < LB_POSITIONS[2] + 5) && (lady_brown.get_position() > LB_POSITIONS[2] - 5))) {
     pros::delay(2);
   }
   chassis.pid_drive_set(-6_in, 110);
   chassis.pid_wait_quick_chain();
-  lady_brown.move_to(180);
+  lady_brown.move_absolute(180);
   while (!((lady_brown.get_position() < 180 + 5) && (lady_brown.get_position() > 180 - 5))) {
     pros::delay(2);
   }
@@ -477,7 +476,7 @@ void StratusQuo::red_ring_side()
   //intake.toggle_piston();
   chassis.pid_wait();
   chassis.pid_drive_set(16_in, 50);
-  set_hooks(127);
+  hook_voltage.store(127);
   chassis.pid_wait();
   chassis.pid_drive_set(24_in, 40);
   //intake.toggle_piston();
@@ -487,7 +486,7 @@ void StratusQuo::red_ring_side()
   chassis.pid_wait();
   chassis.pid_drive_set(5_in, 110);
   pros::delay(750);
-  set_hooks(-20);
+  hook_voltage.set(-20);
   chassis.pid_wait();
   pros::delay(500);
   chassis.pid_drive_set(-12_in, 110);
@@ -502,15 +501,15 @@ void StratusQuo::red_goal_rush()
   using namespace StratusQuo;
   is_red_team = true;
   color_sort_is_enabled = false;
-  lady_brown.set_position(90);
-  lady_brown.move_to(100);
+  lady_brown.set_zero_position(90);
+  lady_brown.move_absolute(100, 200);
   chassis.pid_drive_set(42_in, 90);
-  lady_brown.move_to(360, 62);
+  lady_brown.move_absolute(360, 62);
   chassis.pid_wait();
   chassis.pid_drive_set(-4_in, 90);
   chassis.pid_wait();
   chassis.pid_swing_set(ez::RIGHT_SWING, 75_deg, 70);
-  lady_brown.move_to(0, 200);
+  lady_brown.move_absolute(0, 200);
   chassis.pid_wait();
   chassis.pid_drive_set(-8_in, 110);
   chassis.pid_wait();
@@ -586,20 +585,20 @@ void StratusQuo::skills()
   using namespace StratusQuo;
   chassis.drive_angle_set(230_deg);
   is_red_team.store(true);
-  lady_brown.set_position(90);
-  lady_brown.move_to(640);
+  lady_brown.set_zero_position(90);
+  lady_brown.move_absolute(640, 200);
   while (!((lady_brown.get_position() < 640 + 5) && (lady_brown.get_position() > 640 - 5))) {
     pros::delay(2);
   }
   chassis.pid_drive_set(-9_in, 110);
-  lady_brown.move_to(5);
+  lady_brown.move_absolute(5, 200);
   chassis.pid_wait();
   chassis.pid_drive_set(-6_in, 50);
   chassis.pid_wait();
   set_clamp.store(true);
   pros::delay(200); // Clamp
 
-  set_hooks(-127);
+  hook_voltage.store(-127);
   chassis.pid_swing_set(ez::LEFT_SWING, 390_deg, 50); // Turn to angle
   chassis.pid_wait();
 
@@ -607,7 +606,7 @@ void StratusQuo::skills()
   chassis.pid_drive_set(56_in, 110);
   chassis.pid_wait(); // Pick up first ring
 
-  lady_brown.move_to(70, 600);
+  lady_brown.move_absolute(70, 600);
   while (!((lady_brown.get_position() < 70 + .5) && (lady_brown.get_position() > 70 - .5))) {
     pros::delay(2);
   } // LB up for wall stake ring
@@ -621,20 +620,20 @@ void StratusQuo::skills()
   chassis.pid_wait(); // Turn to wall stake
 
   set_intake(0);
-  lady_brown.move_to(140);
+  lady_brown.move_absolute(140, 200);
   while (!((lady_brown.get_position() < 140 + .5) && (lady_brown.get_position() > 140 - .5))) {
     pros::delay(2);
   }
   chassis.pid_drive_set(18_in, 110);
-  set_rollers(127);
+  roller_voltage.store(127);
   chassis.pid_wait();
-  lady_brown.move_to(600);
+  lady_brown.move_absolute(600, 200);
   while (!((lady_brown.get_position() < 600 + 5) && (lady_brown.get_position() > 600 - 5))) {
     pros::delay(2);
   } // Score on wall stake
 
   chassis.pid_drive_set(-30_in, 110);
-  lady_brown.move_to(5);
+  lady_brown.move_absolute(5, 200);
   chassis.pid_turn_set(180_deg, 60);
   chassis.pid_wait();
   set_intake(127);
