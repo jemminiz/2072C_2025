@@ -410,19 +410,19 @@ void StratusQuo::blue_ring_side()
   chassis.pid_swing_set(ez::LEFT_SWING, 247_deg, 70, 25);
   chassis.pid_wait();
   chassis.pid_drive_set(36_in, 110);
-  intake.toggle_piston();
-  set_hooks(0);
-  lady_brown.move_to(LB_POSITIONS[1]);
-  while (!((lady_brown.get_position() < LB_POSITIONS[1] + 0.05) && (lady_brown.get_position() > LB_POSITIONS[1] - 0.05))) {
-    pros::delay(2);
-  }
+  //intake.toggle_piston();
   chassis.pid_wait();
   set_hooks(127);
-  intake.toggle_piston();
+  //intake.toggle_piston();
   chassis.pid_drive_set(-3_in, 40);
   chassis.pid_wait();
   chassis.pid_drive_set(6_in, 110);
   chassis.pid_wait();
+  chassis.pid_turn_set(270_deg, 80);
+  chassis.pid_wait();
+  chassis.pid_drive_set(24_in, 110);
+  chassis.pid_wait();
+  /*
   chassis.pid_swing_set(ez::RIGHT_SWING, 180_deg, 90);
   chassis.pid_wait();
   set_intake(0);
@@ -435,15 +435,15 @@ void StratusQuo::blue_ring_side()
   }
   chassis.pid_drive_set(-6_in, 110);
   chassis.pid_wait_quick_chain();
-  lady_brown.move_to(360);
-  while (!((lady_brown.get_position() < 360 + 5) && (lady_brown.get_position() > 360 - 5))) {
+  lady_brown.move_to(180);
+  while (!((lady_brown.get_position() < 180 + 5) && (lady_brown.get_position() > 180 - 5))) {
     pros::delay(2);
   }
   chassis.pid_turn_set(-5_deg, 110);
   chassis.pid_wait_quick_chain();
   chassis.pid_drive_set(12_in, 127);
   pros::delay(75);
-  lady_brown.move(127);
+  lady_brown.move(127); */
 }
 
 void StratusQuo::red_ring_side()
@@ -474,32 +474,27 @@ void StratusQuo::red_ring_side()
   chassis.pid_wait();
   chassis.pid_drive_set(36_in, 110);
   chassis.pid_wait_until(12_in);
-  intake.toggle_piston();
-  set_hooks(0);
-  lady_brown.move_to(LB_POSITIONS[1] + 20);
-  while (!((lady_brown.get_position() < LB_POSITIONS[1] + 20.05) && (lady_brown.get_position() > LB_POSITIONS[1] + 19.95))) {
-    pros::delay(2);
-  }
+  //intake.toggle_piston();
   chassis.pid_wait();
-  chassis.pid_drive_set(16_in, 40);
+  chassis.pid_drive_set(16_in, 50);
   set_hooks(127);
   chassis.pid_wait();
-  intake.toggle_piston();
+  chassis.pid_drive_set(24_in, 40);
+  //intake.toggle_piston();
+  chassis.pid_wait();
+  /*
   chassis.pid_turn_set(180_deg, 80);
   chassis.pid_wait();
-  chassis.pid_drive_set(6_in, 110);
+  chassis.pid_drive_set(5_in, 110);
   pros::delay(750);
-  set_hooks(-5);
-  lady_brown.move_to(580);
+  set_hooks(-20);
   chassis.pid_wait();
-  while (!((lady_brown.get_position() < 580 + 0.05) && (lady_brown.get_position() > 580 + 0.05))) {
-    pros::delay(2);
-  }
-  chassis.pid_drive_set(-6_in, 110);
+  pros::delay(500);
+  chassis.pid_drive_set(-12_in, 110);
   chassis.pid_wait();
   chassis.pid_turn_set(0_deg, 80);
   chassis.pid_wait();
-  lady_brown.move(127);
+  lady_brown.move(127); */
 }
 
 void StratusQuo::red_goal_rush()
@@ -508,14 +503,14 @@ void StratusQuo::red_goal_rush()
   is_red_team = true;
   color_sort_is_enabled = false;
   lady_brown.set_position(90);
-  lady_brown.move_to(200);
+  lady_brown.move_to(100);
   chassis.pid_drive_set(42_in, 90);
-  lady_brown.move_to(720, 62);
+  lady_brown.move_to(360, 62);
   chassis.pid_wait();
   chassis.pid_drive_set(-4_in, 90);
   chassis.pid_wait();
   chassis.pid_swing_set(ez::RIGHT_SWING, 75_deg, 70);
-  lady_brown.move_to(5, 200);
+  lady_brown.move_to(0, 200);
   chassis.pid_wait();
   chassis.pid_drive_set(-8_in, 110);
   chassis.pid_wait();

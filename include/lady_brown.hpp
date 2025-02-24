@@ -5,9 +5,9 @@
 #include <vector>
 namespace StratusQuo
 {
-    inline std::vector<double> LB_POSITIONS({0, 66, 600});
+    inline std::vector<double> LB_POSITIONS({0, 33, 300});
 
-    inline ez::PID LADY_BROWN_PID{.5, 0, 12.5, 10, "Lift"};
+    inline ez::PID LADY_BROWN_PID{2.2, 0, 15, 10, "Lift"};
     class Lady_Brown
     {
         public:

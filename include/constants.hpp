@@ -15,6 +15,6 @@ inline const uint8_t RIGHT_LIMIT_SWITCH_PORT = 'b';
 inline const uint8_t DOINKER_PORT = 'd';
 inline const uint8_t RIGHT_DOINKER_PORT = 'f';
 
-inline const pros::Rotation LADY_BROWN_ROTATION(-21);
+inline const pros::Rotation LADY_BROWN_ROTATION(16);
 
 inline std::atomic<bool> is_auto_clamp_enabled(true);

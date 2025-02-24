@@ -450,7 +450,8 @@
     },
     "upload_options": {
       "description": "roboticsisez.com",
-      "icon": "X"
+      "icon": "X",
+      "slot": 2
     },
     "use_early_access": false
   }
