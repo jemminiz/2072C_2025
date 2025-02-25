@@ -215,7 +215,7 @@ void opcontrol() {
     }
     else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN))
     {
-      lady_brown.move_absolute(lady_brown_pid.compute(lady_brown_rotation.get_position()), 200);
+      lady_brown.move(lady_brown_pid.compute(lady_brown_rotation.get_position()));
     }
     else lady_brown.brake();
     pros::delay(ez::util::DELAY_TIME);  // This is used for timer calculations!  Keep this ez::util::DELAY_TIME
