@@ -1,6 +1,7 @@
 #include "main.h"
 #include "autons.hpp"
 #include "pros/misc.h"
+#include "pros/motors.h"
 #include "robodash.hpp"
 #include "subsystems.hpp"
 #include "constants.hpp"
@@ -83,9 +84,12 @@ pros::Task intake_task([]() {
     StratusQuo::hooks.move(hook_voltage.load());
     StratusQuo::rollers.move(roller_voltage.load());
 
-    if(hook_voltage.load() == 0 && roller_voltage.load() == 0)
+    if(hook_voltage.load() == 0)
     {
       StratusQuo::hooks.brake();
+    }
+    if(roller_voltage.load() == 0)
+    {
       StratusQuo::rollers.brake();
     }
 
@@ -97,11 +101,11 @@ pros::Task screen_task([]() {
   pros::delay(2000);
   while(true)
   {
-    //debug.focus();
-    debug.println(std::to_string(StratusQuo::lady_brown.get_position()));
+    debug.focus();
+    debug.println("Current Position: " + std::to_string(StratusQuo::lady_brown.get_position()));
     pros::delay(75);
     debug.clear();
-    debug.println(std::to_string(StratusQuo::lady_brown.get_voltage()));
+    debug.println("Current Expected Voltage: " + std::to_string(StratusQuo::lady_brown_pid.compute(StratusQuo::lady_brown_rotation.get_position() / 100.0)));
   }
 });
 
@@ -114,8 +118,13 @@ void initialize() {
 
   default_constants();
 
+  StratusQuo::rollers.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+  StratusQuo::hooks.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+
   StratusQuo::lady_brown.tare_position();
+  StratusQuo::lady_brown_rotation.reset_position();
   StratusQuo::lady_brown_pid.exit_condition_set(80, 50, 300, 150, 500, 500);
+  StratusQuo::lady_brown.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 
   StratusQuo::chassis.pid_tuner_pids.push_back({"Lift", &StratusQuo::lady_brown_pid.constants});
 
@@ -169,7 +178,7 @@ void pid_tuner() {
 void opcontrol() {
   using namespace StratusQuo;
   chassis.drive_brake_set(MOTOR_BRAKE_COAST);
-  lady_brown_pid.target_set(66); // Set target to load position
+  lady_brown_pid.target_set(22); // Set target to load position
 
   while (true) {
     color_sort_is_enabled = false;
@@ -181,8 +190,16 @@ void opcontrol() {
     pid_tuner();
 
     chassis.opcontrol_tank();
-    if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) set_intake(127);
-    else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) set_intake(-127);
+    if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R1))
+    {
+      hook_voltage.store(127);
+      roller_voltage.store(127);
+    }
+    else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R2))
+    {
+      hook_voltage.store(-127);
+      roller_voltage.store(-127);
+    }
     else set_intake(0);
 
     if(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT))
@@ -203,6 +220,7 @@ void opcontrol() {
     if(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT))
     {
       lady_brown.tare_position();
+      lady_brown_rotation.reset_position(); // Resets position
     }
 
     if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1))
@@ -215,7 +233,8 @@ void opcontrol() {
     }
     else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN))
     {
-      lady_brown.move(lady_brown_pid.compute(lady_brown_rotation.get_position()));
+      lady_brown.move(lady_brown_pid.compute(lady_brown_rotation.get_position() / 100.0)); // Divide by 100 to account for centidegrees
+      // Calculates the voltage to run based on the PID constants and current position
     }
     else lady_brown.brake();
     pros::delay(ez::util::DELAY_TIME);  // This is used for timer calculations!  Keep this ez::util::DELAY_TIME

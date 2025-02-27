@@ -25,6 +25,6 @@ namespace StratusQuo
     void blue_goal_rush();
     void red_goal_side_basic();
     void blue_goal_side_basic();
-
+    void blue_goal_NATE();
     void skills();
 }
