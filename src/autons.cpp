@@ -628,7 +628,7 @@ void StratusQuo::skills()
 
   chassis.pid_drive_set(-12_in, 110);
   chassis.pid_wait();
-  lady_brown.move_absolute(360, 200);
+  lady_brown.move_absolute(450, 200);
   chassis.pid_drive_set(-3_in, 50);
   chassis.pid_wait_quick();
   set_clamp.store(true);
@@ -641,61 +641,38 @@ void StratusQuo::skills()
   set_intake(127);
   chassis.pid_wait(); // First Ring
 
-  chassis.pid_turn_set(30_deg, 70);
+  chassis.pid_turn_set(55_deg, 70);
   chassis.pid_wait();
-  chassis.pid_drive_set(60_in, 110);
+  chassis.pid_drive_set(44_in, 110);
   chassis.pid_wait(); // Second Ring
-  
-  chassis.pid_turn_set(170_deg, 70);
-  pros::delay(300);
-  lady_brown.move_absolute(60, 200);
-  while (!((lady_brown.get_position() < 60 + 2) && (lady_brown.get_position() > 60 - 2)))
-  {
-    pros::delay(2);
-  }
+  chassis.pid_drive_set(-16_in, 110);
   chassis.pid_wait();
-  chassis.pid_drive_set(30_in, 110);
-  chassis.pid_wait();
-  
-  chassis.pid_turn_set(90_deg, 70);
-  chassis.pid_wait();
-  pros::delay(500);
-  hook_voltage.store(-10);
-  lady_brown.move_absolute(905, 200);
-  chassis.pid_drive_set(1.5_in, 40);
-  while (!((lady_brown.get_position() < lady_brown.get_target_position() + 2) && (lady_brown.get_position() > lady_brown.get_target_position() - 2)))
-  {
-    pros::delay(2);
-  }
-  chassis.pid_drive_set(-18_in, 110);
-  lady_brown.move(-127);
-  pros::delay(100);
-  lady_brown.brake();
-  chassis.pid_wait();
+
   chassis.pid_turn_set(180_deg, 70);
   chassis.pid_wait();
   set_intake(127);
-  chassis.pid_drive_set(60_in, 90);
+  chassis.pid_drive_set(54_in, 60);
   chassis.pid_wait();
-  chassis.pid_turn_set(60_deg, 70);
+  chassis.pid_turn_set(60_deg, 50);
   chassis.pid_wait();
   chassis.pid_drive_set(12_in, 110);
   chassis.pid_wait();
   chassis.pid_turn_set(-45_deg, 70);
   chassis.pid_wait();
-  chassis.pid_drive_set(-24_in, 110);
+  chassis.pid_drive_set(-8_in, 110);
   chassis.pid_wait();
   set_clamp.store(false);
-  set_intake(0);
+  roller_voltage.store(0);
   hook_voltage.store(-127);
+  pros::delay(200);
 
   chassis.pid_drive_set(13_in, 110);
   chassis.pid_wait();
-  chassis.pid_turn_set(90_deg, 70);
+  chassis.pid_turn_set(93.5_deg, 70);
   chassis.pid_wait();
-  chassis.pid_drive_set(-69_in, 110);
+  chassis.pid_drive_set(-69_in, 80);
   chassis.pid_wait();
-  chassis.pid_drive_set(-3_in, 50);
+  chassis.pid_drive_set(-8_in, 50);
   chassis.pid_wait_quick();
   set_clamp.store(true);
   chassis.pid_wait();
@@ -705,48 +682,51 @@ void StratusQuo::skills()
   chassis.pid_drive_set(24_in, 110);
   set_intake(127);
   chassis.pid_wait();
-  chassis.pid_turn_set(-30_deg, 70);
+  chassis.pid_turn_set(-55_deg, 70);
   chassis.pid_wait();
-  chassis.pid_drive_set(50_in, 110);
+  chassis.pid_drive_set(40_in, 110);
   chassis.pid_wait();
-  chassis.pid_turn_set(-165_deg, 70);
-  chassis.pid_wait();
-  chassis.pid_drive_set(24_in, 110);
-  hook_voltage.store(0);
-  lady_brown.move_absolute(174, 200);
-  while (!((lady_brown.get_position() < lady_brown.get_target_position() + .5) && (lady_brown.get_position() > lady_brown.get_target_position() - .5)))
-  {
-    pros::delay(2);
-  }
-  hook_voltage.store(127);
-  chassis.pid_wait();
-  chassis.pid_turn_set(-90_deg, 70);
-  chassis.pid_wait();
-  chassis.pid_drive_set(12_in, 110);
-  set_intake(0);
-  lady_brown.move_absolute(900, 200);
-  while (!((lady_brown.get_position() < lady_brown.get_target_position() + .5) && (lady_brown.get_position() > lady_brown.get_target_position() - .5)))
-  {
-    pros::delay(2);
-  }
-
-  chassis.pid_drive_set(-20_in, 110);
+  chassis.pid_drive_set(-14_in, 110);
   chassis.pid_wait();
   chassis.pid_turn_set(-180_deg, 70);
   chassis.pid_wait();
-  chassis.pid_drive_set(60_in, 110);
+  chassis.pid_drive_set(54_in, 60);
   chassis.pid_wait();
-  chassis.pid_turn_set(-60_deg, 70);
+  chassis.pid_turn_set(-60_deg, 50);
   chassis.pid_wait();
   chassis.pid_drive_set(12_in, 110);
   chassis.pid_wait();
-  chassis.pid_turn_set(15_deg, 70);
+  chassis.pid_turn_set(45_deg, 70);
   chassis.pid_wait();
-  chassis.pid_drive_set(-24_in, 110);
+  chassis.pid_drive_set(-8_in, 110);
   chassis.pid_wait();
   set_clamp.store(false);
   hook_voltage.store(-127);
-  chassis.pid_drive_set(80_in, 110);
-  roller_voltage.store(127);
+  pros::delay(200);
+  
+  chassis.pid_drive_set(18_in, 110);
+  chassis.pid_wait();
+  chassis.pid_turn_set(2.5_deg, 70);
   hook_voltage.store(0);
+  chassis.pid_wait();
+
+  chassis.pid_drive_set(66_in, 110);
+  lady_brown.move_absolute(100, 200);
+  while (!((lady_brown.get_position() < 100 + 1.5) && (lady_brown.get_position() > 100 - 1.5))) // 110
+  {
+    pros::delay(2);
+  }
+  chassis.pid_wait();
+  hook_voltage.store(100);
+  chassis.pid_turn_set(43_deg, 70);
+  chassis.pid_wait();
+  chassis.pid_drive_set(54_in, 110);
+  chassis.pid_wait();
+  pros::delay(500);
+  hook_voltage.store(0);
+  lady_brown.move_absolute(1420, 600);
+  while (!((lady_brown.get_position() < 1420 + 7) && (lady_brown.get_position() > 1420 - 7)))
+  {
+    pros::delay(2);
+  }
 }

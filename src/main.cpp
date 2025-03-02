@@ -105,7 +105,6 @@ pros::Task screen_task([]() {
     debug.println("Current Position: " + std::to_string(StratusQuo::lady_brown.get_position()));
     pros::delay(75);
     debug.clear();
-    debug.println("Current Expected Voltage: " + std::to_string(StratusQuo::lady_brown_pid.compute(StratusQuo::lady_brown_rotation.get_position() / 100.0)));
   }
 });
 
