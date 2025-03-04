@@ -28,9 +28,81 @@ void default_constants() {
   StratusQuo::chassis.pid_odom_boomerang_constants_set(5.8, 0.0, 32.5);  // Angular control for boomerang motions
 
   // Exit conditions
-  StratusQuo::chassis.pid_turn_exit_condition_set(90_ms, 3_deg, 250_ms, 7_deg, 500_ms, 500_ms);
-  StratusQuo::chassis.pid_swing_exit_condition_set(90_ms, 3_deg, 250_ms, 7_deg, 500_ms, 500_ms);
-  StratusQuo::chassis.pid_drive_exit_condition_set(90_ms, 1_in, 250_ms, 3_in, 500_ms, 500_ms);
+  StratusQuo::chassis.pid_turn_exit_condition_set(500_ms, 3_deg, 500_ms, 7_deg, 500_ms, 500_ms);
+  StratusQuo::chassis.pid_swing_exit_condition_set(500_ms, 3_deg, 500_ms, 7_deg, 500_ms, 500_ms);
+  StratusQuo::chassis.pid_drive_exit_condition_set(500_ms, 1_in, 500_ms, 3_in, 500_ms, 500_ms);
+  StratusQuo::chassis.pid_odom_turn_exit_condition_set(90_ms, 3_deg, 250_ms, 7_deg, 500_ms, 750_ms);
+  StratusQuo::chassis.pid_odom_drive_exit_condition_set(90_ms, 1_in, 250_ms, 3_in, 500_ms, 750_ms);
+  StratusQuo::chassis.pid_turn_chain_constant_set(3_deg);
+  StratusQuo::chassis.pid_swing_chain_constant_set(5_deg);
+  StratusQuo::chassis.pid_drive_chain_constant_set(3_in);
+
+  // Slew constants
+  StratusQuo::chassis.slew_turn_constants_set(3_deg, 70);
+  StratusQuo::chassis.slew_drive_constants_set(3_in, 70);
+  StratusQuo::chassis.slew_swing_constants_set(3_in, 80);
+
+  // The amount that turns are prioritized over driving in odom motions
+  // - if you have tracking wheels, you can run this higher.  1.0 is the max
+  StratusQuo::chassis.odom_turn_bias_set(0.9);
+
+  StratusQuo::chassis.odom_look_ahead_set(7_in);           // This is how far ahead in the path the robot looks at
+  StratusQuo::chassis.odom_boomerang_distance_set(16_in);  // This sets the maximum distance away from target that the carrot point can be
+  StratusQuo::chassis.odom_boomerang_dlead_set(0.625);     // This handles how aggressive the end of boomerang motions are
+
+  StratusQuo::chassis.pid_angle_behavior_set(ez::shortest);  // Changes the default behavior for turning, this defaults it to the shortest path there
+}
+
+void mogo_constants()
+{
+  // P, I, D, and Start I
+  StratusQuo::chassis.pid_drive_constants_set(24.0, 0.0, 100.0);         // Fwd/rev constants, used for odom and non odom motions
+  StratusQuo::chassis.pid_heading_constants_set(3.0, 0.0, 20.0);        // Holds the robot straight while going forward without odom
+  StratusQuo::chassis.pid_turn_constants_set(4.4, 0.05, 20.0, 15.0);     // Turn in place constants
+  StratusQuo::chassis.pid_swing_constants_set(6.0, 0.0, 65.0);           // Swing constants
+  StratusQuo::chassis.pid_odom_angular_constants_set(6.5, 0.0, 52.5);    // Angular control for odom motions
+  StratusQuo::chassis.pid_odom_boomerang_constants_set(5.8, 0.0, 32.5);  // Angular control for boomerang motions
+
+  // Exit conditions
+  StratusQuo::chassis.pid_turn_exit_condition_set(500_ms, 3_deg, 500_ms, 7_deg, 500_ms, 500_ms);
+  StratusQuo::chassis.pid_swing_exit_condition_set(500_ms, 3_deg, 500_ms, 7_deg, 500_ms, 500_ms);
+  StratusQuo::chassis.pid_drive_exit_condition_set(500_ms, 1_in, 500_ms, 3_in, 500_ms, 500_ms);
+  StratusQuo::chassis.pid_odom_turn_exit_condition_set(90_ms, 3_deg, 250_ms, 7_deg, 500_ms, 750_ms);
+  StratusQuo::chassis.pid_odom_drive_exit_condition_set(90_ms, 1_in, 250_ms, 3_in, 500_ms, 750_ms);
+  StratusQuo::chassis.pid_turn_chain_constant_set(3_deg);
+  StratusQuo::chassis.pid_swing_chain_constant_set(5_deg);
+  StratusQuo::chassis.pid_drive_chain_constant_set(3_in);
+
+  // Slew constants
+  StratusQuo::chassis.slew_turn_constants_set(3_deg, 70);
+  StratusQuo::chassis.slew_drive_constants_set(3_in, 70);
+  StratusQuo::chassis.slew_swing_constants_set(3_in, 80);
+
+  // The amount that turns are prioritized over driving in odom motions
+  // - if you have tracking wheels, you can run this higher.  1.0 is the max
+  StratusQuo::chassis.odom_turn_bias_set(0.9);
+
+  StratusQuo::chassis.odom_look_ahead_set(7_in);           // This is how far ahead in the path the robot looks at
+  StratusQuo::chassis.odom_boomerang_distance_set(16_in);  // This sets the maximum distance away from target that the carrot point can be
+  StratusQuo::chassis.odom_boomerang_dlead_set(0.625);     // This handles how aggressive the end of boomerang motions are
+
+  StratusQuo::chassis.pid_angle_behavior_set(ez::shortest);  // Changes the default behavior for turning, this defaults it to the shortest path there
+}
+
+void full_mogo_constants()
+{
+  // P, I, D, and Start I
+  StratusQuo::chassis.pid_drive_constants_set(24.0, 0.0, 100.0);         // Fwd/rev constants, used for odom and non odom motions
+  StratusQuo::chassis.pid_heading_constants_set(3.0, 0.0, 20.0);        // Holds the robot straight while going forward without odom
+  StratusQuo::chassis.pid_turn_constants_set(4.4, 0.05, 20.0, 15.0);     // Turn in place constants
+  StratusQuo::chassis.pid_swing_constants_set(6.0, 0.0, 65.0);           // Swing constants
+  StratusQuo::chassis.pid_odom_angular_constants_set(6.5, 0.0, 52.5);    // Angular control for odom motions
+  StratusQuo::chassis.pid_odom_boomerang_constants_set(5.8, 0.0, 32.5);  // Angular control for boomerang motions
+
+  // Exit conditions
+  StratusQuo::chassis.pid_turn_exit_condition_set(500_ms, 3_deg, 500_ms, 7_deg, 500_ms, 500_ms);
+  StratusQuo::chassis.pid_swing_exit_condition_set(500_ms, 3_deg, 500_ms, 7_deg, 500_ms, 500_ms);
+  StratusQuo::chassis.pid_drive_exit_condition_set(500_ms, 1_in, 500_ms, 3_in, 500_ms, 500_ms);
   StratusQuo::chassis.pid_odom_turn_exit_condition_set(90_ms, 3_deg, 250_ms, 7_deg, 500_ms, 750_ms);
   StratusQuo::chassis.pid_odom_drive_exit_condition_set(90_ms, 1_in, 250_ms, 3_in, 500_ms, 750_ms);
   StratusQuo::chassis.pid_turn_chain_constant_set(3_deg);
