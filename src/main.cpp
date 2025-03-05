@@ -52,6 +52,11 @@ pros::Task lb_task([]() {
     }
     else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L2))
     {
+      if(lady_brown_limit_switch.get_value())
+      {
+        lady_brown.brake();
+        continue;
+      }
       lady_brown.move(-127);
     }
     else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN))

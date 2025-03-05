@@ -20,6 +20,7 @@ namespace StratusQuo
     inline pros::Motor lady_brown(10);
     inline const pros::Rotation lady_brown_rotation(16);
     inline ez::PID lady_brown_pid(0.9, 0, 0, 0);
+    inline pros::adi::DigitalIn lady_brown_limit_switch('h');
 
     inline pros::Optical optical(6);
     inline pros::adi::DigitalIn left_limit_switch('c');
