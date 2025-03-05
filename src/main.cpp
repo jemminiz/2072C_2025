@@ -2,6 +2,7 @@
 #include "autons.hpp"
 #include "pros/misc.h"
 #include "pros/motors.h"
+#include "pros/rtos.hpp"
 #include "robodash.hpp"
 #include "subsystems.hpp"
 #include "constants.hpp"
@@ -39,6 +40,30 @@ pros::Task lb_task([]() {
     pros::delay(50);
   }
 }); */
+
+pros::Task lb_task([]() {
+  using namespace StratusQuo;
+  pros::delay(2000); // Wait for everything to initialize
+  while(true)
+  {
+    if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1))
+    {
+      lady_brown.move(127);
+    }
+    else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L2))
+    {
+      lady_brown.move(-127);
+    }
+    else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN))
+    {
+      while (!((lady_brown_rotation.get_position() < lady_brown_pid.target_get() + 2) && (lady_brown_rotation.get_position() > lady_brown_pid.target_get() - 2)))
+      lady_brown.move(lady_brown_pid.compute(lady_brown_rotation.get_position() / 100.0)); // Divide by 100 to account for centidegrees
+      // Calculates the voltage to run based on the PID constants and current position
+    }
+    else lady_brown.brake();
+    pros::delay(50);
+  }
+});
 
 pros::Task limit_switch_task([]() {
   pros::delay(2000);
@@ -222,20 +247,6 @@ void opcontrol() {
       lady_brown_rotation.reset_position(); // Resets position
     }
 
-    if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1))
-    {
-      lady_brown.move(127);
-    }
-    else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L2))
-    {
-      lady_brown.move(-127);
-    }
-    else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN))
-    {
-      lady_brown.move(lady_brown_pid.compute(lady_brown_rotation.get_position() / 100.0)); // Divide by 100 to account for centidegrees
-      // Calculates the voltage to run based on the PID constants and current position
-    }
-    else lady_brown.brake();
     pros::delay(ez::util::DELAY_TIME);  // This is used for timer calculations!  Keep this ez::util::DELAY_TIME
   }
 }
