@@ -16,31 +16,6 @@ bool R2_is_pressed = false;
 bool DOWN_is_pressed = false;
 int lady_brown_speed = 0;
 
-/*
-pros::Task lb_task([]() {
-  while(true)
-  {
-    if(L1_is_pressed)
-    {
-      StratusQuo::lady_brown.move(127);
-    }
-    else if(L2_is_pressed)
-    {
-      StratusQuo::lady_brown.move(-127);
-    }
-    else if(DOWN_is_pressed)
-    {
-      StratusQuo::lady_brown.target_set(33);
-      StratusQuo::lady_brown.move(StratusQuo::lady_brown.compute(StratusQuo::lady_brown.get_position()));
-    }
-    else 
-    {
-      StratusQuo::lady_brown.brake();
-    }
-    pros::delay(50);
-  }
-}); */
-
 pros::Task lb_task([]() {
   using namespace StratusQuo;
   pros::delay(2000); // Wait for everything to initialize
@@ -73,6 +48,7 @@ pros::Task lb_task([]() {
 pros::Task limit_switch_task([]() {
   pros::delay(2000);
   bool changed = false;
+  bool curr = set_clamp.load();
   while(true)
   {
     if(((StratusQuo::left_limit_switch.get_new_press() && StratusQuo::right_limit_switch.get_value()) ||
@@ -80,9 +56,10 @@ pros::Task limit_switch_task([]() {
     {
       set_clamp.store(true);
     }
-    StratusQuo::clamp.set(set_clamp.load());
-    if(set_clamp.load() != changed) pros::delay(1000);
-    changed = set_clamp.load();
+    curr = set_clamp.load();
+    StratusQuo::clamp.set(curr);
+    if(curr != changed) pros::delay(1000);
+    changed = curr;
     pros::delay(50);
   }
 });
