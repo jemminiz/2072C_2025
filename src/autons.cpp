@@ -688,7 +688,6 @@ void StratusQuo::skills()
 {
   using namespace StratusQuo;
   chassis.drive_angle_set(230_deg);
-  lb_task.suspend();
   is_red_team.store(true);
   color_sort_is_enabled.store(false);
   lady_brown.set_zero_position(90);

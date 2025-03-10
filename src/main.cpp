@@ -75,6 +75,35 @@ pros::Task intake_task([]() {
   }
 });
 
+pros::Task lb_task([]() {
+  using namespace StratusQuo;
+  pros::delay(2000); // Wait for everything to initialize
+  while(true)
+  {
+    if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1))
+    {
+      lady_brown.move(127);
+    }
+    else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L2))
+    {
+      if(lady_brown_limit_switch.get_value())
+      {
+        lady_brown.brake();
+        lady_brown_rotation.reset_position();
+        continue;
+      }
+      lady_brown.move(-127);
+    }
+    else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN))
+    {
+      lady_brown.move(lady_brown_pid.compute(lady_brown_rotation.get_position() / 100.0)); // Divide by 100 to account for centidegrees
+      // Calculates the voltage to run based on the PID constants and current position
+    }
+    else lady_brown.brake();
+    pros::delay(50);
+  }
+});
+
 pros::Task screen_task([]() {
   pros::delay(2000);
   while(true)
@@ -104,6 +133,8 @@ void initialize() {
   StratusQuo::lady_brown.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 
   StratusQuo::chassis.pid_tuner_pids.push_back({"Lift", &StratusQuo::lady_brown_pid.constants});
+
+  lb_task.suspend();
 
   StratusQuo::chassis.drive_imu_calibrate(false);
   StratusQuo::chassis.drive_sensor_reset();
@@ -155,6 +186,7 @@ void pid_tuner() {
 void opcontrol() {
   using namespace StratusQuo;
   chassis.drive_brake_set(MOTOR_BRAKE_COAST);
+  lb_task.resume();
   lady_brown_pid.target_set(22); // Set target to load position
 
   while (true) {

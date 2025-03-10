@@ -32,32 +32,3 @@ namespace StratusQuo
     
     inline Clamp clamp('a');
 }
-
-inline pros::Task lb_task([]() {
-    using namespace StratusQuo;
-    pros::delay(2000); // Wait for everything to initialize
-    while(true)
-    {
-      if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1))
-      {
-        lady_brown.move(127);
-      }
-      else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L2))
-      {
-        if(lady_brown_limit_switch.get_value())
-        {
-          lady_brown.brake();
-          lady_brown_rotation.reset_position();
-          continue;
-        }
-        lady_brown.move(-127);
-      }
-      else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN))
-      {
-        lady_brown.move(lady_brown_pid.compute(lady_brown_rotation.get_position() / 100.0)); // Divide by 100 to account for centidegrees
-        // Calculates the voltage to run based on the PID constants and current position
-      }
-      else lady_brown.brake();
-      pros::delay(50);
-    }
-  });
