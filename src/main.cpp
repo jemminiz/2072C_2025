@@ -82,7 +82,7 @@ pros::Task wallStakeTask([]() {
         }
         else if(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN))
         {
-            (currentPos % 2 == 0) ? wallStakePID.target_set(27.3) : wallStakePID.target_set(29);
+            (currentPos % 2 == 0) ? wallStakePID.target_set(38) : wallStakePID.target_set(43);
             currentPos++;
             do
             {
