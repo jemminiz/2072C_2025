@@ -2,6 +2,7 @@
 
 #include "main.h"
 #include "pros/adi.hpp"
+#include "pros/distance.hpp"
 #include <atomic>
 
 extern pros::Controller master;
@@ -30,6 +31,7 @@ extern ez::PID wallStakePID;
 
 extern pros::Rotation liftSensor;
 extern pros::Optical optical;
+extern pros::Distance clampSensor;
 
 extern bool wingsOut;
 extern bool liftUp;

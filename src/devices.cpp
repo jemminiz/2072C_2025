@@ -22,6 +22,7 @@ ez::PID wallStakePID(1.1, 0, 0);
 
 pros::Rotation liftSensor(16, false);
 pros::Optical optical(6);
+pros::Distance clampSensor(1);
 
 pros::Motor hooks (8, pros::E_MOTOR_GEARSET_06, true, pros::E_MOTOR_ENCODER_DEGREES);
 pros::Motor rollers (9, pros::E_MOTOR_GEARSET_06, true, pros::E_MOTOR_ENCODER_DEGREES);

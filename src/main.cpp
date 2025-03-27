@@ -7,14 +7,24 @@
 #include "pros/rtos.hpp"
 #include "screen.hpp"
 
+bool is_auto = true;
+
 pros::Task auto_clamp_task([]() {
     pros::delay(2000);
     bool curr = set_clamp.load();
     bool changed;
-    while(true)
+    while(true) // Limit switch code
     {
         // One gets a new press and the other is being pressed
         curr = ((backClampLeftLimitSwitch.get_new_press() && backClampRightLimitSwitch.get_value()) || (backClampLeftLimitSwitch.get_value() && backClampRightLimitSwitch.get_new_press()) && is_auto_clamp_enabled.load());
+        backClamp.set_value(curr);
+        if(changed && !curr) pros::delay(1000); // Delay 1 second after release
+        pros::delay(20);
+        changed = curr;
+    }
+    while(true) // Distance sensor code
+    {
+        curr = (clampSensor.get() < 0.5); // TODO: tune distance in mm
         backClamp.set_value(curr);
         if(changed && !curr) pros::delay(1000); // Delay 1 second after release
         pros::delay(20);
@@ -66,32 +76,40 @@ pros::Task wallStakeTask([]() {
     int currentPos = 0;
     while(true)
     {
-        if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1))
+        if(!is_auto)
         {
-            wallStake.move(127);
-        }
-        else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L2))
-        {
-            if(wallStakeLimitSwitch.get_value())
+            if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1))
             {
-                wallStake.brake();
-                liftSensor.reset_position();
-                continue;
+                wallStake.move(127);
             }
-            wallStake.move(-127);
-        }
-        else if(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN))
-        {
-            (currentPos % 2 == 0) ? wallStakePID.target_set(38) : wallStakePID.target_set(43);
-            currentPos++;
-            do
+            else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L2))
             {
-                wallStake.move(wallStakePID.compute(liftSensor.get_position() / 100.0));
-                pros::delay(ez::util::DELAY_TIME);
-            } while(wallStakePID.exit_condition() == ez::RUNNING);
+                if(wallStakeLimitSwitch.get_value())
+                {
+                    wallStake.brake();
+                    liftSensor.reset_position();
+                    continue;
+                }
+                wallStake.move(-127);
+            }
+            else if(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN))
+            {
+                (currentPos % 2 == 0) ? wallStakePID.target_set(38) : wallStakePID.target_set(43);
+                currentPos++;
+                do
+                {
+                    wallStake.move(wallStakePID.compute(liftSensor.get_position() / 100.0));
+                    pros::delay(ez::util::DELAY_TIME);
+                } while(wallStakePID.exit_condition(wallStake) == ez::RUNNING);
+            }
+            else wallStake.brake();
+            pros::delay(50);
         }
-        else wallStake.brake();
-        pros::delay(50);
+        else
+        {
+            wallStake.move(wallStakePID.compute());
+            pros::delay(20);
+        }
     }
 });
 
@@ -125,7 +143,7 @@ void initialize() {
 
     wallStake.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 
-    wallStakePID.exit_condition_set(500, 0.5);
+    wallStakePID.exit_condition_set(500, 0.5, 0, 0, 1000, 0);
 
     // piston inits
     intakeRaise.set_value(false);
@@ -162,8 +180,7 @@ void autonomous() {
  */
 void opcontrol() {
     set_drive_to_coast();
-
-    wallStakePID.target_set(30);
+    is_auto = false;
 
     // task to make sure all motors are plugged in and check the temperature of the drivetrain
     pros::Task motorCheck(checkMotorsAndPrintTemperature);
