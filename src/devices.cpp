@@ -18,14 +18,14 @@ pros::ADIDigitalIn backClampLeftLimitSwitch('C');
 pros::ADIDigitalIn backClampRightLimitSwitch('B');
 pros::ADIDigitalIn wallStakeLimitSwitch('H');
 
-ez::PID wallStakePID(1.1, 0, 0);
+ez::PID wallStakePID(0.02125);
 
 pros::Rotation liftSensor(16, false);
 pros::Optical optical(6);
-pros::Distance clampSensor(1);
+pros::Distance clampSensor(12);
 
-pros::Motor hooks (8, pros::E_MOTOR_GEARSET_06, true, pros::E_MOTOR_ENCODER_DEGREES);
-pros::Motor rollers (9, pros::E_MOTOR_GEARSET_06, true, pros::E_MOTOR_ENCODER_DEGREES);
+pros::Motor hooks (8, pros::E_MOTOR_GEARSET_06, false, pros::E_MOTOR_ENCODER_DEGREES);
+pros::Motor rollers (9, pros::E_MOTOR_GEARSET_06, false, pros::E_MOTOR_ENCODER_DEGREES);
 pros::MotorGroup intake ({hooks, rollers});
 pros::Motor wallStake (10, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
 
@@ -42,7 +42,7 @@ pros::Motor rightBack(3, pros::E_MOTOR_GEARSET_06, true);
 pros::MotorGroup left_side_motors({leftFront, leftMiddle, leftBack,});
 pros::MotorGroup right_side_motors({rightFront, rightMiddle, rightBack});
 
-pros::Imu imu(13); 
+pros::Imu imu(20); 
 
 Drive chassis (
   // Left Chassis Ports (negative port will reverse it!)
@@ -174,7 +174,9 @@ void modified_exit_conditions() {
 
 void calibrateChassis() {
     // calibrate the chassis with imu
-    chassis.initialize();
+    chassis.drive_imu_calibrate(false);
+    chassis.drive_sensor_reset();
+    chassis.opcontrol_curve_sd_initialize();
 }
 
 void chassisInits() {

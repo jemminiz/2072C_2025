@@ -52,3 +52,5 @@ inline std::atomic<double> roller_voltage = 0;
 inline bool backClamped = false;
 inline bool intakeRaised = false;
 inline bool rightDoinkered = false;
+
+extern pros::Task wallStakeTask;
