@@ -215,9 +215,14 @@ void positiveSideRed() {
   chassis.drive_angle_set(20);
 
   wallStake.move_absolute(200, 200);
-  intake = 127;
-  leftDoinker.set_value(true);
+  chassis.pid_turn_set(110, TURN_SPEED);
+  intakeRaise.set_value(true);
 
+  rollers = 127; 
+  chassis.pid_drive_set(10, 80, false);
+
+  /*
+  leftDoinker.set_value(true);
   chassis.pid_drive_set(35, 127, false);
   pros::delay(200);
   chassis.pid_wait_until(31);
@@ -303,7 +308,7 @@ void positiveSideRed() {
   chassis.pid_drive_set(-34, DRIVE_SPEED, true);
   pros::delay(100);
   chassis.pid_wait();
-
+*/
 }
 
 
@@ -318,6 +323,7 @@ void positiveSideQuals(bool isRed) {
 
   wallStake.move_absolute(10, 200);
 
+  
   if (!isRed) {
     chassis.pid_swing_set(ez::RIGHT_SWING,-70 * sign, -SWING_SPEED, 0);
     pros::delay(100);
@@ -1429,35 +1435,39 @@ void negativeAllianceStakeLast(bool isRed)
 
   chassis.pid_turn_set(330 * sign, TURN_SPEED);
   chassis.pid_wait();
-  chassis.pid_drive_set(20, DRIVE_SPEED, true);
+  chassis.pid_drive_set(24.5, DRIVE_SPEED, true);
   roller_voltage.store(127);
   hook_voltage.store(127);
   chassis.pid_wait();
   chassis.pid_swing_set(isRed ? ez::RIGHT_SWING : ez::LEFT_SWING, 265 * sign, SWING_SPEED);
   chassis.pid_wait();
 
-  chassis.pid_drive_set(24, DRIVE_SPEED, true);
+  chassis.pid_drive_set(22, DRIVE_SPEED, true);
   chassis.pid_wait();
   chassis.pid_drive_set(-12, DRIVE_SPEED, false);
   chassis.pid_wait();
   chassis.pid_swing_set(isRed ? ez::RIGHT_SWING : ez::LEFT_SWING, 135 * sign, SWING_SPEED, -20);
   chassis.pid_wait();
-  chassis.pid_drive_set(32, DRIVE_SPEED, true);
+  chassis.pid_drive_set(38, DRIVE_SPEED, true);
   chassis.pid_wait();
 
-  chassis.pid_turn_set(230, TURN_SPEED);
+  chassis.pid_turn_set(232, TURN_SPEED);
   chassis.pid_wait();
 
+  chassis.pid_speed_max_set(40);
   chassis.pid_drive_set(60, DRIVE_SPEED, false);
   chassis.pid_wait_until(40);
-  chassis.pid_speed_max_set(40);
   chassis.pid_wait();
-  chassis.pid_drive_set(-16, DRIVE_SPEED, true);
+  chassis.pid_drive_set(-20, 30, true);
   chassis.pid_wait();
-  chassis.pid_drive_set(16, DRIVE_SPEED, true);
+  chassis.pid_drive_set(20, DRIVE_SPEED, true);
   chassis.pid_wait();
   chassis.pid_drive_set(-20, DRIVE_SPEED, true);
   chassis.pid_wait();
+  chassis.pid_turn_set(280, TURN_SPEED);
+  chassis.pid_drive_set(-80, DRIVE_SPEED, false);
+
+  /*
   chassis.pid_turn_set(90 * sign, TURN_SPEED);
   chassis.pid_wait();
 
@@ -1473,7 +1483,8 @@ void negativeAllianceStakeLast(bool isRed)
   chassis.pid_wait();
   chassis.pid_drive_set(-12, DRIVE_SPEED, true);
   chassis.pid_wait();
-}
+*/
+  }
 void negativeAllianceStakeLastRed()
 {
   negativeAllianceStakeLast(true);

@@ -62,13 +62,15 @@ pros::Task intake_task([]() {
       optical.set_led_pwm(100);
 
       auto color = optical.get_hue();
-      if (is_red_team.load() && color > 190 && color < 250) {
+      if (is_red_team.load() && color > 210 && color < 250) {
+        pros::delay(100);
         hooks = -127;
-        pros::delay(500);
+        pros::delay(300);
       }
-      if (!is_red_team.load() && color < 10) {
+      else if (!is_red_team.load() && (color < 5 || color > 350)) {
+        pros::delay(100);
         hooks = -127;
-        pros::delay(500);
+        pros::delay(300);
       }
     } else
       optical.set_led_pwm(0);
@@ -130,6 +132,7 @@ pros::Task wallStakeTask([]() {
 
 // Enter your autons here!
 AutonFunction autonFunctions[] = {
+    {"Goal Side Red corner", positiveSideRed},
     {"Solo AWP Red", soloAwpRed},
     {"Solo AWP Blue", soloAwpBlue},
     {"Drive off line",
@@ -140,8 +143,8 @@ AutonFunction autonFunctions[] = {
     {"Negative side red quals", negativeSideQualsRed},
     {"Negative no alliance stake quals red", negativeNoAllianceStakeQualsRed},
     {"Negative no alliance stake quals blue", negativeNoAllianceStakeQualsBlue},
-    {"Negative alliance stake last red", negativeAllianceStakeLastRed},
     {"Negative alliance stake last blue", negativeAllianceStakeLastBlue},
+    {"Negative alliance stake last red", negativeAllianceStakeLastRed}
 };
 
 // this is needed for LVGL displaying! Do not touch!
@@ -230,7 +233,7 @@ void opcontrol() {
 
   while (true) {
     chassis.opcontrol_tank();
-    is_color_sort_enabled = false;
+    is_color_sort_enabled = false; //DONT FORGET TO CHANGE
     if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
       hook_voltage.store(127);
       roller_voltage.store(127);
