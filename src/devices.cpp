@@ -154,7 +154,7 @@ void driverControlCountdown() {
 }
 
 void default_constants() {
-  chassis.pid_heading_constants_set(3, 0, 20);
+  chassis.pid_heading_constants_set(2.95, 0, 20);
   chassis.pid_drive_constants_set(10, 0, 100);
   chassis.pid_turn_constants_set(3, 0, 20);
   chassis.pid_swing_constants_set(5, 0, 30);

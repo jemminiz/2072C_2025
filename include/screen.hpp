@@ -1,6 +1,7 @@
 // screen.hpp
 #pragma once
 
+#include "display/lv_misc/lv_color.h"
 #include <string>
 
 struct AutonFunction {

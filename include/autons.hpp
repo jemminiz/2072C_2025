@@ -22,6 +22,12 @@ void samsPositiveSideRed();
 void samsPositiveSideBlue();
 void positiveSideSimpleRed();
 void positiveSideSimpleBlue();
+void easyNegativeQualsBlue();
+void easyNegativeQualsRed();
+void negativeNoAllianceStakeQualsBlue();
+void negativeNoAllianceStakeQualsRed();
+void negativeAllianceStakeLastRed();
+void negativeAllianceStakeLastBlue();
 
 
 

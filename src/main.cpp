@@ -30,7 +30,27 @@ pros::Task auto_clamp_task([]() {
   } */
   while (true) // Distance sensor code
   {
+    curr = (clampSensor.get() < 20);
+    if(curr)
+    {
+      set_clamp.store(true);
+    }
+    if(curr && master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT))
+    {
+      set_clamp.store(false);
+      backClamp.set_value(set_clamp);
+      backClamped = false;
+      pros::delay(2000); // Delay 1 second after release
+      continue;
+    }
+    if(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT))
+    {
+      set_clamp.store(!backClamped); // Toggle based off what it currently is
+    }
     backClamp.set_value(set_clamp.load());
+    backClamped = set_clamp.load();
+    pros::delay(20);
+    changed = curr;
   }
 });
 
@@ -67,14 +87,6 @@ pros::Task intake_task([]() {
   }
 });
 
-void wallStake_control() {
-    if(is_auto) {
-        return;
-    } else if(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)) {
-        wallStakePID.target_set(2820);
-
-    }
-}
 pros::Task wallStakeTask([]() {
   pros::delay(2000);
   int currentPos = 0;
@@ -98,21 +110,11 @@ pros::Task wallStakeTask([]() {
         else
         if(master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN))
         {
-            wallStakePID.target_set(1980);
-            do
-            {
-                wallStake.move(wallStakePID.compute(liftSensor.get_position())); 
-                pros::delay(ez::util::DELAY_TIME);
-            } while(wallStakePID.exit_condition(wallStake) == ez::RUNNING);
+          wallStake.move_absolute(100, 200); // LOAD STATE 1!
         }
         else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT))
         {
-            wallStakePID.target_set(3800);
-            do
-            {
-                wallStake.move(wallStakePID.compute(liftSensor.get_position())); 
-                pros::delay(ez::util::DELAY_TIME);
-            } while (wallStakePID.exit_condition(wallStake) == ez::RUNNING);
+          wallStake.move_absolute(200, 200); // LOAD STATE 2!
         }
         else wallStake.brake();
         pros::delay(50);
@@ -126,34 +128,27 @@ pros::Task wallStakeTask([]() {
   }
 });
 
-pros::Task screenTask([]() {
-  while (true) {
-    printf("Computed Output Value: %.2f\n",
-           wallStakePID.compute(liftSensor.get_position()));
-    printf("Sensor Value: %d\n", liftSensor.get_position());
-    printf("Target Value: %.2f\n", wallStakePID.target_get());
-    printf("ErrorValue: %.2f\n",
-           (liftSensor.get_position()) - wallStakePID.target_get());
-    pros::delay(500);
-  }
-});
-
 // Enter your autons here!
 AutonFunction autonFunctions[] = {
     {"Solo AWP Red", soloAwpRed},
     {"Solo AWP Blue", soloAwpBlue},
     {"Drive off line",
      []() { chassis.pid_drive_set(-6, 110, false); }}, // Drive off the line!
+    {"Easy negative side blue quals", easyNegativeQualsBlue},
+    {"Easy negative side red quals", easyNegativeQualsRed},
     {"Negative side blue quals", negativeSideQualsBlue},
     {"Negative side red quals", negativeSideQualsRed},
+    {"Negative no alliance stake quals red", negativeNoAllianceStakeQualsRed},
+    {"Negative no alliance stake quals blue", negativeNoAllianceStakeQualsBlue},
+    {"Negative alliance stake last red", negativeAllianceStakeLastRed},
+    {"Negative alliance stake last blue", negativeAllianceStakeLastBlue},
 };
 
 // this is needed for LVGL displaying! Do not touch!
 size_t autonCount = sizeof(autonFunctions) / sizeof(autonFunctions[0]);
 
 void initialize() {
-  pros::delay(
-      750); // Stop the user from doing anything while legacy ports configure.
+  pros::delay(750); // Stop the user from doing anything while legacy ports configure.
 
   // screen init
   calibrationScreenInit();
@@ -201,6 +196,21 @@ void competition_initialize() {}
 void autonomous() {
   set_drive_to_hold();
 
+  pros::Task auto_clamp_autonomous([]() {
+    while(true)
+    {
+      while(is_auto_clamp_enabled)
+      {
+        if(clampSensor.get() < 20 && !backClamped)
+        {
+          set_clamp.store(true);
+        }
+        backClamped = set_clamp.load();
+        pros::delay(50);
+      }
+    }
+  });
+
   runSelectedAuton(autonFunctions, autonCount);
 }
 
@@ -213,10 +223,10 @@ void opcontrol() {
 
   // task to make sure all motors are plugged in and check the temperature of
   // the drivetrain
-  // pros::Task motorCheck(checkMotorsAndPrintTemperature);
+  pros::Task motorCheck(checkMotorsAndPrintTemperature);
   wallStakeTask.resume();
 
-  bool backClamped = set_clamp.load();
+  backClamped = set_clamp.load();
 
   while (true) {
     chassis.opcontrol_tank();
@@ -232,18 +242,13 @@ void opcontrol() {
       roller_voltage.store(0);
     }
 
-    int dist = clampSensor.get();
-    if(dist < 20 && !backClamped)
+    if(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT))
     {
-      set_clamp.store(true);
+      set_clamp.store(!backClamped);
+      backClamped = !backClamped;
     }
-    else if(backClamped && master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y))
-    {
-      set_clamp.store(false);
-    }
-    backClamped = set_clamp.load();
 
-    if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
+    if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A)) {
       rightDoinker.set_value(!rightDoinkered);
       rightDoinkered = !rightDoinkered;
     }
