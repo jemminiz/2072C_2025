@@ -212,14 +212,82 @@ void positiveSideBlue() {
 }
 
 void positiveSideRed() { 
+  is_red_team.store(true);
+
+  wallStakeTask.suspend();
+
+  pros::Task wallStakeWatch([]() {
+    while(true)
+    {
+      if(wallStakeLimitSwitch.get_new_press())
+      {
+        wallStake.brake();
+      }
+      pros::delay(50);
+    }
+  });
+
   chassis.drive_angle_set(20);
 
-  wallStake.move_absolute(200, 200);
-  chassis.pid_turn_set(110, TURN_SPEED);
+  wallStake.move_velocity(600);
+
+  pros::delay(600);
+
+  wallStake.move_velocity(-600);
+  
+  chassis.pid_drive_set(-5, DRIVE_SPEED, false);
+  pros::delay(800);
+  wallStake.move_velocity(0);
+  chassis.pid_wait();
+  
+
+  chassis.pid_turn_set(90, TURN_SPEED);
+  chassis.pid_wait();
   intakeRaise.set_value(true);
 
-  rollers = 127; 
-  chassis.pid_drive_set(10, 80, false);
+  roller_voltage.store(127); 
+  chassis.pid_drive_set(20, 80, false);
+  chassis.pid_wait();
+  intakeRaise.set_value(false);
+  pros::delay(200);
+
+  chassis.pid_turn_set(15, 80);
+  chassis.pid_wait();
+
+  chassis.pid_drive_set(-27, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-6, 80, false);
+  chassis.pid_wait();
+  set_clamp.store(true);
+
+  chassis.pid_turn_set(235, TURN_SPEED);
+  chassis.pid_wait();
+  hook_voltage.store(127);
+  chassis.pid_drive_set(27.5, DRIVE_SPEED, false);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-13, DRIVE_SPEED, false);
+  chassis.pid_wait();
+  
+  chassis.pid_turn_set(290, TURN_SPEED);
+  chassis.pid_wait();
+  
+  chassis.pid_drive_set(35, DRIVE_SPEED, false);
+  chassis.pid_wait();
+  pros::delay(300);
+  chassis.pid_drive_set(45, 127, false);
+  chassis.pid_wait();
+
+  chassis.pid_drive_set(-15, 20, true);
+  chassis.pid_wait();
+  pros::delay(200);
+  chassis.pid_drive_set(20, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-15, DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+  chassis.pid_turn_set(200, TURN_SPEED);
+  chassis.pid_wait();
+  set_clamp.store(false);
 
   /*
   leftDoinker.set_value(true);

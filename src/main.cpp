@@ -95,7 +95,8 @@ pros::Task wallStakeTask([]() {
   while (true) {
     if(!is_auto)
     {
-        if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1))
+        
+      if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1))
         {
             wallStake.move_voltage(12000);
         }
@@ -109,17 +110,22 @@ pros::Task wallStakeTask([]() {
             }
             wallStake.move_voltage(-12000);
         }
-        else
-        if(master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN))
+        else 
         {
-          wallStake.move_absolute(100, 200); // LOAD STATE 1!
+          if(master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN))
+          {
+            wallStake.move_absolute(150, 200); // LOAD STATE 1!
+          }
+          else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT))
+          {
+            wallStake.move_absolute(200, 200); // LOAD STATE 2!
+          }
+          else 
+          {
+            wallStake.brake();
+            pros::delay(50);
+          }
         }
-        else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT))
-        {
-          wallStake.move_absolute(200, 200); // LOAD STATE 2!
-        }
-        else wallStake.brake();
-        pros::delay(50);
     }
     else
     {
@@ -261,10 +267,10 @@ void opcontrol() {
       intakeRaised = !intakeRaised;
     }
 
-    if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT)) {
+    /*if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT)) {
       wallStake.tare_position();
       liftSensor.reset_position(); // Resets position
-    }
+    }*/
 
     pros::delay(ez::util::DELAY_TIME); // This is used for timer calculations!
                                        // Keep this ez::util::DELAY_TIME
