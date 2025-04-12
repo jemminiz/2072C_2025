@@ -1519,7 +1519,7 @@ void negativeAllianceStakeLast(bool isRed)
   chassis.pid_drive_set(38, DRIVE_SPEED, true);
   chassis.pid_wait();
 
-  chassis.pid_turn_set(232, TURN_SPEED);
+  chassis.pid_turn_set(232 * sign, TURN_SPEED);
   chassis.pid_wait();
 
   chassis.pid_speed_max_set(40);
@@ -1532,7 +1532,7 @@ void negativeAllianceStakeLast(bool isRed)
   chassis.pid_wait();
   chassis.pid_drive_set(-20, DRIVE_SPEED, true);
   chassis.pid_wait();
-  chassis.pid_turn_set(280, TURN_SPEED);
+  chassis.pid_turn_set(280 * sign, TURN_SPEED);
   chassis.pid_drive_set(-80, DRIVE_SPEED, false);
 
   /*
