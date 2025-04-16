@@ -10,71 +10,70 @@
 #include "screen.hpp"
 
 bool is_auto = true;
+bool manualClick = false;
 
-pros::Task auto_clamp_task([]() {
+void auto_clamp_task(void * params) {
   pros::delay(2000);
-  bool curr = set_clamp.load();
-  bool changed;
-  /*
-  while(true) // Limit switch code
+
+  while (true)
   {
-      // One gets a new press and the other is being pressed
-      curr = ((backClampLeftLimitSwitch.get_new_press() &&
-  backClampRightLimitSwitch.get_value()) ||
-  (backClampLeftLimitSwitch.get_value() &&
-  backClampRightLimitSwitch.get_new_press()) && is_auto_clamp_enabled.load());
-      backClamp.set_value(curr);
-      if(changed && !curr) pros::delay(1000); // Delay 1 second after release
-      pros::delay(20);
-      changed = curr;
-  } */
-  while (true) // Distance sensor code
-  {
-    curr = (clampSensor.get() < 20);
-    if(curr)
-    {
-      set_clamp.store(true);
+    if (!backClamped && clampSensor.get() < 20) {
+      backClamp.set_value(true);
+      backClamped = true;
+      pros::delay(250);
     }
-    if(curr && master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT))
-    {
-      set_clamp.store(false);
-      backClamp.set_value(set_clamp);
-      backClamped = false;
-      pros::delay(2000); // Delay 1 second after release
-      continue;
+    else if (manualClick) {
+      backClamped = !backClamped;
+      backClamp.set_value(backClamped);
+      manualClick = false;
+      pros::delay(750);
     }
-    if(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT))
-    {
-      set_clamp.store(!backClamped); // Toggle based off what it currently is
-    }
-    backClamp.set_value(set_clamp.load());
-    backClamped = set_clamp.load();
+
     pros::delay(20);
-    changed = curr;
   }
-});
+}
 
 pros::Task intake_task([]() {
   pros::delay(2000);
   while (true) {
-    if (is_color_sort_enabled.load()) {
+    if (is_color_sort_enabled.load() && backClamped) {
       optical.set_integration_time(5);
       optical.set_led_pwm(100);
 
       auto color = optical.get_hue();
       if (is_red_team.load() && color > 210 && color < 250) {
-        pros::delay(100);
+        pros::delay(200);
         hooks = -127;
         pros::delay(300);
       }
       else if (!is_red_team.load() && (color < 5 || color > 350)) {
-        pros::delay(100);
+        pros::delay(200);
         hooks = -127;
         pros::delay(300);
       }
-    } else
-      optical.set_led_pwm(0);
+      else {
+      optical.set_led_pwm(0);}
+   }
+   if (stopIntake) {
+    optical.set_integration_time(5);
+    optical.set_led_pwm(100);
 
+    auto color = optical.get_hue();
+    if (!is_red_team.load() && color > 205 && color < 255) {
+      hooks = -127;
+      pros::delay(3);
+      hooks = 0;
+      hooks.brake();
+      hook_voltage.store(0);
+    }
+    else if (is_red_team.load() && (color < 10 || color > 355)) {
+      hooks = -127;
+      pros::delay(3);
+      hooks = 0;
+      hooks.brake();
+      hook_voltage.store(0);
+    }
+  }
     hooks.move(hook_voltage.load());
     rollers.move(roller_voltage.load());
 
@@ -84,10 +83,10 @@ pros::Task intake_task([]() {
     if (roller_voltage.load() == 0) {
       rollers.brake();
     }
-
     pros::delay(20);
   }
 });
+
 
 pros::Task wallStakeTask([]() {
   pros::delay(2000);
@@ -95,37 +94,27 @@ pros::Task wallStakeTask([]() {
   while (true) {
     if(!is_auto)
     {
-        
-      if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1))
-        {
-            wallStake.move_voltage(12000);
-        }
-        else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L2))
-        {
-            if(wallStakeLimitSwitch.get_value())
+      while (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
+        wallStake.move_voltage(12000);
+        pros::delay(40);
+        wallStake.brake();
+      }
+      while (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
+        wallStake.move_voltage(-12000);
+        pros::delay(40);
+        wallStake.brake();
+        if(wallStakeLimitSwitch.get_value())
             {
                 wallStake.brake();
                 liftSensor.reset_position();
+                wallStake.tare_position();
                 continue;
             }
-            wallStake.move_voltage(-12000);
-        }
-        else 
-        {
-          if(master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN))
+      }
+          if(master.get_digital(pros::E_CONTROLLER_DIGITAL_Y))
           {
-            wallStake.move_absolute(150, 200); // LOAD STATE 1!
+            wallStake.move_absolute(127, 200); // LOAD STATE 1!
           }
-          else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT))
-          {
-            wallStake.move_absolute(200, 200); // LOAD STATE 2!
-          }
-          else 
-          {
-            wallStake.brake();
-            pros::delay(50);
-          }
-        }
     }
     else
     {
@@ -138,6 +127,8 @@ pros::Task wallStakeTask([]() {
 
 // Enter your autons here!
 AutonFunction autonFunctions[] = {
+    {"Goal Rush Blue",  positiveSideSimpleBlue},
+    {"Goal Side Blue corner", positiveSideBlue},  
     {"Goal Side Red corner", positiveSideRed},
     {"Solo AWP Red", soloAwpRed},
     {"Solo AWP Blue", soloAwpBlue},
@@ -181,9 +172,10 @@ void initialize() {
 
   // piston inits
   intakeRaise.set_value(false);
-  set_clamp.store(false);
+  backClamp.set_value(false);
   leftDoinker.set_value(false);
   rightDoinker.set_value(false);
+  pros::Task autoClampes(auto_clamp_task);
 }
 
 /**
@@ -208,14 +200,14 @@ void autonomous() {
   pros::Task auto_clamp_autonomous([]() {
     while(true)
     {
-      while(is_auto_clamp_enabled)
+      while(isAutoClamp)
       {
         if(clampSensor.get() < 20 && !backClamped)
         {
-          set_clamp.store(true);
+          backClamped = true;
+          backClamp.set_value(backClamped);
         }
-        backClamped = set_clamp.load();
-        pros::delay(50);
+        pros::delay(250);
       }
     }
   });
@@ -235,8 +227,6 @@ void opcontrol() {
   pros::Task motorCheck(checkMotorsAndPrintTemperature);
   wallStakeTask.resume();
 
-  backClamped = set_clamp.load();
-
   while (true) {
     chassis.opcontrol_tank();
     is_color_sort_enabled = false; //DONT FORGET TO CHANGE
@@ -253,8 +243,7 @@ void opcontrol() {
 
     if(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT))
     {
-      set_clamp.store(!backClamped);
-      backClamped = !backClamped;
+      manualClick = true;
     }
 
     if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A)) {
@@ -267,6 +256,13 @@ void opcontrol() {
       intakeRaised = !intakeRaised;
     }
 
+    if(wallStakeLimitSwitch.get_value())
+    {
+        wallStake.brake();
+        wallStake.tare_position();
+        liftSensor.reset_position();
+    }
+    
     /*if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT)) {
       wallStake.tare_position();
       liftSensor.reset_position(); // Resets position
