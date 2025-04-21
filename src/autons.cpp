@@ -553,46 +553,84 @@ void positiveSideSimple(bool isRed) {
   chassis.pid_drive_set(42, DRIVE_SPEED, true);
   chassis.pid_wait_until(10);
   stopIntake = true;
-  intakeRaise.set_value(true);
+  //intakeRaise.set_value(true);
 
 
   chassis.pid_wait_until(25);
-  intakeRaise.set_value(false);
+  //intakeRaise.set_value(false);
   chassis.pid_wait();
   wallStake.move_velocity(600);
   pros::delay(400);
   stopIntake = false;
+  roller_voltage.store(-127);
   chassis.pid_wait();
   wallStake.brake();
 
-  chassis.pid_turn_set(-95*sign, TURN_SPEED);
+  chassis.pid_turn_set(-97*sign, TURN_SPEED);
   wallStake.move_velocity(-600);
   pros::delay(1200);
   wallStake.brake();
   chassis.pid_wait();
-  roller_voltage.store(-127);
   
-  chassis.pid_drive_set(-35, DRIVE_SPEED, true);
+  chassis.pid_drive_set(-36.5, DRIVE_SPEED, true);
   chassis.pid_wait();
   
 
   
-  chassis.pid_turn_set(54*sign, TURN_SPEED);
+  chassis.pid_turn_set(55*sign, TURN_SPEED);
   chassis.pid_wait();
-  chassis.pid_drive_set(4, DRIVE_SPEED, true);
+  chassis.pid_drive_set(5.5, DRIVE_SPEED, true);
   chassis.pid_wait();
   
   leftDoinker.set_value(true);
-  chassis.pid_drive_set(-10, DRIVE_SPEED, true);
+  pros::delay(100);
+
+  is_color_sort_enabled.store(false);
+  chassis.pid_turn_set(30*sign, TURN_SPEED);
   chassis.pid_wait();
-  chassis.pid_swing_set(isRed ? ez::RIGHT_SWING : ez::LEFT_SWING, -10 * sign, -70, -25);
+
+  chassis.pid_drive_set(-27, DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+  chassis.pid_turn_set(-130*sign, TURN_SPEED);
+  chassis.pid_wait_until(-0.3*sign);
+  leftDoinker.set_value(false);
+  chassis.pid_wait();
+
+  hook_voltage.store(127);
+  is_color_sort_enabled.store(true);
+  chassis.pid_drive_set(75, DRIVE_SPEED, false);
+  chassis.pid_wait();
+
+  pros::delay(150);
+  chassis.pid_drive_set(-15, 40, false);
+  chassis.pid_wait();
+
+  chassis.pid_drive_set(20, DRIVE_SPEED, false);
+  chassis.pid_wait();
+
+  chassis.pid_drive_set(-20, DRIVE_SPEED, false);
   chassis.pid_wait();
   
-  chassis.pid_drive_set(-5, DRIVE_SPEED, true);
-  chassis.pid_wait_until(-1);
+
+  
+  /*
+  chassis.pid_swing_set(isRed ? ez::RIGHT_SWING : ez::LEFT_SWING, -2 * sign, -70, -40);
+  chassis.pid_wait();
+  
+  is_color_sort_enabled.store(false);
+  chassis.pid_drive_set(-9, DRIVE_SPEED, true);
+  chassis.pid_wait_until(-3);
+  chassis.pid_wait();
   backClamp.set_value(true);
   backClamped = true;
+  hook_voltage.store(127);
+
+  chassis.drive_angle_set(2*sign);
+  chassis.pid_swing_set(isRed ? ez::LEFT_SWING : ez::RIGHT_SWING, -120*sign, SWING_SPEED);
   chassis.pid_wait();
+
+
 /*  
   chassis.pid_drive_set(-40, DRIVE_SPEED, true);
   chassis.pid_wait();

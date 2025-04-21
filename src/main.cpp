@@ -109,11 +109,12 @@ pros::Task wallStakeTask([]() {
                 liftSensor.reset_position();
                 wallStake.tare_position();
                 continue;
+                pros::delay(40);
             }
       }
           if(master.get_digital(pros::E_CONTROLLER_DIGITAL_Y))
           {
-            wallStake.move_absolute(127, 200); // LOAD STATE 1!
+            wallStake.move_absolute(150, 150); // LOAD STATE 1!
           }
     }
     else
@@ -127,9 +128,9 @@ pros::Task wallStakeTask([]() {
 
 // Enter your autons here!
 AutonFunction autonFunctions[] = {
-    {"Goal Rush Blue",  positiveSideSimpleBlue},
-    {"Goal Side Blue corner", positiveSideBlue},  
-    {"Goal Side Red corner", positiveSideRed},
+    {"+ Goal Rush Blue",  positiveSideSimpleBlue},
+    {"+ 4 Ring Blue", positiveSideBlue},  
+    {"+ 4 Ring Red", positiveSideRed},
     {"Solo AWP Red", soloAwpRed},
     {"Solo AWP Blue", soloAwpBlue},
     {"Drive off line",
@@ -140,8 +141,8 @@ AutonFunction autonFunctions[] = {
     {"Negative side red quals", negativeSideQualsRed},
     {"Negative no alliance stake quals red", negativeNoAllianceStakeQualsRed},
     {"Negative no alliance stake quals blue", negativeNoAllianceStakeQualsBlue},
-    {"Negative alliance stake last blue", negativeAllianceStakeLastBlue},
-    {"Negative alliance stake last red", negativeAllianceStakeLastRed}
+    {"- Elims blue", negativeAllianceStakeLastBlue},
+    {"- Elims red", negativeAllianceStakeLastRed}
 };
 
 // this is needed for LVGL displaying! Do not touch!
@@ -256,7 +257,7 @@ void opcontrol() {
       intakeRaised = !intakeRaised;
     }
 
-    if(wallStakeLimitSwitch.get_value())
+    /*if(wallStakeLimitSwitch.get_value())
     {
         wallStake.brake();
         wallStake.tare_position();
