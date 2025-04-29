@@ -3,133 +3,153 @@
 #include "autons.hpp"
 #include "devices.hpp"
 #include "drivercontrol.hpp"
-#include "pros/llemu.hpp"
 #include "pros/misc.h"
 #include "pros/motors.h"
 #include "pros/rtos.hpp"
 #include "screen.hpp"
 
 bool is_auto = true;
-bool manualClick = false;
+std::atomic<bool> manualClick = false;
 
-void auto_clamp_task(void * params) {
+pros::Task auto_clamp_task([]() {
   pros::delay(2000);
 
-  while (true)
-  {
-    if (!backClamped && clampSensor.get() < 20) {
-      backClamp.set_value(true);
-      backClamped = true;
-      pros::delay(250);
-    }
-    else if (manualClick) {
-      backClamped = !backClamped;
-      backClamp.set_value(backClamped);
-      manualClick = false;
-      pros::delay(750);
-    }
-
-    pros::delay(20);
-  }
-}
-
-pros::Task intake_task([]() {
-  pros::delay(2000);
   while (true) {
-    if (is_color_sort_enabled.load() && backClamped) {
-      optical.set_integration_time(5);
-      optical.set_led_pwm(100);
-
-      auto color = optical.get_hue();
-      if (is_red_team.load() && color > 210 && color < 250) {
-        pros::delay(200);
-        hooks = -127;
-        pros::delay(300);
+    if (!is_auto) {
+      // Driver control mode
+      backClamped = set_clamp.load();
+      if (!backClamped && clampSensor.get() < 20) {
+        backClamp.set_value(true);
+        set_clamp.store(true);
+        pros::delay(250);
+      } else if (manualClick) {
+        bool newState = !set_clamp.load();
+        set_clamp.store(newState);
+        backClamp.set_value(newState);
+        manualClick = false;
+        pros::delay(750);
       }
-      else if (!is_red_team.load() && (color < 5 || color > 350)) {
-        pros::delay(200);
-        hooks = -127;
-        pros::delay(300);
+    } else if (isAutoClamp) {
+      // Autonomous mode
+      if (clampSensor.get() < 20 && !backClamped) {
+        backClamped = true;
+        set_clamp.store(true);
+        backClamp.set_value(true);
+        pros::delay(250);
       }
-      else {
-      optical.set_led_pwm(0);}
-   }
-   if (stopIntake) {
-    optical.set_integration_time(5);
-    optical.set_led_pwm(100);
+    }
 
-    auto color = optical.get_hue();
-    if (!is_red_team.load() && color > 205 && color < 255) {
-      hooks = -127;
-      pros::delay(3);
-      hooks = 0;
-      hooks.brake();
-      hook_voltage.store(0);
-    }
-    else if (is_red_team.load() && (color < 10 || color > 355)) {
-      hooks = -127;
-      pros::delay(3);
-      hooks = 0;
-      hooks.brake();
-      hook_voltage.store(0);
-    }
-  }
-    hooks.move(hook_voltage.load());
-    rollers.move(roller_voltage.load());
-
-    if (hook_voltage.load() == 0) {
-      hooks.brake();
-    }
-    if (roller_voltage.load() == 0) {
-      rollers.brake();
-    }
     pros::delay(20);
   }
 });
 
+pros::Task color_sort_task([]() {
+  pros::delay(2000);
+  const int PROX_THRESHOLD_ENTER = 50;
+  const int PROX_THRESHOLD_EXIT = 120;
+  bool prevRingState = false;
+  bool ringDetected = false;
+  bool throwing = false;
+  uint32_t throwStartTime = 0;
+  optical.set_integration_time(10);
+  optical.set_led_pwm(100);
+  while (true) {
+    bool currentRingState = false;
+    if (is_color_sort_enabled) {
+      if (is_red_team.load()) // Red team - throw blue
+      {
+        currentRingState = (optical.get_proximity() > PROX_THRESHOLD_ENTER &&
+                                optical.get_hue() <= 16 ||
+                            optical.get_hue() >= 280);
+      } else if (!is_red_team.load()) // Blue team - throw red
+      {
+        currentRingState =
+            (optical.get_proximity() > PROX_THRESHOLD_ENTER &&
+             optical.get_hue() >= 100 && optical.get_hue() <= 250);
+      }
+
+      if (currentRingState && !prevRingState) {
+        ringDetected = true;
+      } else if (ringDetected &&
+                 optical.get_proximity() < PROX_THRESHOLD_EXIT) {
+        hooks.move(-127);
+        throwStartTime = pros::millis();
+        throwing = true;
+        ringDetected = false;
+      }
+      prevRingState = currentRingState;
+
+      // stop throwing after 200ms
+      if (throwing && (pros::millis() - throwStartTime >= 200)) {
+        hooks.move(127);
+        rollers.move(127);
+        throwing = false;
+      }
+    }
+    if (stopIntake) {
+      if (is_red_team.load() &&
+          (optical.get_hue() >= 100 && optical.get_hue() <= 250)) {
+        intake.brake();
+      } else if (!is_red_team.load() &&
+                 (optical.get_hue() <= 16 || optical.get_hue() >= 280)) {
+        intake.brake();
+      }
+    }
+    pros::delay(10);
+  }
+});
 
 pros::Task wallStakeTask([]() {
   pros::delay(2000);
   int currentPos = 0;
+  enum WallStakePositions {
+    ZERO = 0,
+    LOAD = 110,
+    SCORE = 250,
+    UNTIP = 330,
+    GRAB = 400
+  };
   while (true) {
-    if(!is_auto)
-    {
-      while (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
-        wallStake.move_voltage(12000);
-        pros::delay(40);
-        wallStake.brake();
-      }
-      while (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
+    if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1)) {
+      currentPos += 1;
+      currentPos %= 3;
+    } else if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L2)) {
+      currentPos = (currentPos + 3 - 1) % 3;
+    } else if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y)) {
+      currentPos = 3;
+    } else if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)) {
+      currentPos = 4;
+    } else if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) {
+      // zero lb
+      while (!wallStakeLimitSwitch.get_value()) {
         wallStake.move_voltage(-12000);
-        pros::delay(40);
-        wallStake.brake();
-        if(wallStakeLimitSwitch.get_value())
-            {
-                wallStake.brake();
-                liftSensor.reset_position();
-                wallStake.tare_position();
-                continue;
-                pros::delay(40);
-            }
       }
-          if(master.get_digital(pros::E_CONTROLLER_DIGITAL_Y))
-          {
-            wallStake.move_absolute(150, 150); // LOAD STATE 1!
-          }
-    }
-    else
-    {
-        wallStake.move(wallStakePID.compute(liftSensor.get_position()));
-        pros::delay(50);
     }
 
+    switch (currentPos) {
+    case 0:
+      wallStake.move_absolute(ZERO, 150);
+      break;
+    case 1:
+      wallStake.move_absolute(LOAD, 150);
+      break;
+    case 2:
+      wallStake.move_absolute(SCORE, 150);
+      break;
+    case 3:
+      wallStake.move_absolute(UNTIP, 150);
+      break;
+    case 4:
+      wallStake.move_absolute(GRAB, 150);
+      break;
+    }
   }
 });
 
 // Enter your autons here!
 AutonFunction autonFunctions[] = {
-    {"+ Goal Rush Blue",  positiveSideSimpleBlue},
-    {"+ 4 Ring Blue", positiveSideBlue},  
+    {"+ Goal Rush Blue", positiveSideSimpleBlue},
+    {"+ 4 Ring Blue", positiveSideBlue},
     {"+ 4 Ring Red", positiveSideRed},
     {"Solo AWP Red", soloAwpRed},
     {"Solo AWP Blue", soloAwpBlue},
@@ -142,14 +162,16 @@ AutonFunction autonFunctions[] = {
     {"Negative no alliance stake quals red", negativeNoAllianceStakeQualsRed},
     {"Negative no alliance stake quals blue", negativeNoAllianceStakeQualsBlue},
     {"- Elims blue", negativeAllianceStakeLastBlue},
-    {"- Elims red", negativeAllianceStakeLastRed}
-};
+    {"- Elims red", negativeAllianceStakeLastRed},
+    {"- Ring Rush Red", negativeRingRushRed},
+    {"- Ring Rush Blue", negativeRingRushBlue}};
 
 // this is needed for LVGL displaying! Do not touch!
 size_t autonCount = sizeof(autonFunctions) / sizeof(autonFunctions[0]);
 
 void initialize() {
-  pros::delay(750); // Stop the user from doing anything while legacy ports configure.
+  pros::delay(
+      750); // Stop the user from doing anything while legacy ports configure.
 
   // screen init
   calibrationScreenInit();
@@ -162,8 +184,7 @@ void initialize() {
       // auton count needed for LVGL displaying
       autonCount,
       // customizable color scheme, play around with it!
-      LV_COLOR_MAKE(0x00, 0xA6, 0xF5)
-  );
+      LV_COLOR_MAKE(0x00, 0xA6, 0xF5));
 
   chassisInits();
 
@@ -176,7 +197,6 @@ void initialize() {
   backClamp.set_value(false);
   leftDoinker.set_value(false);
   rightDoinker.set_value(false);
-  pros::Task autoClampes(auto_clamp_task);
 }
 
 /**
@@ -197,22 +217,7 @@ void competition_initialize() {}
  */
 void autonomous() {
   set_drive_to_hold();
-
-  pros::Task auto_clamp_autonomous([]() {
-    while(true)
-    {
-      while(isAutoClamp)
-      {
-        if(clampSensor.get() < 20 && !backClamped)
-        {
-          backClamped = true;
-          backClamp.set_value(backClamped);
-        }
-        pros::delay(250);
-      }
-    }
-  });
-
+  is_auto = true;
   runSelectedAuton(autonFunctions, autonCount);
 }
 
@@ -226,26 +231,20 @@ void opcontrol() {
   // task to make sure all motors are plugged in and check the temperature of
   // the drivetrain
   pros::Task motorCheck(checkMotorsAndPrintTemperature);
+  color_sort_task.suspend();
   wallStakeTask.resume();
 
   while (true) {
     chassis.opcontrol_tank();
-    is_color_sort_enabled = false; //DONT FORGET TO CHANGE
+    is_color_sort_enabled = false;
     if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
-      hook_voltage.store(127);
-      roller_voltage.store(127);
+      intake.move(127);
     } else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
-      hook_voltage.store(-127);
-      roller_voltage.store(-127);
-    } else {
-      hook_voltage.store(0);
-      roller_voltage.store(0);
+      intake.move(-127);
     }
 
-    if(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT))
-    {
-      manualClick = true;
-    }
+    manualClick.store(
+        master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT));
 
     if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A)) {
       rightDoinker.set_value(!rightDoinkered);
@@ -256,18 +255,6 @@ void opcontrol() {
       intakeRaise.set_value(intakeRaised);
       intakeRaised = !intakeRaised;
     }
-
-    /*if(wallStakeLimitSwitch.get_value())
-    {
-        wallStake.brake();
-        wallStake.tare_position();
-        liftSensor.reset_position();
-    }
-    
-    /*if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT)) {
-      wallStake.tare_position();
-      liftSensor.reset_position(); // Resets position
-    }*/
 
     pros::delay(ez::util::DELAY_TIME); // This is used for timer calculations!
                                        // Keep this ez::util::DELAY_TIME

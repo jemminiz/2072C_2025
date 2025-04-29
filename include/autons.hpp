@@ -28,6 +28,8 @@ void negativeNoAllianceStakeQualsBlue();
 void negativeNoAllianceStakeQualsRed();
 void negativeAllianceStakeLastRed();
 void negativeAllianceStakeLastBlue();
+void negativeRingRushRed();
+void negativeRingRushBlue();
 
 
 
