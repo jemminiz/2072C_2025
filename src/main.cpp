@@ -10,6 +10,7 @@
 
 bool is_auto = true;
 std::atomic<bool> manualClick = false;
+RingState ringState = IDLE;
 
 pros::Task auto_clamp_task([]() {
   pros::delay(2000);
@@ -45,57 +46,73 @@ pros::Task auto_clamp_task([]() {
 
 pros::Task color_sort_task([]() {
   pros::delay(2000);
-  const int PROX_THRESHOLD_ENTER = 50;
-  const int PROX_THRESHOLD_EXIT = 120;
+  RingState ringState = IDLE;
+  bool currentRingState = false;
   bool prevRingState = false;
-  bool ringDetected = false;
-  bool throwing = false;
   uint32_t throwStartTime = 0;
-  optical.set_integration_time(10);
+  uint32_t detectedStartTime = 0;
+  bool throwing = false;
   optical.set_led_pwm(100);
+  optical.set_integration_time(5);
   while (true) {
-    bool currentRingState = false;
-    if (is_color_sort_enabled) {
-      if (is_red_team.load()) // Red team - throw blue
-      {
-        currentRingState = (optical.get_proximity() > PROX_THRESHOLD_ENTER &&
-                                optical.get_hue() <= 16 ||
-                            optical.get_hue() >= 280);
-      } else if (!is_red_team.load()) // Blue team - throw red
-      {
+    if (is_color_sort_enabled.load()) {
+      // 1. Detect if a bad ring is seen based on hue
+      if (!is_red_team.load()) {
         currentRingState =
-            (optical.get_proximity() > PROX_THRESHOLD_ENTER &&
-             optical.get_hue() >= 100 && optical.get_hue() <= 250);
+            (optical.get_hue() <= 16 || optical.get_hue() >= 280);
+      } else {
+        currentRingState =
+            (optical.get_hue() >= 100 && optical.get_hue() <= 250);
       }
 
-      if (currentRingState && !prevRingState) {
-        ringDetected = true;
-      } else if (ringDetected &&
-                 optical.get_proximity() < PROX_THRESHOLD_EXIT) {
+      // 2. State machine
+      switch (ringState) {
+      case IDLE:
+        if (currentRingState) {
+          detectedStartTime = pros::millis();
+          ringState = DETECTED;
+        }
+        break;
+
+      case DETECTED:
+        if (currentRingState) {
+          if (pros::millis() - detectedStartTime >= 50) {
+            ringState = CONFIRMED;
+          }
+        } else {
+          ringState = IDLE;
+        }
+        break;
+
+      case CONFIRMED:
+        // Wait for physical contact
+        if (intakeLimitSwitch.get_value()) {
+          ringState = READY_TO_LAUNCH;
+        }
+        // Timeout fallback
+        else if (pros::millis() - detectedStartTime > 500) {
+          ringState = IDLE;
+        }
+        break;
+
+      case READY_TO_LAUNCH:
+        pros::delay(100);
         hooks.move(-127);
         throwStartTime = pros::millis();
         throwing = true;
-        ringDetected = false;
+        ringState = IDLE;
+        break;
       }
+
       prevRingState = currentRingState;
 
-      // stop throwing after 200ms
+      // Stop hooks after 200ms
       if (throwing && (pros::millis() - throwStartTime >= 200)) {
-        hooks.move(127);
-        rollers.move(127);
+        hooks.move(0);
         throwing = false;
       }
     }
-    if (stopIntake) {
-      if (is_red_team.load() &&
-          (optical.get_hue() >= 100 && optical.get_hue() <= 250)) {
-        intake.brake();
-      } else if (!is_red_team.load() &&
-                 (optical.get_hue() <= 16 || optical.get_hue() >= 280)) {
-        intake.brake();
-      }
-    }
-    pros::delay(10);
+    pros::delay(20);
   }
 });
 
@@ -104,10 +121,10 @@ pros::Task wallStakeTask([]() {
   int currentPos = 0;
   enum WallStakePositions {
     ZERO = 0,
-    LOAD = 110,
-    SCORE = 250,
-    UNTIP = 330,
-    GRAB = 400
+    LOAD = 130,
+    SCORE = 480,
+    UNTIP = 900,
+    GRAB = 600
   };
   while (true) {
     if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1)) {
@@ -117,13 +134,16 @@ pros::Task wallStakeTask([]() {
       currentPos = (currentPos + 3 - 1) % 3;
     } else if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y)) {
       currentPos = 3;
-    } else if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)) {
+    } else if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)) {
       currentPos = 4;
     } else if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) {
       // zero lb
-      while (!wallStakeLimitSwitch.get_value()) {
-        wallStake.move_voltage(-12000);
-      }
+      wallStake.move_voltage(-6000); // slower approach
+      while (!wallStakeLimitSwitch.get_value())
+        pros::delay(10);
+      wallStake.move_voltage(0);
+      wallStake.tare_position(); // zero out the encoder
+      currentPos = 0;
     }
 
     switch (currentPos) {
@@ -143,6 +163,7 @@ pros::Task wallStakeTask([]() {
       wallStake.move_absolute(GRAB, 150);
       break;
     }
+    pros::delay(20);
   }
 });
 
@@ -228,21 +249,111 @@ void opcontrol() {
   set_drive_to_coast();
   is_auto = false;
 
-  // task to make sure all motors are plugged in and check the temperature of
-  // the drivetrain
   pros::Task motorCheck(checkMotorsAndPrintTemperature);
   color_sort_task.suspend();
   wallStakeTask.resume();
 
+  RingState ringState = IDLE;
+  bool currentRingState = false;
+  bool prevRingState = false;
+  uint32_t throwStartTime = 0;
+  uint32_t detectedStartTime = 0;
+  bool throwing = false;
+
+  optical.set_integration_time(5);
+
   while (true) {
     chassis.opcontrol_tank();
-    is_color_sort_enabled = false;
-    if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
-      intake.move(127);
-    } else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
-      intake.move(-127);
+
+    if (is_color_sort_enabled.load()) {
+      // 1. Detect if a bad ring is seen based on hue
+      if (!is_red_team.load()) {
+        currentRingState =
+            (optical.get_hue() <= 16 || optical.get_hue() >= 280);
+      } else {
+        currentRingState =
+            (optical.get_hue() >= 100 && optical.get_hue() <= 250);
+      }
+
+      // 2. State machine
+      switch (ringState) {
+      case IDLE:
+        if (currentRingState) {
+          detectedStartTime = pros::millis();
+          ringState = DETECTED;
+        }
+        break;
+
+      case DETECTED:
+        if (currentRingState) {
+          if (pros::millis() - detectedStartTime >= 50) {
+            ringState = CONFIRMED;
+          }
+        } else {
+          ringState = IDLE;
+        }
+        break;
+
+      case CONFIRMED:
+        // Wait for physical contact
+        if (intakeLimitSwitch.get_value()) {
+          ringState = READY_TO_LAUNCH;
+        }
+        // Timeout fallback
+        else if (pros::millis() - detectedStartTime > 500) {
+          ringState = IDLE;
+        }
+        break;
+
+      case READY_TO_LAUNCH:
+        pros::delay(100);
+        hooks.move(-127);
+        throwStartTime = pros::millis();
+        throwing = true;
+        ringState = IDLE;
+        break;
+      }
+
+      prevRingState = currentRingState;
+
+      // Stop hooks after 200ms
+      if (throwing && (pros::millis() - throwStartTime >= 200)) {
+        hooks.move(0);
+        throwing = false;
+      }
     }
 
+    // Intake control
+    if (!throwing) {
+      if (is_color_sort_enabled.load()) {
+        if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1) &&
+            !master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
+          intake.move(127);
+        } else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
+          intake.move(-127);
+          is_color_sort_enabled.store(false);
+        } else if ((master.get_digital(pros::E_CONTROLLER_DIGITAL_R1) &&
+                    master.get_digital_new_press(
+                        pros::E_CONTROLLER_DIGITAL_R2)) ||
+                   (master.get_digital_new_press(
+                        pros::E_CONTROLLER_DIGITAL_R2) &&
+                    master.get_digital(pros::E_CONTROLLER_DIGITAL_R1))) {
+          is_color_sort_enabled.store(!is_color_sort_enabled.load());
+        } else if (ringState == IDLE) {
+          intake.move(0);
+        }
+      } else {
+        if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
+          intake.move(127);
+        } else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
+          intake.move(-127);
+        } else {
+          intake.move(0);
+        }
+      }
+    }
+
+    // Manual controls
     manualClick.store(
         master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT));
 
@@ -256,7 +367,6 @@ void opcontrol() {
       intakeRaised = !intakeRaised;
     }
 
-    pros::delay(ez::util::DELAY_TIME); // This is used for timer calculations!
-                                       // Keep this ez::util::DELAY_TIME
+    pros::delay(ez::util::DELAY_TIME);
   }
 }

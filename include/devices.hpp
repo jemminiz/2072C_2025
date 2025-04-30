@@ -22,8 +22,7 @@ extern pros::ADIDigitalOut leftDoinker;
 extern pros::ADIDigitalOut rightDoinker;
 
 
-extern pros::ADIDigitalIn backClampLeftLimitSwitch;
-extern pros::ADIDigitalIn backClampRightLimitSwitch;
+extern pros::ADIDigitalIn intakeLimitSwitch;
 extern pros::ADIDigitalIn wallStakeLimitSwitch;
 
 extern ez::PID wallStakePID;
@@ -55,3 +54,14 @@ inline bool isAutoClamp = true;
 inline bool stopIntake = false;
 
 extern pros::Task wallStakeTask;
+
+
+
+enum RingState {
+    IDLE,
+    DETECTED,
+    CONFIRMED,
+    READY_TO_LAUNCH
+  };
+
+extern RingState ringState;

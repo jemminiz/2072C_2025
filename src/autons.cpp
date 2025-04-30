@@ -1367,6 +1367,8 @@ void soloAwp(bool isRed) {
 
   pros::delay(600);
 
+  wallStake.brake();
+
   chassis.pid_drive_set(-18, DRIVE_SPEED, true);
   chassis.pid_wait();
   wallStake.move(-127);
@@ -1374,7 +1376,7 @@ void soloAwp(bool isRed) {
   chassis.pid_wait();
   chassis.pid_drive_set(-14, DRIVE_SPEED, true);
   chassis.pid_wait();
-  chassis.pid_drive_set(-10, 40, false);
+  chassis.pid_drive_set(-12, 40, false);
   chassis.pid_wait();
   set_clamp.store(true);
   chassis.pid_wait();
@@ -1384,20 +1386,22 @@ void soloAwp(bool isRed) {
   hooks = 127;
   chassis.pid_drive_set(25, DRIVE_SPEED, true);
   chassis.pid_wait();
-  chassis.pid_turn_set(110 * sign, TURN_SPEED);
+  chassis.pid_turn_set(110 * sign, 60);
   chassis.pid_wait();
   intakeRaise.set_value(true);
   chassis.pid_wait();  
-  chassis.pid_drive_set(60, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  chassis.pid_turn_set(45 * sign, TURN_SPEED);
+  chassis.pid_drive_set(60.5, DRIVE_SPEED, true);
   chassis.pid_wait();
   intakeRaise.set_value(false);
   isAutoClamp = false; 
   backClamp.set_value(false);
-  chassis.pid_drive_set(20, DRIVE_SPEED, true);
-  hooks = 0;;
+  stopIntake = true;
+  chassis.pid_turn_set(225 * sign, TURN_SPEED);
   chassis.pid_wait();
+  chassis.pid_drive_set(-20, DRIVE_SPEED, true);
+  hooks = 0;
+  chassis.pid_wait();
+  stopIntake = false;
   chassis.pid_turn_set(180 * sign, TURN_SPEED);
   chassis.pid_wait();  
   isAutoClamp = true;
@@ -1407,14 +1411,15 @@ void soloAwp(bool isRed) {
   chassis.pid_wait();
   backClamp.set_value(true);
   backClamped = true;
-  hooks = 127;
+  hooks = -127;
   chassis.pid_turn_set(85 * sign, TURN_SPEED);
   chassis.pid_wait();
+  hooks = 127;
   chassis.pid_drive_set(24, DRIVE_SPEED, true);
   chassis.pid_wait();
   chassis.pid_turn_set(270 * sign, TURN_SPEED);
   chassis.pid_wait();
-  chassis.pid_drive_set(48, DRIVE_SPEED, true);
+  chassis.pid_drive_set(30, DRIVE_SPEED, true);
 }
 
 void soloAwpBlue() {

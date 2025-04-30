@@ -14,11 +14,8 @@ pros::ADIDigitalOut leftDoinker('F');
 pros::ADIDigitalOut rightDoinker('D');
 pros::ADIDigitalOut backClamp('A');
 
-pros::ADIDigitalIn backClampLeftLimitSwitch('C');
-pros::ADIDigitalIn backClampRightLimitSwitch('B');
+pros::ADIDigitalIn intakeLimitSwitch('C');
 pros::ADIDigitalIn wallStakeLimitSwitch('H');
-
-ez::PID wallStakePID(0.02125);
 
 pros::Rotation liftSensor(16, false);
 pros::Optical optical(6);
@@ -43,6 +40,7 @@ pros::MotorGroup left_side_motors({leftFront, leftMiddle, leftBack,});
 pros::MotorGroup right_side_motors({rightFront, rightMiddle, rightBack});
 
 pros::Imu imu(20); 
+ez::PID wallStakePID(0);
 
 Drive chassis (
   // Left Chassis Ports (negative port will reverse it!)
@@ -119,7 +117,7 @@ void checkMotorsAndPrintTemperature() {
 
         double averageTempCelsius = totalTemp / 6;
         double averageTempFahrenheit = averageTempCelsius * 9.0 / 5.0 + 32.0;
-        master.set_text(0, 0, "Avg Temp: " + std::to_string(imu.get_heading()));
+        master.set_text(0, 0, "Avg Temp: " + std::to_string(wallStakeLimitSwitch.get_value()));
 
         pros::delay(250);
     }
