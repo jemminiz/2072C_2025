@@ -117,7 +117,7 @@ void checkMotorsAndPrintTemperature() {
 
         double averageTempCelsius = totalTemp / 6;
         double averageTempFahrenheit = averageTempCelsius * 9.0 / 5.0 + 32.0;
-        master.set_text(0, 0, "Avg Temp: " + std::to_string(wallStakeLimitSwitch.get_value()));
+        master.set_text(0, 0, "Avg Temp: " + std::to_string(liftSensor.get_position()));
 
         pros::delay(250);
     }

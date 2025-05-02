@@ -59,10 +59,10 @@ pros::Task color_sort_task([]() {
       // 1. Detect if a bad ring is seen based on hue
       if (!is_red_team.load()) {
         currentRingState =
-            (optical.get_hue() <= 16 || optical.get_hue() >= 280);
+            (optical.get_hue() <= 20 || optical.get_hue() >= 280);
       } else {
         currentRingState =
-            (optical.get_hue() >= 100 && optical.get_hue() <= 250);
+            (optical.get_hue() >= 200 && optical.get_hue() <= 250);
       }
 
       // 2. State machine
@@ -118,7 +118,7 @@ pros::Task color_sort_task([]() {
 
 pros::Task wallStakeTask([]() {
   pros::delay(2000);
-  int currentPos = 0;
+  currentPos = 0;
   enum WallStakePositions {
     ZERO = 0,
     LOAD = 130,
@@ -170,12 +170,19 @@ pros::Task wallStakeTask([]() {
 // Enter your autons here!
 AutonFunction autonFunctions[] = {
     {"+ Goal Rush Blue", positiveSideSimpleBlue},
+    {"Red Ring rush solo awp", soloAwpSafeRed},
     {"+ 4 Ring Blue", positiveSideBlue},
     {"+ 4 Ring Red", positiveSideRed},
     {"Solo AWP Red", soloAwpRed},
     {"Solo AWP Blue", soloAwpBlue},
     {"Drive off line",
      []() { chassis.pid_drive_set(-6, 110, false); }}, // Drive off the line!
+     {"Universal Blue Left",
+     universalBlueLeft}, // Universal Blue
+    {"Universal Blue Right",
+      universalBlueRight}, // Universal Blue
+      {"Universal Red Left", universalRedLeft}, // Universal Red
+      {"Universal Red Right", universalRedRight}, // Universal Red
     {"Easy negative side blue quals", easyNegativeQualsBlue},
     {"Easy negative side red quals", easyNegativeQualsRed},
     {"Negative side blue quals", negativeSideQualsBlue},
@@ -269,10 +276,10 @@ void opcontrol() {
       // 1. Detect if a bad ring is seen based on hue
       if (!is_red_team.load()) {
         currentRingState =
-            (optical.get_hue() <= 16 || optical.get_hue() >= 280);
+            (optical.get_hue() <= 20 || optical.get_hue() >= 280);
       } else {
         currentRingState =
-            (optical.get_hue() >= 100 && optical.get_hue() <= 250);
+            (optical.get_hue() >= 200 && optical.get_hue() <= 250);
       }
 
       // 2. State machine

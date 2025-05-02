@@ -53,6 +53,8 @@ inline bool rightDoinkered = false;
 inline bool isAutoClamp = true; 
 inline bool stopIntake = false;
 
+inline int currentPos;
+
 extern pros::Task wallStakeTask;
 
 

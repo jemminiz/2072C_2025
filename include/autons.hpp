@@ -30,7 +30,10 @@ void negativeAllianceStakeLastRed();
 void negativeAllianceStakeLastBlue();
 void negativeRingRushRed();
 void negativeRingRushBlue();
-
+void universalBlueLeft();
+void universalBlueRight();
+void universalRedLeft();
+void universalRedRight();
 
 
 
