@@ -44,8 +44,11 @@ pros::Task auto_clamp_task([]() {
   }
 });
 
+enum RingColors { NONE, RED, BLUE };
+
 pros::Task color_sort_task([]() {
   pros::delay(2000);
+  RingColors currentRing = NONE;
   RingState ringState = IDLE;
   bool currentRingState = false;
   bool prevRingState = false;
@@ -57,12 +60,14 @@ pros::Task color_sort_task([]() {
   while (true) {
     if (is_color_sort_enabled.load()) {
       // 1. Detect if a bad ring is seen based on hue
+      if ((optical.get_hue() <= 20 || optical.get_hue() >= 280))
+        currentRing = RED;
+      else if (optical.get_hue() >= 200 && optical.get_hue() <= 250)
+        currentRing = BLUE;
       if (!is_red_team.load()) {
-        currentRingState =
-            (optical.get_hue() <= 20 || optical.get_hue() >= 280);
+        currentRingState = (currentRing == RED);
       } else {
-        currentRingState =
-            (optical.get_hue() >= 200 && optical.get_hue() <= 250);
+        currentRingState = (currentRing == BLUE);
       }
 
       // 2. State machine
@@ -70,6 +75,8 @@ pros::Task color_sort_task([]() {
       case IDLE:
         if (currentRingState) {
           detectedStartTime = pros::millis();
+          ringState = DETECTED;
+        } else if (stopIntake && !currentRingState) {
           ringState = DETECTED;
         }
         break;
@@ -79,19 +86,28 @@ pros::Task color_sort_task([]() {
           if (pros::millis() - detectedStartTime >= 50) {
             ringState = CONFIRMED;
           }
+        } else if (stopIntake && !currentRingState) {
+          ringState = CONFIRMED;
         } else {
           ringState = IDLE;
         }
         break;
 
       case CONFIRMED:
-        // Wait for physical contact
-        if (intakeLimitSwitch.get_value()) {
-          ringState = READY_TO_LAUNCH;
-        }
-        // Timeout fallback
-        else if (pros::millis() - detectedStartTime > 500) {
-          ringState = IDLE;
+        if (currentRingState) {
+          // Wait for physical contact
+          if (intakeLimitSwitch.get_value()) {
+            ringState = READY_TO_LAUNCH;
+          }
+          // Timeout fallback
+          else if (pros::millis() - detectedStartTime > 500) {
+            ringState = IDLE;
+          }
+        } else if (stopIntake) {
+          if (intakeLimitSwitch.get_value()) {
+            intake = 0;
+            ringState = IDLE;
+          }
         }
         break;
 
@@ -177,12 +193,10 @@ AutonFunction autonFunctions[] = {
     {"Solo AWP Blue", soloAwpBlue},
     {"Drive off line",
      []() { chassis.pid_drive_set(-6, 110, false); }}, // Drive off the line!
-     {"Universal Blue Left",
-     universalBlueLeft}, // Universal Blue
-    {"Universal Blue Right",
-      universalBlueRight}, // Universal Blue
-      {"Universal Red Left", universalRedLeft}, // Universal Red
-      {"Universal Red Right", universalRedRight}, // Universal Red
+    {"Universal Blue Left", universalBlueLeft},        // Universal Blue
+    {"Universal Blue Right", universalBlueRight},      // Universal Blue
+    {"Universal Red Left", universalRedLeft},          // Universal Red
+    {"Universal Red Right", universalRedRight},        // Universal Red
     {"Easy negative side blue quals", easyNegativeQualsBlue},
     {"Easy negative side red quals", easyNegativeQualsRed},
     {"Negative side blue quals", negativeSideQualsBlue},
