@@ -1754,7 +1754,7 @@ void universal(bool isRed, bool isLeft)
     }
   });
 
-  chassis.drive_angle_set(-180 * sign);
+  chassis.drive_angle_set(180 * sign);
   chassis.pid_drive_set(-20, DRIVE_SPEED, true);
   chassis.pid_wait();
   chassis.pid_drive_set(-6, 50, false);
@@ -1762,7 +1762,7 @@ void universal(bool isRed, bool isLeft)
   set_clamp.store(true);
   intake = 127;
   pros::delay(50);
-  chassis.pid_turn_set(-38 * sign, TURN_SPEED);
+  chassis.pid_turn_set(38 * sign, TURN_SPEED);
   chassis.pid_wait();
   intake.brake();
   chassis.pid_drive_set(26.5, DRIVE_SPEED, true);
@@ -1770,29 +1770,29 @@ void universal(bool isRed, bool isLeft)
   pros::delay(50);
   isLeft ? leftDoinker.set_value(true) : rightDoinker.set_value(true);
   pros::delay(100);
-  chassis.pid_turn_set(-15 * sign, TURN_SPEED); // -345
+  chassis.pid_turn_set(15 * sign, TURN_SPEED); // -345
   chassis.pid_wait();
   chassis.pid_drive_set(4, DRIVE_SPEED, false);
   chassis.pid_wait();
   isLeft ? rightDoinker.set_value(true) : leftDoinker.set_value(true);
   pros::delay(100);
   // Right swing to -320
-  chassis.pid_swing_set(isLeft ? ez::LEFT_SWING : ez::RIGHT_SWING, -40 * sign, SWING_SPEED, 70);
+  chassis.pid_swing_set(isLeft ? ez::RIGHT_SWING : ez::LEFT_SWING, 40 * sign, SWING_SPEED, 70);
   chassis.pid_wait();
   leftDoinker.set_value(false);
   rightDoinker.set_value(false);
   pros::delay(200);
   intake = 127;
   // -265
-  chassis.pid_turn_set(85 * sign, TURN_SPEED);
+  chassis.pid_turn_set(-85 * sign, TURN_SPEED);
   chassis.pid_wait();
   // right swing to -75
-  chassis.pid_swing_set(isLeft ? ez::LEFT_SWING : ez::RIGHT_SWING, 285 * sign, SWING_SPEED, 10);
+  chassis.pid_swing_set(isLeft ? ez::LEFT_SWING : ez::RIGHT_SWING, 105 * sign, SWING_SPEED, 10);
   chassis.pid_wait();
   chassis.pid_drive_set(38, DRIVE_SPEED, true);
   chassis.pid_wait();
   // -510
-  chassis.pid_turn_set(150 * sign, TURN_SPEED);
+  chassis.pid_turn_set(330 * sign, TURN_SPEED);
   chassis.pid_wait();
   chassis.pid_drive_set(64, DRIVE_SPEED, true);
   currentPos = 2;
