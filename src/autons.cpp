@@ -2,7 +2,6 @@
 #include "EZ-Template/util.hpp"
 #include "devices.hpp"
 #include "autons.hpp"
-#include "drivercontrol.hpp"
 #include "pros/rtos.hpp"
 #include <cstdio>
 
@@ -1787,7 +1786,7 @@ void universal(bool isRed, bool isLeft)
   chassis.pid_turn_set(-85 * sign, TURN_SPEED);
   chassis.pid_wait();
   // right swing to -75
-  chassis.pid_swing_set(isLeft ? ez::LEFT_SWING : ez::RIGHT_SWING, 105 * sign, SWING_SPEED, 10);
+  chassis.pid_swing_set(isLeft ? ez::RIGHT_SWING : ez::LEFT_SWING, 105 * sign, SWING_SPEED, 10);
   chassis.pid_wait();
   chassis.pid_drive_set(38, DRIVE_SPEED, true);
   chassis.pid_wait();
@@ -1804,6 +1803,7 @@ void universal(bool isRed, bool isLeft)
   pros::delay(100);
   chassis.pid_drive_set(-16, DRIVE_SPEED, true);
   chassis.pid_wait();
+  wallStakeWatch.remove();
 }
 void universalRedLeft() { universal(true, true); }
 void universalRedRight() { universal(true, false); }

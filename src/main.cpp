@@ -64,6 +64,8 @@ pros::Task color_sort_task([]() {
         currentRing = RED;
       else if (optical.get_hue() >= 200 && optical.get_hue() <= 250)
         currentRing = BLUE;
+      else 
+        currentRing = NONE;
       if (!is_red_team.load()) {
         currentRingState = (currentRing == RED);
       } else {
@@ -103,7 +105,7 @@ pros::Task color_sort_task([]() {
           else if (pros::millis() - detectedStartTime > 500) {
             ringState = IDLE;
           }
-        } else if (stopIntake) {
+        } else if (stopIntake && (is_red_team.load() == (currentRing == RED))) {
           if (intakeLimitSwitch.get_value()) {
             intake = 0;
             ringState = IDLE;
