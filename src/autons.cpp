@@ -1783,15 +1783,15 @@ void universal(bool isRed, bool isLeft)
   pros::delay(200);
   intake = 127;
   // -265
-  chassis.pid_turn_set(-85 * sign, TURN_SPEED);
+  chassis.pid_turn_set(85 * sign, TURN_SPEED);
   chassis.pid_wait();
   // right swing to -75
-  chassis.pid_swing_set(isLeft ? ez::RIGHT_SWING : ez::LEFT_SWING, 105 * sign, SWING_SPEED, 10);
+  chassis.pid_swing_set(isLeft ? ez::RIGHT_SWING : ez::LEFT_SWING, -65 * sign, SWING_SPEED, 10);
   chassis.pid_wait();
   chassis.pid_drive_set(38, DRIVE_SPEED, true);
   chassis.pid_wait();
   // -510
-  chassis.pid_turn_set(330 * sign, TURN_SPEED);
+  chassis.pid_turn_set(-160 * sign, TURN_SPEED);
   chassis.pid_wait();
   chassis.pid_drive_set(64, DRIVE_SPEED, true);
   currentPos = 2;
@@ -1807,5 +1807,5 @@ void universal(bool isRed, bool isLeft)
 }
 void universalRedLeft() { universal(true, true); }
 void universalRedRight() { universal(true, false); }
-void universalBlueLeft() { universal(false, false); }
-void universalBlueRight() { universal(false, true); }
+void universalBlueLeft() { universal(false, true); }
+void universalBlueRight() { universal(false, false); }

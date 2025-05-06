@@ -204,15 +204,14 @@ static lv_res_t confirm_btn_action(lv_obj_t *btn) {
     fprintf(usd_file_write, "%d\n", selectedAuton); 
     fclose(usd_file_write);
     
-
     // Create a new screen
     lv_obj_t *new_scr = lv_obj_create(NULL, NULL);
-
 
     // Load the new screen
     lv_scr_load(new_scr);
 
-    // Ensure mainScreenGif is not null and is properly initialized
+    // Display an image on the new screen
+    imageContainer(new_scr, "/usd/selected_auton_image.bmp");
 
     return LV_RES_OK;
 }
@@ -299,18 +298,25 @@ lv_obj_t editPortsButton(lv_obj_t *scr, lv_color_t color_scheme) {
     return *confirmBtn;
 }
 
-Gif* gifContainer(lv_obj_t *scr) {
+lv_obj_t* imageContainer(lv_obj_t *scr, const char* imagePath) {
     // Create an outer container for positioning
-    lv_obj_t *outer_gif_cont = lv_cont_create(scr, NULL);
-    lv_obj_set_size(outer_gif_cont, LV_HOR_RES / 1.6, LV_VER_RES / 1.55);
-    lv_obj_align(outer_gif_cont, NULL, LV_ALIGN_IN_TOP_RIGHT, -10, 10);
+    lv_obj_t *outer_img_cont = lv_cont_create(scr, NULL);
+    lv_obj_set_size(outer_img_cont, LV_HOR_RES / 1.6, LV_VER_RES / 1.55);
+    lv_obj_align(outer_img_cont, NULL, LV_ALIGN_IN_TOP_RIGHT, -10, 10);
 
     // Set the outer container's layout to off so its children can be freely moved
-    lv_cont_set_layout(outer_gif_cont, LV_LAYOUT_OFF);
+    lv_cont_set_layout(outer_img_cont, LV_LAYOUT_OFF);
 
-    // Now create and place the GIF inside the inner container
-    textGif = new Gif("/usd/2145shake.gif", outer_gif_cont); // The Gif class constructor takes the file path and parent object
-    return textGif;
+    // Create an image object
+    lv_obj_t *img = lv_img_create(outer_img_cont, NULL);
+
+    // Set the image source to the file path on the SD card
+    lv_img_set_src(img, imagePath);
+
+    // Center the image within the container
+    lv_obj_align(img, NULL, LV_ALIGN_CENTER, 0, 0);
+
+    return img;
 }
 
 void autonSelectorScreenInit(AutonFunction autonFunctions[], size_t autonCount, lv_color_t color_scheme) {

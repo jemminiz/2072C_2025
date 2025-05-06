@@ -139,9 +139,9 @@ pros::Task wallStakeTask([]() {
   currentPos = 0;
   enum WallStakePositions {
     ZERO = 0,
-    LOAD = 130,
+    LOAD = 120,
     SCORE = 480,
-    UNTIP = 900,
+    UNTIP = 1000,
     GRAB = 600
   };
   while (true) {
@@ -260,6 +260,15 @@ void competition_initialize() {}
  * Runs the user autonomous code. This function will be started in its own task
  */
 void autonomous() {
+  pros::Task alignerFixTask([]() {
+    while(true)
+    {
+      wallStake.move(-127);
+      pros::delay(150);
+      wallStake.brake();
+      break;
+    }
+  });
   set_drive_to_hold();
   is_auto = true;
   runSelectedAuton(autonFunctions, autonCount);

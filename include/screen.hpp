@@ -1,6 +1,7 @@
 // screen.hpp
 #pragma once
 
+#include "display/lv_core/lv_obj.h"
 #include "display/lv_misc/lv_color.h"
 #include <string>
 
@@ -23,3 +24,5 @@ void particlesjs();
 void calibrationScreenInit();
 void autonSelectorScreenInit(AutonFunction autonFunctions[], size_t autonCount, lv_color_t color_scheme);
 void runSelectedAuton(AutonFunction autonFunctions[], size_t autonCount);
+
+lv_obj_t* imageContainer(lv_obj_t *scr, const char* imagePath);
