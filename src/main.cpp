@@ -60,9 +60,9 @@ pros::Task color_sort_task([]() {
   while (true) {
     if (is_color_sort_enabled.load()) {
       // 1. Detect if a bad ring is seen based on hue
-      if ((optical.get_hue() <= 20 || optical.get_hue() >= 280))
+      if ((optical.get_hue() <= 40 || optical.get_hue() >= 260))
         currentRing = RED;
-      else if (optical.get_hue() >= 200 && optical.get_hue() <= 250)
+      else if (optical.get_hue() >= 120 && optical.get_hue() <= 250)
         currentRing = BLUE;
       else 
         currentRing = NONE;
@@ -102,7 +102,7 @@ pros::Task color_sort_task([]() {
             ringState = READY_TO_LAUNCH;
           }
           // Timeout fallback
-          else if (pros::millis() - detectedStartTime > 500) {
+          else if (pros::millis() - detectedStartTime > 1000) {
             ringState = IDLE;
           }
         } else if (stopIntake && (is_red_team.load() == (currentRing == RED))) {
@@ -114,7 +114,7 @@ pros::Task color_sort_task([]() {
         break;
 
       case READY_TO_LAUNCH:
-        pros::delay(100);
+        pros::delay(75);
         hooks.move(-127);
         throwStartTime = pros::millis();
         throwing = true;
@@ -128,6 +128,8 @@ pros::Task color_sort_task([]() {
       if (throwing && (pros::millis() - throwStartTime >= 200)) {
         hooks.move(0);
         throwing = false;
+        pros::delay(650);
+        intake = 127;
       }
     }
     pros::delay(20);
@@ -149,11 +151,9 @@ pros::Task wallStakeTask([]() {
       currentPos += 1;
       currentPos %= 3;
     } else if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L2)) {
-      currentPos = (currentPos + 3 - 1) % 3;
+      currentPos = 0;
     } else if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y)) {
       currentPos = 3;
-    } else if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)) {
-      currentPos = 4;
     } else if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) {
       // zero lb
       wallStake.move_voltage(-6000); // slower approach
@@ -208,7 +208,14 @@ AutonFunction autonFunctions[] = {
     {"- Elims blue", negativeAllianceStakeLastBlue},
     {"- Elims red", negativeAllianceStakeLastRed},
     {"- Ring Rush Red", negativeRingRushRed},
-    {"- Ring Rush Blue", negativeRingRushBlue}};
+    {"- Ring Rush Blue", negativeRingRushBlue},
+      {"Half Blue Right", halfAwpBlueRight},
+        {"Half Red Right", halfAwpRedRight},
+      {"Half Blue Left", halfAwpBlueLeft},
+    {"Half Red Left", halfAwpRedLeft},
+  {"Six Ring Alliance Stake Blue", negativeSixRingAllianceStakeBlue},
+    {"Six Ring Alliance Stake Red", negativeSixRingAllianceStakeRed},
+  {"Universal Alliance Stake Blue Right", universalAllianceStakeBlueRight}};
 
 // this is needed for LVGL displaying! Do not touch!
 size_t autonCount = sizeof(autonFunctions) / sizeof(autonFunctions[0]);
@@ -260,15 +267,10 @@ void competition_initialize() {}
  * Runs the user autonomous code. This function will be started in its own task
  */
 void autonomous() {
-  pros::Task alignerFixTask([]() {
-    while(true)
-    {
-      wallStake.move(-127);
-      pros::delay(150);
-      wallStake.brake();
-      break;
-    }
-  });
+  
+  //wallStake.move(-127);
+  //pros::delay(150);
+  //wallStake.brake();
   set_drive_to_hold();
   is_auto = true;
   runSelectedAuton(autonFunctions, autonCount);

@@ -637,6 +637,7 @@ void positiveSideQualsBlue() { positiveSideQuals(false); }
 
 void positiveSideQualsRed() { positiveSideQuals(true); }
 
+
 void negativeSideQuals(bool isRed) {
   double sign = isRed ? 1 : -1;
   chassis.drive_angle_set(-22 * sign);
@@ -1430,7 +1431,7 @@ void easyNegativeQuals(bool isRed)
 
   wallStake.move_velocity(600);
 
-  pros::delay(600);
+  pros::delay(1000);
 
   chassis.pid_drive_set(-18, DRIVE_SPEED, true);
   chassis.pid_wait();
@@ -1444,8 +1445,6 @@ void easyNegativeQuals(bool isRed)
   hooks = -127;
   set_clamp.store(true);
 
-  chassis.pid_drive_set(-24, DRIVE_SPEED, true);
-  chassis.pid_wait();
   rollers = 127;
   hooks = 127;
   chassis.pid_turn_set(315 * sign, TURN_SPEED);
@@ -1461,7 +1460,7 @@ void easyNegativeQuals(bool isRed)
 
   chassis.pid_drive_set(-12, DRIVE_SPEED, false);
   chassis.pid_wait();
-  chassis.pid_swing_set(isRed ? ez::RIGHT_SWING : ez::LEFT_SWING, 215 * sign, SWING_SPEED);
+  chassis.pid_swing_set(isRed ? ez::RIGHT_SWING : ez::LEFT_SWING, 145 * sign, SWING_SPEED);
   chassis.pid_wait();
   chassis.pid_drive_set(40, DRIVE_SPEED, true);
   chassis.pid_wait();
@@ -1583,8 +1582,9 @@ void negativeAllianceStakeLast(bool isRed)
   });
 
   chassis.drive_angle_set(180 * sign);
-
-  chassis.pid_drive_set(-18, DRIVE_SPEED, true);
+  rollers = 127;
+  hooks = 127;
+  /*chassis.pid_drive_set(-18, DRIVE_SPEED, true);
   chassis.pid_wait();
   chassis.pid_drive_set(-6, 50, false);
 
@@ -1658,19 +1658,6 @@ void negativeRingRush(bool isRed)
 
   is_red_team.store(isRed);
 
-  wallStakeTask.suspend();
-
-  pros::Task wallStakeWatch([]() {
-    while(true)
-    {
-      if(wallStakeLimitSwitch.get_new_press())
-      {
-        wallStake.brake();
-      }
-      pros::delay(50);
-    }
-  });
-
   chassis.drive_angle_set(-15 * sign);
 
   chassis.pid_drive_set(48, 127, true);
@@ -1680,7 +1667,10 @@ void negativeRingRush(bool isRed)
   pros::delay(100); // extra settle time just in case
   chassis.pid_turn_set(-55 * sign, TURN_SPEED);
   chassis.pid_wait();
-  chassis.pid_drive_set(-30, DRIVE_SPEED, true);
+  if(isRed)
+    chassis.pid_drive_set(-30, DRIVE_SPEED, true);
+  else
+    chassis.pid_drive_set(-32, DRIVE_SPEED, true);
   chassis.pid_wait_until(-18);
   chassis.pid_speed_max_set(60);
   chassis.pid_wait();
@@ -1697,17 +1687,17 @@ void negativeRingRush(bool isRed)
   chassis.pid_wait();
   chassis.pid_drive_set(56, DRIVE_SPEED, true);
   chassis.pid_wait_until(24);
-  wallStake.move_velocity(55);
-  chassis.pid_wait_until(50);
-  wallStake.brake();
+  currentPos = 2;
   chassis.pid_wait();
   chassis.pid_drive_set(-18, 30, true);
   chassis.pid_wait();
   pros::delay(500);
+  
   chassis.pid_drive_set(18, DRIVE_SPEED, true);
   chassis.pid_wait();
-  chassis.pid_drive_set(-16, DRIVE_SPEED, true);
+  chassis.pid_drive_set(-22, DRIVE_SPEED, true);
   chassis.pid_wait();
+  /*
   chassis.pid_turn_set(-270 * sign, 70);
   chassis.pid_wait();
   chassis.pid_drive_set(24, DRIVE_SPEED, true);
@@ -1724,7 +1714,6 @@ void negativeRingRush(bool isRed)
   wallStake.move_velocity(600);
   chassis.pid_wait();
   //*/
-  wallStakeWatch.suspend();
 }
 
 void negativeRingRushRed()
@@ -1754,6 +1743,21 @@ void universal(bool isRed, bool isLeft)
   });
 
   chassis.drive_angle_set(180 * sign);
+  /*chassis.pid_wait();
+  chassis.pid_turn_set(135 * sign, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(15, DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+  wallStake.move_velocity(600);
+
+  pros::delay(700);
+
+  wallStake.brake();
+  chassis.pid_drive_set(-15, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_turn_set(180 * sign, TURN_SPEED);
+  chassis.pid_wait();*/
   chassis.pid_drive_set(-20, DRIVE_SPEED, true);
   chassis.pid_wait();
   chassis.pid_drive_set(-6, 50, false);
@@ -1793,8 +1797,10 @@ void universal(bool isRed, bool isLeft)
   // -510
   chassis.pid_turn_set(-160 * sign, TURN_SPEED);
   chassis.pid_wait();
-  chassis.pid_drive_set(64, DRIVE_SPEED, true);
+  chassis.pid_drive_set(40, DRIVE_SPEED, true);
   currentPos = 2;
+  chassis.pid_turn_set(-160 * sign, TURN_SPEED);
+  /*
   chassis.pid_wait();
   chassis.pid_drive_set(-18, DRIVE_SPEED, true);
   chassis.pid_wait();
@@ -1803,9 +1809,243 @@ void universal(bool isRed, bool isLeft)
   pros::delay(100);
   chassis.pid_drive_set(-16, DRIVE_SPEED, true);
   chassis.pid_wait();
-  wallStakeWatch.remove();
+  wallStakeWatch.remove();*/
 }
 void universalRedLeft() { universal(true, true); }
 void universalRedRight() { universal(true, false); }
 void universalBlueLeft() { universal(false, true); }
 void universalBlueRight() { universal(false, false); }
+
+void halfAwp(bool isRed, bool isLeft)
+{
+  double sign = isLeft ? 1 : -1;
+
+  is_red_team.store(isRed);
+
+  wallStakeTask.suspend();
+
+  pros::Task wallStakeWatch([]() {
+    while(true)
+    {
+      if(wallStakeLimitSwitch.get_new_press())
+      {
+        wallStake.brake();
+      }
+      pros::delay(50);
+    }
+  });
+
+  chassis.drive_angle_set(125 * sign);
+
+  wallStake.move_velocity(600);
+
+  pros::delay(700);
+
+  wallStake.brake();
+
+  chassis.pid_drive_set(-18, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  wallStake.move(-127);
+  chassis.pid_turn_set(170 * sign, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-13, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-12, 40, false);
+  chassis.pid_wait();
+  set_clamp.store(true);
+  chassis.pid_turn_set(265 * sign, TURN_SPEED);
+  chassis.pid_wait();
+
+  chassis.pid_drive_set(26, DRIVE_SPEED, true);
+  intake = 127;
+  chassis.pid_wait();
+
+  pros::delay(200);
+
+  chassis.pid_turn_set(105 * sign, TURN_SPEED);
+  chassis.pid_wait();
+
+  chassis.pid_drive_set(60, DRIVE_SPEED, true);
+  intakeRaise.set_value(true);
+  intakeRaised = true;
+  chassis.pid_wait_until(30);
+  chassis.pid_speed_max_set(60);
+  chassis.pid_wait();
+  pros::delay(200);
+  chassis.pid_turn_set(0 * sign, TURN_SPEED);
+  intakeRaise.set_value(false);
+  intakeRaised = false;
+  chassis.pid_wait();
+  chassis.pid_drive_set(24, 30, false);
+  wallStake.move_velocity(100);
+  set_clamp.store(false);
+}
+
+void halfAwpBlueLeft()
+{halfAwp(false, true);}
+
+void halfAwpBlueRight()
+{halfAwp(false, false);}
+
+void halfAwpRedLeft()
+{halfAwp(true, true);}
+
+void halfAwpRedRight()
+{halfAwp(true, false);}
+
+void negativeSixRingAllianceStake(bool isRed)
+{
+  double sign = isRed ? 1 : -1;
+
+  is_red_team.store(isRed);
+
+  wallStakeTask.suspend();
+
+  pros::Task wallStakeWatch([]() {
+    while(true)
+    {
+      if(wallStakeLimitSwitch.get_new_press())
+      {
+        wallStake.brake();
+      }
+      pros::delay(50);
+    }
+  });
+
+  chassis.drive_angle_set(125 * sign);
+
+  wallStake.move_velocity(600);
+
+  pros::delay(700);
+
+  wallStake.brake();
+
+  chassis.pid_drive_set(-18, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  wallStake.move(-127);
+  chassis.pid_turn_set(175 * sign, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-13, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-12, 40, false);
+  chassis.pid_wait();
+  set_clamp.store(true);
+
+  chassis.pid_turn_set(315 * sign, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(18, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_swing_set(isRed ? ez::RIGHT_SWING : ez::LEFT_SWING, 265 * sign, SWING_SPEED);
+  chassis.pid_wait();
+  intake = 127;
+  chassis.pid_drive_set(24, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-24, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_swing_set(isRed ? ez::RIGHT_SWING : ez::LEFT_SWING, -175, SWING_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(6, DRIVE_SPEED, false);
+  chassis.pid_wait();
+  chassis.pid_turn_set(210 * sign, TURN_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(60, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-18, 40, true);
+  chassis.pid_wait();
+  chassis.pid_turn_set(90 * sign, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(52, DRIVE_SPEED, true);
+  intakeRaise.set_value(true);
+  intakeRaised = true;
+  chassis.pid_wait_until(28);
+  chassis.pid_speed_max_set(50);
+  chassis.pid_wait();
+}
+
+void negativeSixRingAllianceStakeBlue()
+{negativeSixRingAllianceStake(false);}
+void negativeSixRingAllianceStakeRed()
+{negativeSixRingAllianceStake(true);}
+
+void universalAllianceStake(bool isRed, bool isLeft)
+{
+  
+  double sign = isRed ? 1 : -1;
+
+  is_red_team.store(isRed);
+
+  wallStakeTask.suspend();
+
+  pros::Task wallStakeWatch([]() {
+    while(true)
+    {
+      if(wallStakeLimitSwitch.get_new_press())
+      {
+        wallStake.brake();
+      }
+      pros::delay(50);
+    }
+  });
+
+  chassis.drive_angle_set(125 * sign);
+
+  wallStake.move_velocity(600);
+
+  pros::delay(700);
+
+  wallStake.brake();
+
+  chassis.pid_drive_set(-18, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  wallStake.move(-127);
+  chassis.pid_turn_set(175 * sign, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-16, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-6, 40, false);
+  chassis.pid_wait();
+  set_clamp.store(true);
+
+  intake = 127;
+  pros::delay(50);
+  chassis.pid_turn_set(38 * sign, TURN_SPEED);
+  chassis.pid_wait();
+  intake.brake();
+  chassis.pid_drive_set(26.5, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  pros::delay(50);
+  isLeft ? leftDoinker.set_value(true) : rightDoinker.set_value(true);
+  pros::delay(100);
+  chassis.pid_turn_set(15 * sign, TURN_SPEED); // -345
+  chassis.pid_wait();
+  chassis.pid_drive_set(4, DRIVE_SPEED, false);
+  chassis.pid_wait();
+  isLeft ? rightDoinker.set_value(true) : leftDoinker.set_value(true);
+  pros::delay(100);
+  // Right swing to -320
+  chassis.pid_swing_set(isLeft ? ez::RIGHT_SWING : ez::LEFT_SWING, 40 * sign, SWING_SPEED, 70);
+  chassis.pid_wait();
+  leftDoinker.set_value(false);
+  rightDoinker.set_value(false);
+  pros::delay(200);
+  intake = 127;
+  // -265
+  chassis.pid_turn_set(85 * sign, TURN_SPEED);
+  chassis.pid_wait();
+  // right swing to -75
+  chassis.pid_swing_set(isLeft ? ez::RIGHT_SWING : ez::LEFT_SWING, -65 * sign, SWING_SPEED, 10);
+  chassis.pid_wait();
+  chassis.pid_drive_set(38, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  // -510
+  chassis.pid_turn_set(-160 * sign, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(40, DRIVE_SPEED, true);
+  currentPos = 2;
+  chassis.pid_turn_set(-160 * sign, TURN_SPEED);
+}
+
+void universalAllianceStakeBlueRight()
+{
+  universalAllianceStake(false, false);
+}

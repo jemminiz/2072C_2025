@@ -35,7 +35,15 @@ void universalBlueRight();
 void universalRedLeft();
 void universalRedRight();
 
+void halfAwpRedLeft();
+void halfAwpRedRight();
+void halfAwpBlueLeft();
+void halfAwpBlueRight();
 
+void negativeSixRingAllianceStakeBlue();
+void negativeSixRingAllianceStakeRed();
 
 void soloAwpBlue();
 void soloAwpRed();
+
+void universalAllianceStakeBlueRight();
